@@ -16,6 +16,8 @@
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
         /* 顶部导航栏 */
@@ -40,11 +42,31 @@
             letter-spacing: 2px;
         }
 
+        .weather-info {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 3px;
+            padding: 5px 12px;
+            font-size: 0.9em;
+            color: #856404;
+            font-weight: bold;
+        }
+
         .navbar-search {
             flex: 1;
             min-width: 300px;
             display: flex;
             gap: 5px;
+        }
+
+        .search-select {
+            padding: 8px 12px;
+            border: 1px solid #999;
+            border-radius: 3px;
+            font-size: 0.95em;
+            background: white;
+            color: #333;
+            cursor: pointer;
         }
 
         .search-input {
@@ -114,10 +136,11 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            flex: 1;
         }
 
-        /* 分类区域 */
-        .category-section {
+        /* 导航板块 */
+        .nav-section {
             background: white;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -126,7 +149,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
-        .category-header {
+        .nav-header {
             background: linear-gradient(to right, #f0f0f0, #e0e0e0);
             border-bottom: 2px solid #0066cc;
             padding: 12px 20px;
@@ -136,13 +159,13 @@
             letter-spacing: 1px;
         }
 
-        .category-content {
+        .nav-content {
             padding: 20px;
         }
 
-        .link-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        .link-list {
+            display: flex;
+            flex-wrap: wrap;
             gap: 15px;
         }
 
@@ -150,58 +173,72 @@
             background: #f9f9f9;
             border: 1px solid #e0e0e0;
             border-radius: 4px;
-            padding: 15px;
+            padding: 10px 15px;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
-            color: inherit;
-            display: block;
+            color: #0066cc;
+            display: inline-block;
+            font-weight: 500;
         }
 
         .link-item:hover {
             background: #0066cc;
             color: white;
             border-color: #0066cc;
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
         }
 
-        .link-icon {
-            font-size: 2em;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .link-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 0.95em;
-        }
-
-        .link-desc {
-            font-size: 0.85em;
-            opacity: 0.7;
-        }
-
-        .link-item:hover .link-desc {
-            opacity: 1;
-        }
-
         /* 页脚 */
-        .footer {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-            margin-top: 40px;
-            padding: 20px;
-            font-size: 0.9em;
+        .footer-container {
+            margin-top: auto;
         }
 
-        .footer a {
-            color: rgba(255, 255, 255, 0.9);
+        .footer-disclaimer {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .disclaimer-title {
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .disclaimer-text {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .copyright {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .copyright p {
+            color: #666;
+            font-size: 0.85em;
+            margin: 5px 0;
+        }
+
+        .copyright a {
+            color: #0066cc;
             text-decoration: none;
         }
 
-        .footer a:hover {
+        .copyright a:hover {
             text-decoration: underline;
         }
 
@@ -216,8 +253,13 @@
                 min-width: 100%;
             }
 
-            .link-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            .link-list {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .link-item {
+                width: 100%;
             }
         }
     </style>
@@ -226,8 +268,13 @@
     <!-- 顶部导航栏 -->
     <div class="navbar">
         <div class="navbar-brand">🌐 网络导航中心</div>
+        <div class="weather-info">📍 北淀市 -18℃ 雨</div>
         <div class="navbar-search">
-            <input type="text" class="search-input" placeholder="搜索���站、新闻、资讯...">
+            <select class="search-select" id="searchType">
+                <option value="search">搜索</option>
+                <option value="daodelao">地道搜索</option>
+            </select>
+            <input type="text" class="search-input" placeholder="搜索网站、新闻、资讯...">
             <button class="search-btn">搜索</button>
         </div>
         <div class="navbar-right">
@@ -238,127 +285,46 @@
 
     <!-- 主容器 -->
     <div class="container">
-        <!-- 热门推荐 -->
-        <div class="category-section">
-            <div class="category-header">🔥 热门推荐</div>
-            <div class="category-content">
-                <div class="link-grid">
-                    <a href="#" class="link-item">
-                        <span class="link-icon">📺</span>
-                        <div class="link-title">视频中心</div>
-                        <div class="link-desc">观看热门视频内容</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">📰</span>
-                        <div class="link-title">新闻资讯</div>
-                        <div class="link-desc">最新实时资讯</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">🎮</span>
-                        <div class="link-title">游戏平台</div>
-                        <div class="link-desc">热门游戏推荐</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">🛍️</span>
-                        <div class="link-title">购物广场</div>
-                        <div class="link-desc">在线购物体验</div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- 社交媒体 -->
-        <div class="category-section">
-            <div class="category-header">💬 社交媒体</div>
-            <div class="category-content">
-                <div class="link-grid">
-                    <a href="#" class="link-item">
-                        <span class="link-icon">👥</span>
-                        <div class="link-title">社交网络</div>
-                        <div class="link-desc">连接全球用户</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">💭</span>
-                        <div class="link-title">讨论社区</div>
-                        <div class="link-desc">话题讨论平台</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">📸</span>
-                        <div class="link-title">图片分享</div>
-                        <div class="link-desc">分享你的精彩</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">🎵</span>
-                        <div class="link-title">音乐电台</div>
-                        <div class="link-desc">音乐流媒体服务</div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- 工具服务 -->
-        <div class="category-section">
-            <div class="category-header">🛠️ 工具服务</div>
-            <div class="category-content">
-                <div class="link-grid">
-                    <a href="#" class="link-item">
-                        <span class="link-icon">📧</span>
-                        <div class="link-title">电子邮件</div>
-                        <div class="link-desc">邮件服务中心</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">☁️</span>
-                        <div class="link-title">云存储</div>
-                        <div class="link-desc">文件云备份</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">📊</span>
-                        <div class="link-title">数据分析</div>
-                        <div class="link-desc">数据统计工具</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">🔒</span>
-                        <div class="link-title">安全工具</div>
-                        <div class="link-desc">隐私保护服务</div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- 神秘档案 -->
-        <div class="category-section">
-            <div class="category-header">🔍 神秘档案</div>
-            <div class="category-content">
-                <div class="link-grid">
-                    <a href="#" class="link-item">
-                        <span class="link-icon">📁</span>
-                        <div class="link-title">档案库</div>
-                        <div class="link-desc">等待解开的秘密</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">🗂️</span>
-                        <div class="link-title">数据库</div>
-                        <div class="link-desc">信息汇集地</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">📜</span>
-                        <div class="link-title">历史记录</div>
-                        <div class="link-desc">过往事件回顾</div>
-                    </a>
-                    <a href="#" class="link-item">
-                        <span class="link-icon">🔐</span>
-                        <div class="link-title">加密信息</div>
-                        <div class="link-desc">需要密钥解读</div>
-                    </a>
+        <!-- 个人常用网址导航 -->
+        <div class="nav-section">
+            <div class="nav-header">⭐ 个人常用网址导航</div>
+            <div class="nav-content">
+                <div class="link-list">
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">淘沙网</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">拼夕夕</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">AlieAlie啊咧视频</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">嗨奇异</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">终点文学城</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">造浪新闻</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">啾啾空间</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">地气论坛</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">脸盆博客</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">2333小游戏</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">帅喵音乐</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">难闲邮箱</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">996全城</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">知忽</a>
+                    <a href="#" class="link-item" onclick="showLoginPrompt(event)">缘缘婚恋网</a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- 页脚 -->
-    <div class="footer">
-        <p>© 2018-2026 网络导航中心 | <a href="#">关于我们</a> | <a href="#">联系方式</a> | <a href="#">用户协议</a></p>
-        <p style="margin-top: 10px; font-size: 0.85em;">⚠️ 本网站内容仅供参考</p>
+    <div class="footer-container">
+        <!-- 免责声明 -->
+        <div class="footer-disclaimer">
+            <div class="disclaimer-title">⚠️ 免责声明</div>
+            <div class="disclaimer-text">
+                本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关。
+            </div>
+        </div>
+
+        <!-- 著作权信息 -->
+        <div class="copyright">
+            <p>© 2026 MerlinWade. All rights reserved.</p>
+            <p>本作品受著作权保护。未经许可，不得以任何形式转载或复制。</p>
+        </div>
     </div>
 
     <script>
@@ -372,11 +338,19 @@
             alert('📝 注册功能开发中...\n敬请期待！');
         }
 
-        // 搜索框处理
+        // 显示登陆提示
+        function showLoginPrompt(event) {
+            event.preventDefault();
+            alert('🔒 请登录后查看');
+        }
+
+        // 搜索功能处理
         document.querySelector('.search-btn').addEventListener('click', function() {
+            const searchType = document.getElementById('searchType').value;
             const searchText = document.querySelector('.search-input').value;
             if (searchText.trim()) {
-                alert(`🔍 搜索内容：${searchText}\n\n搜索功能开发中...`);
+                const typeLabel = searchType === 'search' ? '搜索' : '地道搜索';
+                alert(`🔍 ${typeLabel}：${searchText}\n\n搜索功能开发中...`);
             } else {
                 alert('请输入搜索内容');
             }
