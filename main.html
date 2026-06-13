@@ -516,7 +516,6 @@
         <p>© 2026 MerlinWade. All rights reserved. | 本作品受著作权保护。未经许可，不得以任何形式转载或复制。</p>
     </div>
 
-    <script>
     // ---------- 单用户 ARG 沉浸式注册/登录模块 ----------
     // 仅存储一个用户（localStorage），注册后不可重复注册，体现唯一体验
     (function() {
@@ -668,7 +667,7 @@
             const header = document.createElement('div');
             header.className = 'arg-modal-header';
             const title = document.createElement('h3');
-            title.textContent = type === 'register' ? '📝 注册新身份' : '🔐 登录秘密基地';
+            title.textContent = type === 'register' ? '📝 注册' : '🔐 登录';
             const closeSpan = document.createElement('span');
             closeSpan.className = 'arg-close';
             closeSpan.innerHTML = '&times;';
@@ -679,10 +678,10 @@
             if (type === 'register') {
                 // 注册表单
                 const fields = [
-                    { label: '👤 用户名', id: 'arg_reg_username', type: 'text', placeholder: '你的代号' },
-                    { label: '🔒 密码', id: 'arg_reg_password', type: 'password', placeholder: '设置密码' },
-                    { label: '✓ 确认密码', id: 'arg_reg_confirm', type: 'password', placeholder: '再次输入密码' },
-                    { label: '🎟️ 内推码', id: 'arg_reg_invite', type: 'text', placeholder: '神秘代码' }
+                    { label: '用户名', id: 'arg_reg_username', type: 'text', placeholder: '' },
+                    { label: '密码', id: 'arg_reg_password', type: 'password', placeholder: '输入密码' },
+                    { label: '确认密码', id: 'arg_reg_confirm', type: 'password', placeholder: '再次输入密码' },
+                    { label: '内推码', id: 'arg_reg_invite', type: 'text', placeholder: '请输入内推码' }
                 ];
                 fields.forEach(f => {
                     const group = document.createElement('div');
@@ -700,7 +699,7 @@
                 const btnDiv = document.createElement('div');
                 btnDiv.className = 'arg-buttons';
                 const submitBtn = document.createElement('button');
-                submitBtn.textContent = '注册并铭记';
+                submitBtn.textContent = '注册';
                 submitBtn.className = 'arg-btn-primary';
                 const cancelBtn = document.createElement('button');
                 cancelBtn.textContent = '取消';
@@ -716,7 +715,7 @@
                 const userGroup = document.createElement('div');
                 userGroup.className = 'arg-form-group';
                 const userLabel = document.createElement('label');
-                userLabel.textContent = '👤 用户名';
+                userLabel.textContent = '用户名';
                 const userInput = document.createElement('input');
                 userInput.type = 'text';
                 userInput.id = 'arg_login_username';
@@ -728,7 +727,7 @@
                 const pwdGroup = document.createElement('div');
                 pwdGroup.className = 'arg-form-group';
                 const pwdLabel = document.createElement('label');
-                pwdLabel.textContent = '🔒 密码';
+                pwdLabel.textContent = '密码';
                 const pwdInput = document.createElement('input');
                 pwdInput.type = 'password';
                 pwdInput.id = 'arg_login_password';
@@ -740,7 +739,7 @@
                 const btnDiv = document.createElement('div');
                 btnDiv.className = 'arg-buttons';
                 const loginBtn = document.createElement('button');
-                loginBtn.textContent = '登入游戏';
+                loginBtn.textContent = '登陆';
                 loginBtn.className = 'arg-btn-primary';
                 const cancelBtn = document.createElement('button');
                 cancelBtn.textContent = '取消';
@@ -824,8 +823,8 @@
             // 2. 密码一致性
             if (password !== confirmPwd) { alert('⚠️ 两次输入的密码不一致'); return; }
             
-            // 3. 内推码必须为 123456
-            if (inviteCode !== '123456') { alert('❌ 内推码错误，必须是 123456'); return; }
+            // 3. 内推码必须为 womenjiehunba
+            if (inviteCode !== 'womenjiehunba') { alert('❌ 内推码错误'); return; }
             
             // 4. 单用户沉浸规则：如果已经存在注册用户，不允许重复注册（除非清理localStorage，符合ARG单一身份）
             const existing = getStoredUser();
@@ -839,7 +838,7 @@
             
             // 注册成功，保存用户信息
             saveUser(username, password);
-            alert(`✨ 注册成功！\n欢迎你，「${username}」\n现在点击「登陆」开启你的ARG解谜之旅吧。`);
+            alert(`✨ 注册成功！\n欢迎你，「${username}」\赶快「登陆」吧。`);
             const regModal = document.getElementById('arg-register-modal');
             if (regModal) closeModal(regModal);
         }
@@ -856,14 +855,14 @@
             
             const storedUser = getStoredUser();
             if (!storedUser) {
-                alert('❌ 尚未注册任何身份。请先点击「注册」创建你的游戏档案。');
+                alert('❌ 尚未注册任何身份。请先点击「注册」创建你的账号。');
                 const loginModal = document.getElementById('arg-login-modal');
                 if (loginModal) closeModal(loginModal);
                 return;
             }
             
             if (storedUser.username === username && storedUser.password === password) {
-                alert(`✅ 登陆成功！\n欢迎回来，${username}\n继续解密世界……`);
+                alert(`✅ 登陆成功！\n欢迎回来，${username}\n`);
                 const loginModal = document.getElementById('arg-login-modal');
                 if (loginModal) closeModal(loginModal);
             } else {
