@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>快888快捷导航</title>
     <style>
-               /* 宁源模式：灰色背景 + 白色楷体挽联 */
+              /* 宁源模式下的背景和挽联（不变） */
         body.ningyuan-mode {
             background: #333333;
         }
@@ -42,14 +42,19 @@
                 letter-spacing: 4px;
             }
         }
+
+        /* 需要变灰的主要内容区域（不包含固定浮动层） */
+        .ningyuan-grayscale {
+            filter: grayscale(1);
+        }
+        /* 天气栏在宁源模式下强制红色（不受灰度影响） */
+        body.ningyuan-mode .weather-info {
+            filter: grayscale(0);
+            color: #ff0000 !important;
+            background: #000000 !important;
+            border-color: #ff0000 !important;
+        }
         
-/* 确保天气栏在黑白模式下显示红色文字（覆盖滤镜影响） */
-.ningyuan-mode .weather-info {
-    filter: grayscale(0);      /* 取消天气栏的黑白效果 */
-    color: #ff0000 !important;
-    background: #000 !important;
-    border-color: #ff0000 !important;
-}
         * {
             margin: 0;
             padding: 0;
@@ -832,9 +837,12 @@
                 localStorage.removeItem(STORAGE_KEY);
             }
             
-// 应用宁源主题（黑白 + 天气栏修改）
+ // 应用宁源主题（灰色背景 + 挽联 + 主要内容灰度）
     function applyNingyuanTheme() {
         document.body.classList.add('ningyuan-mode');
+        // 对需要变灰的区域添加灰度类
+        const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer');
+        grayscaleTargets.forEach(el => el.classList.add('ningyuan-grayscale'));
         const weatherDiv = document.querySelector('.weather-info');
         if (weatherDiv) {
             weatherDiv.textContent = '📍 ？？？ -8层';
@@ -845,11 +853,13 @@
     // 恢复默认主题
     function restoreDefaultTheme() {
         document.body.classList.remove('ningyuan-mode');
+        const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer');
+        grayscaleTargets.forEach(el => el.classList.remove('ningyuan-grayscale'));
         const weatherDiv = document.querySelector('.weather-info');
         if (weatherDiv) {
             weatherDiv.textContent = '📍 北淀市 -18℃ 雨';
             weatherDiv.style.color = '';      // 恢复默认颜色
-            weatherDiv.style.backgroundColor = '#fff3cd'; // 恢复背景（如果有覆盖）
+            weatherDiv.style.backgroundColor = '#fff3cd';
         }
     }
             
