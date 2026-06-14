@@ -22,13 +22,49 @@
             box-sizing: border-box;
         }
 
-        body {
+         body {
             font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: #333333;  /* 灰色背景 */
             min-height: 100vh;
             padding: 15px;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+        /* 左右挽联 */
+        body::before,
+        body::after {
+            content: "死生有命";
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: "楷体", "华文楷书", "KaiTi", serif;
+            font-size: 24px;
+            color: white;
+            background: transparent;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            white-space: nowrap;
+            z-index: 5000;
+            pointer-events: none;
+            letter-spacing: 8px;
+            text-shadow: 0 0 6px rgba(0,0,0,0.5);
+        }
+        body::before {
+            right: 10px;
+            content: "死生有命";
+        }
+        body::after {
+            left: 10px;
+            content: "富贵在天";
+        }
+        /* 移动端适当缩小挽联字号 */
+        @media (max-width: 768px) {
+            body::before,
+            body::after {
+                font-size: 16px;
+                letter-spacing: 4px;
+            }
         }
 
         /* 顶部导航栏 */
@@ -891,7 +927,7 @@
     }
 
 // 显示大量红色"再见"占满屏幕，每隔几个字播放一次警告音，全部出现后红色闪烁    
-function showRedGoodbye() {        
+function showRedGoodbye(callback) {        
     const container = document.createElement('div');        
     container.style.position = 'fixed';        
     container.style.top = '0';        
@@ -902,14 +938,13 @@ function showRedGoodbye() {
     container.style.pointerEvents = 'none';        
     container.style.overflow = 'hidden';        
     document.body.appendChild(container);                
-    const wordCount = 200;    // 字符数量        
+    const wordCount = 200;        
     const words = [];        
     for (let i = 0; i < wordCount; i++) {            
         const span = document.createElement('span');            
         span.textContent = '再见';            
         span.style.position = 'absolute';            
         span.style.color = '#ff0000';            
-        // 字号随机 20px ~ 100px            
         const fontSize = Math.floor(Math.random() * 80 + 20);            
         span.style.fontSize = fontSize + 'px';            
         span.style.fontWeight = 'bold';            
@@ -923,29 +958,24 @@ function showRedGoodbye() {
         container.appendChild(span);            
         words.push(span);        
     }                
-    // 随机延迟数组        
-    const delays = words.map(() => Math.random() * 800);        
+    const delays = words.map(() => Math.random() * 1000);        
     let completedCount = 0;  
     
-    // 设置播放频率：每隔多少个字播放一次（例如每20个字播放一次）
-    const soundInterval = 25;  // 可修改为 2,4,5 等，数字越大频率越低
-    // 可选：从第几个字开始播放（偏移量），默认0
+    const soundInterval = 25;   // 每25个字播放一次警告音
     const soundOffset = 0;
     
     words.forEach((word, idx) => {            
         setTimeout(() => {                
             word.style.opacity = '1';                
-            // 只有索引满足条件时播放警告音（每隔 soundInterval 个播放一次）
             if ((idx - soundOffset) % soundInterval === 0) {
                 playWarningSound();                
             }
             completedCount++;                
             if (completedCount === wordCount) {                    
-                redFlash();          // 全部出现后红色闪烁                
+                redFlash();                
             }            
         }, delays[idx]);        
     });                
-    // 最后清理（保留文字1.2秒后淡出移除）        
     setTimeout(() => {            
         words.forEach(word => {                
             word.style.transition = 'opacity 0.3s';
@@ -953,6 +983,7 @@ function showRedGoodbye() {
         });
         setTimeout(() => {
             container.remove();
+            if (callback) callback();   // 特效全部结束后执行回调
         }, 400);
     }, 1200);
 }
@@ -961,16 +992,18 @@ function showRedGoodbye() {
                 const isAdmin = (currentUser === ADMIN_USERNAME);
                 if (isAdmin) {
                     playWarningSound();
-            showWarning('没关系，下次再见~', 1800);   // 原有的红色警告框
-                    // 例如延迟 2.8 秒后再开始出现“再见”
-    setTimeout(() => {
-            showRedGoodbye();                        // 新增：大量红色“再见”特效
-         }, 2800);   // 这里的数字为延时毫秒数（2800 = 2.8秒）
-            restoreDefaultTheme();   // 注销前恢复主题（因为即将清空 currentUser）
-            currentUser = null;
-            updateNavButtons();
-            return;
-        }
+                    showWarning('没关系，下次再见~', 1800);
+                    // 延迟2.8秒后开始显示“再见”特效，特效全部完成后再执行清理
+                    setTimeout(() => {
+                        showRedGoodbye(() => {
+                            // 特效全部结束后再恢复主题和登出
+                            restoreDefaultTheme();
+                            currentUser = null;
+                            updateNavButtons();
+                        });
+                    }, 2800);
+                    return;
+                }
                 const stored = getStoredUser();
                 if (stored && stored.username === currentUser) {
                     clearUser();
@@ -1100,12 +1133,20 @@ function showRedGoodbye() {
                         return;
                     }
                     let loginSuccess = false;
-                    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                loginSuccess = true;
-                currentUser = ADMIN_USERNAME;
-                redFlash();
-                applyNingyuanTheme();    // 新增：应用黑白主题
-            }
+                    // 先检查是否为宁源
+                  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                        loginSuccess = true;
+                        currentUser = ADMIN_USERNAME;
+                        applyNingyuanTheme();   // 先应用主题
+                        redFlash();             // 再闪烁（内部会临时移除灰度再恢复）
+                    } else {
+                        // 普通用户验证
+                        const stored = getStoredUser();
+                        if (stored && stored.username === username && stored.password === password) {
+                            loginSuccess = true;
+                            currentUser = username;
+                        }
+                    }
                     if (loginSuccess) {
                         alert(`✅ 登陆成功！欢迎回来，${username}`);
                         closeModal();
