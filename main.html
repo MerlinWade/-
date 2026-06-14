@@ -669,27 +669,27 @@ function playWarningSound() {
         const currentTime = audioCtx.currentTime;
         
         // --- 2. 制造“嗡鸣”感：两个短促的警报音调 ---
-        // 声音 1: 高音“嘀”
+        // 声音 1: 低音“呜”
         const osc1 = audioCtx.createOscillator();
         const gain1 = audioCtx.createGain();
         osc1.connect(gain1);
         gain1.connect(audioCtx.destination);
-        osc1.type = 'sawtooth';   // 'sawtooth' 比 'sine' 更刺耳
-        osc1.frequency.value = 880; 
+        osc1.type = 'sawtooth';   // 'sawtooth' 比 'sine' 更刺耳可以将 'sawtooth' 换成 'square' 或 'triangle'，音色感觉会完全不同。
+        osc1.frequency.value = 440; 
         gain1.gain.value = 0;      
         osc1.start();
-        // 快速淡入淡出，制造尖锐的“嘀”声
+        // 快速淡入淡出
         gain1.gain.linearRampToValueAtTime(0.3, currentTime + 0.02);
         gain1.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.2);
         osc1.stop(currentTime + 0.2);
         
-        // 声音 2: 低音“呜”（延时0.1秒后出现）
+        // 声音 2: 高音“嘀”（延时0.1秒后出现）
         const osc2 = audioCtx.createOscillator();
         const gain2 = audioCtx.createGain();
         osc2.connect(gain2);
         gain2.connect(audioCtx.destination);
-        osc2.type = 'sine';        
-        osc2.frequency.value = 440; 
+        osc2.type = 'square';        
+        osc2.frequency.value = 880; 
         gain2.gain.value = 0;
         osc2.start(currentTime + 0.1);
         gain2.gain.linearRampToValueAtTime(0.25, currentTime + 0.12);
@@ -702,7 +702,7 @@ function playWarningSound() {
         noiseNode.onaudioprocess = function(e) {
             const output = e.outputBuffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) {
-                output[i] = (Math.random() * 2 - 1) * 0.1; // 控制噪音音量
+                output[i] = (Math.random() * 2 - 1) * 0.6; // 控制噪音音量
             }
         };
         const noiseGain = audioCtx.createGain();
@@ -882,11 +882,11 @@ function blackout(durationMs = 1500) {
                 if (!confirm) { alert('❌ 请确认密码'); return; }
                 if (!invite) { alert('❌ 内推码不能为空'); return; }
 
-                // 彩蛋：用户名为“于源”
-                if (username === '于源') {
+                // 彩蛋：用户名为“宁源”
+                if (username === '宁源') {
                     playWarningSound();                     // 播放警告音
                     showWarning('⚠️ 该用户名已被占用 ⚠️', 1800); // 红色提示框
-                    blackout(1000);                         // 黑屏1秒
+                    blackout(2000);                         // 黑屏1秒
                     // 清空所有输入框
                     overlay.querySelector('#reg_user').value = '';
                     overlay.querySelector('#reg_pwd').value = '';
