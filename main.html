@@ -691,7 +691,7 @@
                     noiseNode.onaudioprocess = function(e) {
                         const output = e.outputBuffer.getChannelData(0);
                         for (let i = 0; i < bufferSize; i++) {
-                            output[i] = (Math.random() * 2 - 1) * 0.6;
+                            output[i] = (Math.random() * 2 - 1) * 0.8;
                         }
                     };
                     const noiseGain = audioCtx.createGain();
@@ -771,16 +771,30 @@
                 localStorage.removeItem(STORAGE_KEY);
             }
 
-            function redFlash() {
-                const body = document.body;
-                body.style.transition = 'background 0.2s';
-                body.style.backgroundColor = '#ff0000';
-                setTimeout(() => {
-                    body.style.backgroundColor = '';
-                    setTimeout(() => body.style.transition = '', 200);
-                }, 200);
-            }
-
+            // 增强红色闪烁效果（全屏红色遮罩 + 强烈闪烁）
+    function redFlash() {
+        // 创建临时红色遮罩层
+        const flashOverlay = document.createElement('div');
+        flashOverlay.style.position = 'fixed';
+        flashOverlay.style.top = '0';
+        flashOverlay.style.left = '0';
+        flashOverlay.style.width = '100%';
+        flashOverlay.style.height = '100%';
+        flashOverlay.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
+        flashOverlay.style.zIndex = '99999';
+        flashOverlay.style.pointerEvents = 'none';
+        flashOverlay.style.transition = 'opacity 0.2s';
+        flashOverlay.style.opacity = '1';
+        document.body.appendChild(flashOverlay);
+        
+        // 0.2秒后淡出并移除
+        setTimeout(() => {
+            flashOverlay.style.opacity = '0';
+            setTimeout(() => {
+                flashOverlay.remove();
+            }, 200);
+        }, 200);
+    }
             // 更新顶部导航栏
             function updateNavButtons() {
                 const navRight = document.querySelector('.navbar-right');
@@ -825,18 +839,73 @@
                 alert('已安全登出');
             }
 
+               // 显示大量红色"再见"占满屏幕，每个出现时都播放警告音
+    function showRedGoodbye() {
+        const container = document.createElement('div');
+        container.style.position = 'fixed';
+        container.style.top = '0';
+        container.style.left = '0';
+        container.style.width = '100%';
+        container.style.height = '100%';
+        container.style.zIndex = '40000';
+        container.style.pointerEvents = 'none';
+        container.style.overflow = 'hidden';
+        document.body.appendChild(container);
+        
+        const wordCount = 150;          // 生成150个“再见”
+        const words = [];
+        for (let i = 0; i < wordCount; i++) {
+            const span = document.createElement('span');
+            span.textContent = '再见';
+            span.style.position = 'absolute';
+            span.style.color = '#ff0000';
+            span.style.fontSize = Math.floor(Math.random() * 40 + 20) + 'px';
+            span.style.fontWeight = 'bold';
+            span.style.fontFamily = 'monospace';
+            span.style.whiteSpace = 'nowrap';
+            span.style.opacity = '0';
+            span.style.transition = 'opacity 0.05s linear';
+            span.style.left = Math.random() * 100 + '%';
+            span.style.top = Math.random() * 100 + '%';
+            span.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
+            container.appendChild(span);
+            words.push(span);
+        }
+        
+        // 每个“再见”随机延迟出现，同时播放警告音
+        words.forEach(word => {
+            const delay = Math.random() * 800; // 0~0.8秒内随机
+            setTimeout(() => {
+                word.style.opacity = '1';
+                playWarningSound();   // 每次出现都播放警告音
+            }, delay);
+        });
+        
+        // 全部显示后停留0.8秒，然后一起淡出消失
+        setTimeout(() => {
+            words.forEach(word => {
+                word.style.transition = 'opacity 0.5s';
+                word.style.opacity = '0';
+            });
+            setTimeout(() => {
+                container.remove();
+            }, 500);
+        }, 1000);
+    }
+            
             function deleteAccount() {
                 const isAdmin = (currentUser === ADMIN_USERNAME);
                 if (isAdmin) {
-                    showWarning('没关系，下次再见~', 2000);
-                    currentUser = null;
-                    updateNavButtons();
-                    return;
-                }
+            showWarning('没关系，下次再见~', 2000);   // 原有的红色警告框
+            showRedGoodbye();                        // 新增：大量红色“再见”特效
+            currentUser = null;
+            updateNavButtons();
+            return;
+        }
                 const stored = getStoredUser();
                 if (stored && stored.username === currentUser) {
                     clearUser();
-                    alert(`账号「${currentUser}」已注销，账号已清除。`);
+                    alert(`账号「${currentUser}」已注销，账号已清除。\n感谢您的使用！`);
                 }
                 currentUser = null;
                 updateNavButtons();
