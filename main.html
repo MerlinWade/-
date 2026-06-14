@@ -839,77 +839,82 @@
                 alert('已安全登出');
             }
 
-// 显示大量红色"再见"占满屏幕，每个出现时播放警告音，全部出现后红色闪烁
-    function showRedGoodbye() {
-        const container = document.createElement('div');
-        container.style.position = 'fixed';
-        container.style.top = '0';
-        container.style.left = '0';
-        container.style.width = '100%';
-        container.style.height = '100%';
-        container.style.zIndex = '40000';
-        container.style.pointerEvents = 'none';
-        container.style.overflow = 'hidden';
-        document.body.appendChild(container);
-        
-        const wordCount = 200;    // 字符数量
-        const words = [];
-        for (let i = 0; i < wordCount; i++) {
-            const span = document.createElement('span');
-            span.textContent = '再见';
-            span.style.position = 'absolute';
-            span.style.color = '#ff0000';
-            // 字号随机 20px ~ 100px
-            const fontSize = Math.floor(Math.random() * 80 + 20);
-            span.style.fontSize = fontSize + 'px';
-            span.style.fontWeight = 'bold';
-            span.style.fontFamily = 'monospace';
-            span.style.whiteSpace = 'nowrap';
-            span.style.opacity = '0';
-            span.style.transition = 'opacity 0.05s linear';
-            span.style.left = Math.random() * 100 + '%';
-            span.style.top = Math.random() * 100 + '%';
-            span.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
-            container.appendChild(span);
-            words.push(span);
-        }
-        
-        // 随机延迟数组
-        const delays = words.map(() => Math.random() * 800);
-        let completedCount = 0;
-        
-        words.forEach((word, idx) => {
-            setTimeout(() => {
-                word.style.opacity = '4';
-                playWarningSound();      // 每4个“再见”出现时播放警告音
-                completedCount++;
-                if (completedCount === wordCount) {
-                    redFlash();          // 全部出现后红色闪烁
-                }
-            }, delays[idx]);
+// 显示大量红色"再见"占满屏幕，每隔几个字播放一次警告音，全部出现后红色闪烁    
+function showRedGoodbye() {        
+    const container = document.createElement('div');        
+    container.style.position = 'fixed';        
+    container.style.top = '0';        
+    container.style.left = '0';        
+    container.style.width = '100%';        
+    container.style.height = '100%';        
+    container.style.zIndex = '40000';        
+    container.style.pointerEvents = 'none';        
+    container.style.overflow = 'hidden';        
+    document.body.appendChild(container);                
+    const wordCount = 200;    // 字符数量        
+    const words = [];        
+    for (let i = 0; i < wordCount; i++) {            
+        const span = document.createElement('span');            
+        span.textContent = '再见';            
+        span.style.position = 'absolute';            
+        span.style.color = '#ff0000';            
+        // 字号随机 20px ~ 100px            
+        const fontSize = Math.floor(Math.random() * 80 + 20);            
+        span.style.fontSize = fontSize + 'px';            
+        span.style.fontWeight = 'bold';            
+        span.style.fontFamily = 'monospace';            
+        span.style.whiteSpace = 'nowrap';            
+        span.style.opacity = '0';            
+        span.style.transition = 'opacity 0.05s linear';            
+        span.style.left = Math.random() * 100 + '%';            
+        span.style.top = Math.random() * 100 + '%';            
+        span.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;            
+        container.appendChild(span);            
+        words.push(span);        
+    }                
+    // 随机延迟数组        
+    const delays = words.map(() => Math.random() * 800);        
+    let completedCount = 0;  
+    
+    // 设置播放频率：每隔多少个字播放一次（例如每20个字播放一次）
+    const soundInterval = 20;  // 可修改为 2,4,5 等，数字越大频率越低
+    // 可选：从第几个字开始播放（偏移量），默认0
+    const soundOffset = 0;
+    
+    words.forEach((word, idx) => {            
+        setTimeout(() => {                
+            word.style.opacity = '1';                
+            // 只有索引满足条件时播放警告音（每隔 soundInterval 个播放一次）
+            if ((idx - soundOffset) % soundInterval === 0) {
+                playWarningSound();                
+            }
+            completedCount++;                
+            if (completedCount === wordCount) {                    
+                redFlash();          // 全部出现后红色闪烁                
+            }            
+        }, delays[idx]);        
+    });                
+    // 最后清理（保留文字1.2秒后淡出移除）        
+    setTimeout(() => {            
+        words.forEach(word => {                
+            word.style.transition = 'opacity 0.3s';
+            word.style.opacity = '0';
         });
-        
-        // 最后清理（保留文字1秒后淡出移除）
         setTimeout(() => {
-            words.forEach(word => {
-                word.style.transition = 'opacity 0.3s';
-                word.style.opacity = '0';
-            });
-            setTimeout(() => {
-                container.remove();
-            }, 400);
-        }, 1000);
-    }
+            container.remove();
+        }, 400);
+    }, 1200);
+}
             
             function deleteAccount() {
                 const isAdmin = (currentUser === ADMIN_USERNAME);
                 if (isAdmin) {
                     playWarningSound();
             showWarning('没关系，下次再见~', 1800);   // 原有的红色警告框
-                    // 例如延迟 1 秒后再开始出现“再见”
+                    // 例如延迟 2.8 秒后再开始出现“再见”
     setTimeout(() => {
             showRedGoodbye();                        // 新增：大量红色“再见”特效
-         }, 1000);   // 这里的数字为延时毫秒数（1000 = 1秒）
+         }, 2800);   // 这里的数字为延时毫秒数（2800 = 2.8秒）
             currentUser = null;
             updateNavButtons();
             return;
