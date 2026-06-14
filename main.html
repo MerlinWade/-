@@ -680,7 +680,7 @@
             if (type === 'register') {
                 // 注册表单
                 const fields = [
-                    { label: '用户名', id: 'arg_reg_username', type: 'text', placeholder: '' },
+                    { label: '用户名', id: 'arg_reg_username', type: 'text', placeholder: '请输入用户名' },
                     { label: '密码', id: 'arg_reg_password', type: 'password', placeholder: '输入密码' },
                     { label: '确认密码', id: 'arg_reg_confirm', type: 'password', placeholder: '再次输入密码' },
                     { label: '内推码', id: 'arg_reg_invite', type: 'text', placeholder: '请输入内推码' }
@@ -712,7 +712,7 @@
                 
                 submitBtn.addEventListener('click', () => handleRegisterSubmit());
                 cancelBtn.addEventListener('click', () => closeModal(overlay));
-            } else {
+           } else {
                 // 登录表单
                 const userGroup = document.createElement('div');
                 userGroup.className = 'arg-form-group';
@@ -738,6 +738,24 @@
                 pwdGroup.appendChild(pwdInput);
                 container.appendChild(pwdGroup);
                 
+                // 新增：忘记密码按钮区域
+                const forgotDiv = document.createElement('div');
+                forgotDiv.style.textAlign = 'right';
+                forgotDiv.style.marginTop = '-8px';
+                forgotDiv.style.marginBottom = '12px';
+                const forgotLink = document.createElement('a');
+                forgotLink.href = 'javascript:void(0)';
+                forgotLink.textContent = '忘记密码？';
+                forgotLink.style.fontSize = '0.8rem';
+                forgotLink.style.color = '#ff8c00';
+                forgotLink.style.textDecoration = 'none';
+                forgotLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleForgotPassword();
+                });
+                forgotDiv.appendChild(forgotLink);
+                container.appendChild(forgotDiv);
+                
                 const btnDiv = document.createElement('div');
                 btnDiv.className = 'arg-buttons';
                 const loginBtn = document.createElement('button');
@@ -754,7 +772,6 @@
                 cancelBtn.addEventListener('click', () => closeModal(overlay));
             }
             
-            overlay.appendChild(container);
             // 点击遮罩关闭
             overlay.addEventListener('click', (e) => {
                 if (e.target === overlay) closeModal(overlay);
@@ -809,7 +826,7 @@
             localStorage.setItem(STORED_USER_KEY, JSON.stringify({ username, password }));
         }
         
-        // 注册提交逻辑 (单用户体验，已注册则不可二次注册)
+         // 注册提交逻辑 (单用户体验，已注册时可选择覆盖)
         function handleRegisterSubmit() {
             const username = document.getElementById('arg_reg_username').value.trim();
             const password = document.getElementById('arg_reg_password').value;
@@ -828,14 +845,19 @@
             // 3. 内推码必须为 womenjiehunba
             if (inviteCode !== 'womenjiehunba') { alert('❌ 内推码错误'); return; }
             
-            // 4. 单用户沉浸规则：如果已经存在注册用户，不允许重复注册（除非清理localStorage，符合ARG单一身份）
+             // 4. 检查是否已有用户（单用户覆盖逻辑）
             const existing = getStoredUser();
             if (existing !== null) {
-                alert(`⚠️ 你已经拥有身份「${existing.username}」，无需重复注册。\n请直接登录继续游戏。`);
-                // 关闭注册弹窗
-                const regModal = document.getElementById('arg-register-modal');
-                if (regModal) closeModal(regModal);
-                return;
+                // 询问是否覆盖旧档案
+                const confirmOverwrite = confirm(`⚠️ 检测到本地已有账号「${existing.username}」。\n仍要注册新账号吗？（旧账号将被清除）`);
+                if (!confirmOverwrite) {
+                    // 取消覆盖：关闭注册弹窗
+                    const regModal = document.getElementById('arg-register-modal');
+                    if (regModal) closeModal(regModal);
+                    return;
+                }
+                // 用户确认覆盖：清除旧数据
+                localStorage.removeItem(STORED_USER_KEY);
             }
             
             // 注册成功，保存用户信息
@@ -880,6 +902,24 @@
         window.handleRegister = function() {
             showModal('register');
         };
+
+        // 忘记密码 -> 通过内推码验证后提示当前密码
+        function handleForgotPassword() {
+            const storedUser = getStoredUser();
+            if (!storedUser) {
+                alert('❌ 尚未有任何注册档案，请先注册。');
+                return;
+            }
+            
+            const inputCode = prompt('🔐 密码找回验证\n请输入内推码（提示：游戏内固定代码）');
+            if (inputCode === null) return; // 用户取消
+            
+            if (inputCode === '123456') {
+                alert(`📝 当前账号「${storedUser.username}」的密码是：${storedUser.password}\n\n请妥善保管，或重新登录。`);
+            } else {
+                alert('❌ 内推码错误，无法获取密码。');
+            }
+        }
         
         // 额外清理一下可能残留的手动调用（保证原有onclick可以正常弹出）
     })();
