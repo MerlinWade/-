@@ -653,50 +653,127 @@
     `;
     document.head.appendChild(modalStyle);
 
-    // 播放警告音（可自行修改音高、时长）
-    let audioCtx = null;
-    function playWarningSound() {
-        try {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            // ===== 修改以下参数来改变警告音 =====
-            oscillator.frequency.value = 880;   // 音高（赫兹），可改 440~2000
-            oscillator.frequency.value = 440;
-            oscillator.frequency.value = 1320;
-            gainNode.gain.value = 0.8;          // 音量（0~1）
-            oscillator.start();
-            // 声音渐变消失（时长0.8秒）
-            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.8);
-            oscillator.stop(audioCtx.currentTime + 0.8);
-            // ==================================
-        } catch(e) {
-            console.warn('无法播放警告音', e);
-        }
-    }
+// 全局音频上下文，避免重复创建和浏览器限制
+let audioCtx = null;
 
-    // 黑屏函数
-    function blackout(durationMs, callback) {
-        let blackDiv = document.querySelector('.arg-blackout');
-        if (!blackDiv) {
-            blackDiv = document.createElement('div');
-            blackDiv.className = 'blackout arg-blackout';
-            document.body.appendChild(blackDiv);
+function playWarningSound() {
+    try {
+        // 1. 初始化或恢复音频上下文
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        blackDiv.classList.add('active');
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        const currentTime = audioCtx.currentTime;
+        
+        // --- 2. 制造“嗡鸣”感：两个短促的警报音调 ---
+        // 声音 1: 高音“嘀”
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.type = 'sawtooth';   // 'sawtooth' 比 'sine' 更刺耳
+        osc1.frequency.value = 880; 
+        gain1.gain.value = 0;      
+        osc1.start();
+        // 快速淡入淡出，制造尖锐的“嘀”声
+        gain1.gain.linearRampToValueAtTime(0.3, currentTime + 0.02);
+        gain1.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.2);
+        osc1.stop(currentTime + 0.2);
+        
+        // 声音 2: 低音“呜”（延时0.1秒后出现）
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.type = 'sine';        
+        osc2.frequency.value = 440; 
+        gain2.gain.value = 0;
+        osc2.start(currentTime + 0.1);
+        gain2.gain.linearRampToValueAtTime(0.25, currentTime + 0.12);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.6);
+        osc2.stop(currentTime + 0.6);
+
+        // --- 3. 效果增强：加入一段渐变白噪音“嘶嘶”声 ---
+        const bufferSize = 4096;
+        const noiseNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+        noiseNode.onaudioprocess = function(e) {
+            const output = e.outputBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = (Math.random() * 2 - 1) * 0.1; // 控制噪音音量
+            }
+        };
+        const noiseGain = audioCtx.createGain();
+        noiseNode.connect(noiseGain);
+        noiseGain.connect(audioCtx.destination);
+        noiseGain.gain.value = 0;
+        noiseGain.gain.linearRampToValueAtTime(0.15, currentTime + 0.05);
+        noiseGain.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.4);
+        noiseNode.start(currentTime);
+        noiseNode.stop(currentTime + 0.4);
+        // 清理处理器
         setTimeout(() => {
-            blackDiv.classList.remove('active');
-            if (callback) callback();
-        }, durationMs);
+            try { noiseNode.disconnect(); } catch(e) {}
+        }, 500);
+    } catch(e) {
+        console.warn('警告音效播放失败', e);
     }
+}
+
+// 黑屏函数：现在会显示红色警告框，并在消除时产生乱码效果
+function blackout(durationMs = 1500) {
+    let blackDiv = document.querySelector('.arg-blackout');
+    if (!blackDiv) {
+        blackDiv = document.createElement('div');
+        blackDiv.className = 'blackout arg-blackout';
+        document.body.appendChild(blackDiv);
+    }
+    
+    // 1. 首先确保红色警告框在黑屏之上
+    const toast = document.querySelector('.custom-toast');
+    if (toast) {
+        toast.style.zIndex = '30001'; // 比黑屏的30000高1
+    }
+    
+    // 2. 显示黑屏
+    blackDiv.classList.add('active');
+    
+    // 3. 设置定时器准备消除黑屏
+    setTimeout(() => {
+        // 4. 先移除黑屏，但保留红色警告框
+        blackDiv.classList.remove('active');
+        
+        // 5. 启动“乱码恢复”特效
+        const bodyElement = document.body;
+        const originalHTML = bodyElement.innerHTML;
+        // 模拟乱码场景 (仅一次性视觉特效)
+        bodyElement.style.transition = 'all 0.1s';
+        bodyElement.style.filter = 'blur(2px)';
+        // 生成乱码效果
+        let counter = 0;
+        const interval = setInterval(() => {
+            if (counter >= 3) { // 闪烁3次后恢复
+                clearInterval(interval);
+                bodyElement.style.filter = '';
+                bodyElement.style.transition = '';
+                // 最后移除红色警告框
+                if (toast && toast.parentNode) toast.remove();
+                return;
+            }
+            // 交替应用乱码风格
+            if (counter % 2 === 0) {
+                bodyElement.style.filter = 'blur(3px) grayscale(1)';
+                bodyElement.style.opacity = '0.95';
+            } else {
+                bodyElement.style.filter = '';
+                bodyElement.style.opacity = '';
+            }
+            counter++;
+        }, 150);
+    }, durationMs);
+}
 
     // 显示警告提示框（自动消失）
     function showWarning(message, duration = 3000) {
