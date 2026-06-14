@@ -418,11 +418,6 @@
                 padding: 8px 10px;
             }
 
-            .history-btn {
-                font-size: 0.9em;
-                padding: 8px 16px;
-            }
-
             .virtual-footer p {
                 font-size: 0.8em;
             }
@@ -486,10 +481,10 @@
 
     <!-- 虚拟页脚区域 -->
     <div class="virtual-footer-section">
-        <!-- 虚拟页脚 -->
         <div class="virtual-footer">
             <p>© 2018 快888快捷导航 | <a href="#">关于我们</a> | <a href="#">联系方式</a> | <a href="#">用户协议</a>| <a href="#">广告服务</a></p>
         </div>
+    </div>
 
     <!-- 真实页脚 -->
     <div class="real-footer">
@@ -497,514 +492,618 @@
         <p>© 2026 MerlinWade. All rights reserved. | 本作品受著作权保护。未经许可，不得以任何形式转载或复制。</p>
     </div>
 
-<script>   
-        
-//单用户注册/登录模态框
-(function() {
-    // 注入样式（淡蓝色主题，使用标准CSS注释）
-    const modalStyle = document.createElement('style');
-    modalStyle.textContent = `
-        .arg-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            visibility: hidden;
-            opacity: 0;
-            transition: 0.2s;
-        }
-        .arg-overlay.active {
-            visibility: visible;
-            opacity: 1;
-        }
-        .arg-modal {
-            background: #e6f0ff;
-            width: 90%;
-            max-width: 420px;
-            border-radius: 28px;
-            padding: 24px 22px 32px;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
-            transform: scale(0.96);
-            transition: transform 0.2s;
-            border: 1px solid #b8d4ff;
-        }
-        .arg-overlay.active .arg-modal {
-            transform: scale(1);
-        }
-        .arg-modal h3 {
-            font-size: 1.7rem;
-            margin: 0 0 12px 0;
-            background: linear-gradient(135deg, #2c7da0, #1f6390);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            border-bottom: 2px solid #c0e0ff;
-            padding-bottom: 10px;
-        }
-        .arg-close {
-            float: right;
-            font-size: 28px;
-            cursor: pointer;
-            color: #5a8bb9;
-        }
-        .arg-close:hover { color: #1f6390; }
-        .arg-group {
-            margin-bottom: 18px;
-        }
-        .arg-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #1e4b6e;
-        }
-        .arg-group input {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1.5px solid #c0d9f0;
-            border-radius: 40px;
-            font-size: 1rem;
-            outline: none;
-            background: white;
-        }
-        .arg-group input:focus {
-            border-color: #3c8dc5;
-            box-shadow: 0 0 0 3px rgba(60,141,197,0.2);
-        }
-        .arg-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-        }
-        .arg-buttons button {
-            flex: 1;
-            padding: 10px;
-            border-radius: 40px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        .arg-btn-primary {
-            background: linear-gradient(135deg, #3c8dc5, #2c6f9e);
-            color: white;
-        }
-        .arg-btn-secondary {
-            background: #d9eaff;
-            color: #1e4b6e;
-            border: 1px solid #b0cce8;
-        }
-        .forgot-link {
-            text-align: right;
-            margin: -8px 0 12px;
-        }
-        .forgot-link a {
-            font-size: 0.8rem;
-            color: #2c7da0;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        /* 警告提示框（纯红底，固定定位） */
-        .custom-toast {
-            position: fixed;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #c00000;
-            color: white;
-            padding: 16px 28px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            box-shadow: 0 0 20px rgba(255,0,0,0.6);
-            z-index: 20000;
-            text-align: center;
-            white-space: nowrap;
-            pointer-events: none;
-        }
-        /* 黑屏遮罩 */
-        .blackout {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            z-index: 30000;
-            opacity: 0;
-            transition: opacity 0.2s;
-            pointer-events: none;
-        }
-        .blackout.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        @media (max-width: 550px) {
-            .arg-modal { padding: 18px; }
-            .arg-modal h3 { font-size: 1.4rem; }
-            .custom-toast { font-size: 1rem; padding: 12px 20px; white-space: normal; width: 80%; text-align: center; }
-        }
-    `;
-    document.head.appendChild(modalStyle);
+    <script>
+        // ========== 单用户注册/登录模态框（淡蓝 + 彩蛋 + 宁源特殊登录）==========
+        (function() {
+            // 全局状态
+            let currentUser = null;            // 当前登录的用户名
+            const ADMIN_USERNAME = '宁源';     // 内置特殊用户名
+            const ADMIN_PASSWORD = '20180417'; // 内置特殊密码
 
-// 全局音频上下文，避免重复创建和浏览器限制
-let audioCtx = null;
+            // 注入样式
+            const modalStyle = document.createElement('style');
+            modalStyle.textContent = `
+                .arg-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.6);
+                    backdrop-filter: blur(4px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                    visibility: hidden;
+                    opacity: 0;
+                    transition: 0.2s;
+                }
+                .arg-overlay.active {
+                    visibility: visible;
+                    opacity: 1;
+                }
+                .arg-modal {
+                    background: #e6f0ff;
+                    width: 90%;
+                    max-width: 420px;
+                    border-radius: 28px;
+                    padding: 24px 22px 32px;
+                    box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+                    transform: scale(0.96);
+                    transition: transform 0.2s;
+                    border: 1px solid #b8d4ff;
+                }
+                .arg-overlay.active .arg-modal {
+                    transform: scale(1);
+                }
+                .arg-modal h3 {
+                    font-size: 1.7rem;
+                    margin: 0 0 12px 0;
+                    background: linear-gradient(135deg, #2c7da0, #1f6390);
+                    background-clip: text;
+                    -webkit-background-clip: text;
+                    color: transparent;
+                    border-bottom: 2px solid #c0e0ff;
+                    padding-bottom: 10px;
+                }
+                .arg-close {
+                    float: right;
+                    font-size: 28px;
+                    cursor: pointer;
+                    color: #5a8bb9;
+                }
+                .arg-close:hover { color: #1f6390; }
+                .arg-group {
+                    margin-bottom: 18px;
+                }
+                .arg-group label {
+                    display: block;
+                    font-weight: 600;
+                    margin-bottom: 6px;
+                    color: #1e4b6e;
+                }
+                .arg-group input {
+                    width: 100%;
+                    padding: 10px 14px;
+                    border: 1.5px solid #c0d9f0;
+                    border-radius: 40px;
+                    font-size: 1rem;
+                    outline: none;
+                    background: white;
+                }
+                .arg-group input:focus {
+                    border-color: #3c8dc5;
+                    box-shadow: 0 0 0 3px rgba(60,141,197,0.2);
+                }
+                .arg-buttons {
+                    display: flex;
+                    gap: 12px;
+                    margin-top: 24px;
+                }
+                .arg-buttons button {
+                    flex: 1;
+                    padding: 10px;
+                    border-radius: 40px;
+                    font-weight: bold;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 1rem;
+                }
+                .arg-btn-primary {
+                    background: linear-gradient(135deg, #3c8dc5, #2c6f9e);
+                    color: white;
+                }
+                .arg-btn-secondary {
+                    background: #d9eaff;
+                    color: #1e4b6e;
+                    border: 1px solid #b0cce8;
+                }
+                .forgot-link {
+                    text-align: right;
+                    margin: -8px 0 12px;
+                }
+                .forgot-link a {
+                    font-size: 0.8rem;
+                    color: #2c7da0;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+                .custom-toast {
+                    position: fixed;
+                    top: 40%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: #c00000;
+                    color: white;
+                    padding: 16px 28px;
+                    border-radius: 12px;
+                    font-weight: bold;
+                    font-size: 1.2rem;
+                    box-shadow: 0 0 20px rgba(255,0,0,0.6);
+                    z-index: 20000;
+                    text-align: center;
+                    white-space: nowrap;
+                    pointer-events: none;
+                }
+                .blackout {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: black;
+                    z-index: 30000;
+                    opacity: 0;
+                    transition: opacity 0.2s;
+                    pointer-events: none;
+                }
+                .blackout.active {
+                    opacity: 1;
+                    pointer-events: auto;
+                }
+                @media (max-width: 550px) {
+                    .arg-modal { padding: 18px; }
+                    .arg-modal h3 { font-size: 1.4rem; }
+                    .custom-toast { font-size: 1rem; padding: 12px 20px; white-space: normal; width: 80%; text-align: center; }
+                }
+            `;
+            document.head.appendChild(modalStyle);
 
-function playWarningSound() {
-    try {
-        // 1. 初始化或恢复音频上下文
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-
-        const currentTime = audioCtx.currentTime;
-        
-        // --- 2. 制造“嗡鸣”感：两个短促的警报音调 ---
-        // 声音 1: 低音“呜”
-        const osc1 = audioCtx.createOscillator();
-        const gain1 = audioCtx.createGain();
-        osc1.connect(gain1);
-        gain1.connect(audioCtx.destination);
-        osc1.type = 'sawtooth';   // 'sawtooth' 比 'sine' 更刺耳可以将 'sawtooth' 换成 'square' 或 'triangle'，音色感觉会完全不同。
-        osc1.frequency.value = 440; 
-        gain1.gain.value = 0;      
-        osc1.start();
-        // 快速淡入淡出
-        gain1.gain.linearRampToValueAtTime(0.3, currentTime + 0.02);
-        gain1.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.2);
-        osc1.stop(currentTime + 0.2);
-        
-        // 声音 2: 高音“嘀”（延时0.1秒后出现）
-        const osc2 = audioCtx.createOscillator();
-        const gain2 = audioCtx.createGain();
-        osc2.connect(gain2);
-        gain2.connect(audioCtx.destination);
-        osc2.type = 'square';        
-        osc2.frequency.value = 880; 
-        gain2.gain.value = 0;
-        osc2.start(currentTime + 0.1);
-        gain2.gain.linearRampToValueAtTime(0.25, currentTime + 0.12);
-        gain2.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.6);
-        osc2.stop(currentTime + 0.6);
-
-        // --- 3. 效果增强：加入一段渐变白噪音“嘶嘶”声 ---
-        const bufferSize = 4096;
-        const noiseNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
-        noiseNode.onaudioprocess = function(e) {
-            const output = e.outputBuffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                output[i] = (Math.random() * 2 - 1) * 0.6; // 控制噪音音量
+            // 音频相关
+            let audioCtx = null;
+            function playWarningSound() {
+                try {
+                    if (!audioCtx) {
+                        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    const currentTime = audioCtx.currentTime;
+                    // 声音1: 低音
+                    const osc1 = audioCtx.createOscillator();
+                    const gain1 = audioCtx.createGain();
+                    osc1.connect(gain1);
+                    gain1.connect(audioCtx.destination);
+                    osc1.type = 'sawtooth';
+                    osc1.frequency.value = 440;
+                    gain1.gain.value = 0;
+                    osc1.start();
+                    gain1.gain.linearRampToValueAtTime(0.3, currentTime + 0.02);
+                    gain1.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.2);
+                    osc1.stop(currentTime + 0.2);
+                    // 声音2: 高音
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.type = 'square';
+                    osc2.frequency.value = 880;
+                    gain2.gain.value = 0;
+                    osc2.start(currentTime + 0.1);
+                    gain2.gain.linearRampToValueAtTime(0.25, currentTime + 0.12);
+                    gain2.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.6);
+                    osc2.stop(currentTime + 0.6);
+                    // 白噪音
+                    const bufferSize = 4096;
+                    const noiseNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+                    noiseNode.onaudioprocess = function(e) {
+                        const output = e.outputBuffer.getChannelData(0);
+                        for (let i = 0; i < bufferSize; i++) {
+                            output[i] = (Math.random() * 2 - 1) * 0.8;
+                        }
+                    };
+                    const noiseGain = audioCtx.createGain();
+                    noiseNode.connect(noiseGain);
+                    noiseGain.connect(audioCtx.destination);
+                    noiseGain.gain.value = 0;
+                    noiseGain.gain.linearRampToValueAtTime(0.15, currentTime + 0.05);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.4);
+                    noiseNode.start(currentTime);
+                    noiseNode.stop(currentTime + 0.4);
+                    setTimeout(() => {
+                        try { noiseNode.disconnect(); } catch(e) {}
+                    }, 500);
+                } catch(e) {
+                    console.warn('警告音效播放失败', e);
+                }
             }
-        };
-        const noiseGain = audioCtx.createGain();
-        noiseNode.connect(noiseGain);
-        noiseGain.connect(audioCtx.destination);
-        noiseGain.gain.value = 0;
-        noiseGain.gain.linearRampToValueAtTime(0.15, currentTime + 0.05);
-        noiseGain.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.4);
-        noiseNode.start(currentTime);
-        noiseNode.stop(currentTime + 0.4);
-        // 清理处理器
-        setTimeout(() => {
-            try { noiseNode.disconnect(); } catch(e) {}
-        }, 500);
-    } catch(e) {
-        console.warn('警告音效播放失败', e);
-    }
-}
 
-// 黑屏函数：现在会显示红色警告框，并在消除时产生乱码效果
-function blackout(durationMs = 1500) {
-    let blackDiv = document.querySelector('.arg-blackout');
-    if (!blackDiv) {
-        blackDiv = document.createElement('div');
-        blackDiv.className = 'blackout arg-blackout';
-        document.body.appendChild(blackDiv);
+            // 黑屏 + 乱码特效
+            function blackout(durationMs = 1500) {
+                let blackDiv = document.querySelector('.arg-blackout');
+                if (!blackDiv) {
+                    blackDiv = document.createElement('div');
+                    blackDiv.className = 'blackout arg-blackout';
+                    document.body.appendChild(blackDiv);
+                }
+                const toast = document.querySelector('.custom-toast');
+                if (toast) toast.style.zIndex = '30001';
+                blackDiv.classList.add('active');
+                setTimeout(() => {
+                    blackDiv.classList.remove('active');
+                    const bodyElement = document.body;
+                    bodyElement.style.transition = 'all 0.1s';
+                    bodyElement.style.filter = 'blur(2px)';
+                    let counter = 0;
+                    const interval = setInterval(() => {
+                        if (counter >= 3) {
+                            clearInterval(interval);
+                            bodyElement.style.filter = '';
+                            bodyElement.style.transition = '';
+                            if (toast && toast.parentNode) toast.remove();
+                            return;
+                        }
+                        if (counter % 2 === 0) {
+                            bodyElement.style.filter = 'blur(3px) grayscale(1)';
+                            bodyElement.style.opacity = '0.95';
+                        } else {
+                            bodyElement.style.filter = '';
+                            bodyElement.style.opacity = '';
+                        }
+                        counter++;
+                    }, 150);
+                }, durationMs);
+            }
+
+            function showWarning(message, duration = 3000) {
+                const toast = document.createElement('div');
+                toast.className = 'custom-toast';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), duration);
+            }
+
+            // 存储逻辑
+            const STORAGE_KEY = 'arg_single_user';
+            function getStoredUser() {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    try { return JSON.parse(raw); } catch(e) { return null; }
+                }
+                return null;
+            }
+            function saveUser(username, password) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ username, password }));
+            }
+            function clearUser() {
+                localStorage.removeItem(STORAGE_KEY);
+            }
+
+            // 增强红色闪烁效果（全屏红色遮罩 + 强烈闪烁）
+    function redFlash() {
+        // 创建临时红色遮罩层
+        const flashOverlay = document.createElement('div');
+        flashOverlay.style.position = 'fixed';
+        flashOverlay.style.top = '0';
+        flashOverlay.style.left = '0';
+        flashOverlay.style.width = '100%';
+        flashOverlay.style.height = '100%';
+        flashOverlay.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
+        flashOverlay.style.zIndex = '99999';
+        flashOverlay.style.pointerEvents = 'none';
+        flashOverlay.style.transition = 'opacity 0.2s';
+        flashOverlay.style.opacity = '1';
+        document.body.appendChild(flashOverlay);
+        
+        // 0.2秒后淡出并移除
+        setTimeout(() => {
+            flashOverlay.style.opacity = '0';
+            setTimeout(() => {
+                flashOverlay.remove();
+            }, 100);     // 淡出用时 0.1秒
+        }, 200);      // 保持完全红色 0.1秒
     }
+            // 更新顶部导航栏
+            function updateNavButtons() {
+                const navRight = document.querySelector('.navbar-right');
+                if (!navRight) return;
+                if (currentUser) {
+                    navRight.innerHTML = `
+                        <div class="user-menu-container" style="position: relative;">
+                            <button class="user-menu-btn" style="padding: 7px 16px; background: #0066cc; color: white; border: none; border-radius: 3px; cursor: pointer;">👤 ${currentUser}</button>
+                            <div class="user-dropdown" style="display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000; min-width: 100px;">
+                                <button class="dropdown-logout" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer;">🚪 登出</button>
+                                <button class="dropdown-delete" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer; color: #d32f2f;">🗑️ 注销账号</button>
+                            </div>
+                        </div>
+                    `;
+                    const menuBtn = navRight.querySelector('.user-menu-btn');
+                    const dropdown = navRight.querySelector('.user-dropdown');
+                    menuBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+                    };
+                    document.addEventListener('click', function closeDropdown(e) {
+                        if (!navRight.contains(e.target)) dropdown.style.display = 'none';
+                    });
+                    navRight.querySelector('.dropdown-logout').onclick = () => {
+                        if (confirm('确定要登出吗？')) logout();
+                    };
+                    navRight.querySelector('.dropdown-delete').onclick = () => {
+                        if (confirm(`确定要注销账号「${currentUser}」吗？\n（只删除账号，浏览记录及更改仍保留）`)) deleteAccount();
+                    };
+                } else {
+                    navRight.innerHTML = `<button class="login-btn">登陆</button><button class="register-btn">注册</button>`;
+                    const loginBtn = navRight.querySelector('.login-btn');
+                    const registerBtn = navRight.querySelector('.register-btn');
+                    if (loginBtn) loginBtn.onclick = () => window.handleLogin();
+                    if (registerBtn) registerBtn.onclick = () => window.handleRegister();
+                }
+            }
+
+            function logout() {
+                currentUser = null;
+                updateNavButtons();
+                alert('已安全登出');
+            }
+
+// 显示大量红色"再见"占满屏幕，每隔几个字播放一次警告音，全部出现后红色闪烁    
+function showRedGoodbye() {        
+    const container = document.createElement('div');        
+    container.style.position = 'fixed';        
+    container.style.top = '0';        
+    container.style.left = '0';        
+    container.style.width = '100%';        
+    container.style.height = '100%';        
+    container.style.zIndex = '40000';        
+    container.style.pointerEvents = 'none';        
+    container.style.overflow = 'hidden';        
+    document.body.appendChild(container);                
+    const wordCount = 200;    // 字符数量        
+    const words = [];        
+    for (let i = 0; i < wordCount; i++) {            
+        const span = document.createElement('span');            
+        span.textContent = '再见';            
+        span.style.position = 'absolute';            
+        span.style.color = '#ff0000';            
+        // 字号随机 20px ~ 100px            
+        const fontSize = Math.floor(Math.random() * 80 + 20);            
+        span.style.fontSize = fontSize + 'px';            
+        span.style.fontWeight = 'bold';            
+        span.style.fontFamily = 'monospace';            
+        span.style.whiteSpace = 'nowrap';            
+        span.style.opacity = '0';            
+        span.style.transition = 'opacity 0.05s linear';            
+        span.style.left = Math.random() * 100 + '%';            
+        span.style.top = Math.random() * 100 + '%';            
+        span.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;            
+        container.appendChild(span);            
+        words.push(span);        
+    }                
+    // 随机延迟数组        
+    const delays = words.map(() => Math.random() * 800);        
+    let completedCount = 0;  
     
-    // 1. 首先确保红色警告框在黑屏之上
-    const toast = document.querySelector('.custom-toast');
-    if (toast) {
-        toast.style.zIndex = '30001'; // 比黑屏的30000高1
-    }
+    // 设置播放频率：每隔多少个字播放一次（例如每20个字播放一次）
+    const soundInterval = 25;  // 可修改为 2,4,5 等，数字越大频率越低
+    // 可选：从第几个字开始播放（偏移量），默认0
+    const soundOffset = 0;
     
-    // 2. 显示黑屏
-    blackDiv.classList.add('active');
-    
-    // 3. 设置定时器准备消除黑屏
+    words.forEach((word, idx) => {            
+        setTimeout(() => {                
+            word.style.opacity = '1';                
+            // 只有索引满足条件时播放警告音（每隔 soundInterval 个播放一次）
+            if ((idx - soundOffset) % soundInterval === 0) {
+                playWarningSound();                
+            }
+            completedCount++;                
+            if (completedCount === wordCount) {                    
+                redFlash();          // 全部出现后红色闪烁                
+            }            
+        }, delays[idx]);        
+    });                
+    // 最后清理（保留文字1.2秒后淡出移除）        
+    setTimeout(() => {            
+        words.forEach(word => {                
+            word.style.transition = 'opacity 0.3s';
+            word.style.opacity = '0';
+        });
+        setTimeout(() => {
+            container.remove();
+        }, 400);
+    }, 1200);
+}
+            
+            function deleteAccount() {
+                const isAdmin = (currentUser === ADMIN_USERNAME);
+                if (isAdmin) {
+                    playWarningSound();
+            showWarning('没关系，下次再见~', 1800);   // 原有的红色警告框
+                    // 例如延迟 2.8 秒后再开始出现“再见”
     setTimeout(() => {
-        // 4. 先移除黑屏，但保留红色警告框
-        blackDiv.classList.remove('active');
-        
-        // 5. 启动“乱码恢复”特效
-        const bodyElement = document.body;
-        const originalHTML = bodyElement.innerHTML;
-        // 模拟乱码场景 (仅一次性视觉特效)
-        bodyElement.style.transition = 'all 0.1s';
-        bodyElement.style.filter = 'blur(2px)';
-        // 生成乱码效果
-        let counter = 0;
-        const interval = setInterval(() => {
-            if (counter >= 3) { // 闪烁3次后恢复
-                clearInterval(interval);
-                bodyElement.style.filter = '';
-                bodyElement.style.transition = '';
-                // 最后移除红色警告框
-                if (toast && toast.parentNode) toast.remove();
-                return;
-            }
-            // 交替应用乱码风格
-            if (counter % 2 === 0) {
-                bodyElement.style.filter = 'blur(3px) grayscale(1)';
-                bodyElement.style.opacity = '0.95';
-            } else {
-                bodyElement.style.filter = '';
-                bodyElement.style.opacity = '';
-            }
-            counter++;
-        }, 150);
-    }, durationMs);
-}
-
-    // 显示警告提示框（自动消失）
-    function showWarning(message, duration = 3000) {
-        const toast = document.createElement('div');
-        toast.className = 'custom-toast';
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.remove();
-        }, duration);
-    }
-
-    // 存储逻辑
-    const STORAGE_KEY = 'arg_single_user';
-    function getStoredUser() {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-            try { return JSON.parse(raw); } catch(e) { return null; }
-        }
-        return null;
-    }
-    function saveUser(username, password) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ username, password }));
-    }
-    function clearUser() {
-        localStorage.removeItem(STORAGE_KEY);
-    }
-
-    // 忘记密码（内推码验证后显示密码）
-    function forgotPassword() {
-        const user = getStoredUser();
-        if (!user) {
-            alert('❌ 尚无注册账号，请先注册。');
+            showRedGoodbye();                        // 新增：大量红色“再见”特效
+         }, 2800);   // 这里的数字为延时毫秒数（2800 = 2.8秒）
+            currentUser = null;
+            updateNavButtons();
             return;
         }
-        const code = prompt('🔐 密码找回验证\n请输入内推码：');
-        if (code === null) return;
-        if (code === 'womenjiehunba') {
-            alert(`📝 当前账号「${user.username}」的密码是：${user.password}\n请妥善保管。`);
-        } else {
-            alert('❌ 内推码错误，无法获取密码。');
-        }
-    }
+                const stored = getStoredUser();
+                if (stored && stored.username === currentUser) {
+                    clearUser();
+                    alert(`账号「${currentUser}」已注销，账号已清除。\n感谢您的使用！`);
+                }
+                currentUser = null;
+                updateNavButtons();
+            }
 
-    // 模态框管理
-    let currentModal = null;
-    function closeModal() {
-        if (currentModal) {
-            currentModal.classList.remove('active');
-            setTimeout(() => {
-                if (currentModal && currentModal.parentNode) currentModal.remove();
-                currentModal = null;
-            }, 200);
-        }
-    }
-
-    // 注册模态框
-    function showRegisterModal() {
-        closeModal();
-        const overlay = document.createElement('div');
-        overlay.className = 'arg-overlay';
-        overlay.innerHTML = `
-            <div class="arg-modal">
-                <span class="arg-close">&times;</span>
-                <h3>📝 注册</h3>
-                <div class="arg-group">
-                    <label>用户名</label>
-                    <input type="text" id="reg_user" placeholder="请输入用户名">
-                </div>
-                <div class="arg-group">
-                    <label>密码</label>
-                    <input type="password" id="reg_pwd" placeholder="设置密码">
-                </div>
-                <div class="arg-group">
-                    <label>确认密码</label>
-                    <input type="password" id="reg_confirm" placeholder="再次输入密码">
-                </div>
-                <div class="arg-group">
-                    <label>内推码</label>
-                    <input type="text" id="reg_invite" placeholder="请输入内推码">
-                </div>
-                <div class="arg-buttons">
-                    <button class="arg-btn-primary" id="reg_submit">注册</button>
-                    <button class="arg-btn-secondary" id="reg_cancel">取消</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-        currentModal = overlay;
-
-        // 关闭事件绑定
-        overlay.querySelector('.arg-close').onclick = closeModal;
-        overlay.querySelector('#reg_cancel').onclick = closeModal;
-        overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
-
-        const submitBtn = overlay.querySelector('#reg_submit');
-        submitBtn.onclick = () => {
-            try {
-                const username = overlay.querySelector('#reg_user').value.trim();
-                const password = overlay.querySelector('#reg_pwd').value;
-                const confirm = overlay.querySelector('#reg_confirm').value;
-                const invite = overlay.querySelector('#reg_invite').value.trim();
-
-                if (!username) { alert('❌ 用户名不能为空'); return; }
-                if (!password) { alert('❌ 密码不能为空'); return; }
-                if (!confirm) { alert('❌ 请确认密码'); return; }
-                if (!invite) { alert('❌ 内推码不能为空'); return; }
-
-                // 彩蛋：用户名为“宁源”
-                if (username === '宁源') {
-                    playWarningSound();                     // 播放警告音
-                    showWarning('⚠️ 该用户名已被占用 ⚠️', 1800); // 红色提示框
-                    blackout(2000);                         // 黑屏1秒
-                    // 清空所有输入框
-                    overlay.querySelector('#reg_user').value = '';
-                    overlay.querySelector('#reg_pwd').value = '';
-                    overlay.querySelector('#reg_confirm').value = '';
-                    overlay.querySelector('#reg_invite').value = '';
+            function forgotPassword() {
+                const user = getStoredUser();
+                if (!user) {
+                    alert('❌ 尚无注册账号，请先注册。');
                     return;
                 }
+                const code = prompt('🔐 密码找回验证\n请输入内推码：');
+                if (code === null) return;
+                if (code === 'womenjiehunba') {
+                    alert(`当前账号「${user.username}」的密码是：${user.password}\n请妥善保管。`);
+                } else {
+                    alert('❌ 内推码错误，无法获取密码。');
+                }
+            }
 
-                if (password !== confirm) { alert('⚠️ 两次输入的密码不一致'); return; }
-                if (invite !== 'womenjiehunba') { alert('❌ 内推码错误'); return; }
+            let currentModal = null;
+            function closeModal() {
+                if (currentModal) {
+                    currentModal.classList.remove('active');
+                    setTimeout(() => {
+                        if (currentModal && currentModal.parentNode) currentModal.remove();
+                        currentModal = null;
+                    }, 200);
+                }
+            }
 
-                const existing = getStoredUser();
-                if (existing) {
-                    const userConfirmed = window.confirm(`⚠️ 已有账号「${existing.username}」。\n注册新账号将清除旧数据，是否继续？`);
-                    if (!userConfirmed) {
+            function showRegisterModal() {
+                closeModal();
+                const overlay = document.createElement('div');
+                overlay.className = 'arg-overlay';
+                overlay.innerHTML = `
+                    <div class="arg-modal">
+                        <span class="arg-close">&times;</span>
+                        <h3>📝 注册</h3>
+                        <div class="arg-group"><label>用户名</label><input type="text" id="reg_user" placeholder="请输入用户名"></div>
+                        <div class="arg-group"><label>密码</label><input type="password" id="reg_pwd" placeholder="设置密码"></div>
+                        <div class="arg-group"><label>确认密码</label><input type="password" id="reg_confirm" placeholder="再次输入密码"></div>
+                        <div class="arg-group"><label>内推码</label><input type="text" id="reg_invite" placeholder="请输入内推码"></div>
+                        <div class="arg-buttons"><button class="arg-btn-primary" id="reg_submit">注册</button><button class="arg-btn-secondary" id="reg_cancel">取消</button></div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                currentModal = overlay;
+
+                overlay.querySelector('.arg-close').onclick = closeModal;
+                overlay.querySelector('#reg_cancel').onclick = closeModal;
+                overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
+
+                const submitBtn = overlay.querySelector('#reg_submit');
+                submitBtn.onclick = () => {
+                    try {
+                        const username = overlay.querySelector('#reg_user').value.trim();
+                        const password = overlay.querySelector('#reg_pwd').value;
+                        const confirm = overlay.querySelector('#reg_confirm').value;
+                        const invite = overlay.querySelector('#reg_invite').value.trim();
+
+                        if (!username) { alert('❌ 用户名不能为空'); return; }
+                        if (!password) { alert('❌ 密码不能为空'); return; }
+                        if (!confirm) { alert('❌ 请确认密码'); return; }
+                        if (!invite) { alert('❌ 内推码不能为空'); return; }
+                        if (username === '宁源') {
+                            playWarningSound();
+                            showWarning('⚠️ 该用户名已被占用 ⚠️', 1800);
+                            blackout(2000);
+                            overlay.querySelector('#reg_user').value = '';
+                            overlay.querySelector('#reg_pwd').value = '';
+                            overlay.querySelector('#reg_confirm').value = '';
+                            overlay.querySelector('#reg_invite').value = '';
+                            return;
+                        }
+                        if (password !== confirm) { alert('⚠️ 两次输入的密码不一致'); return; }
+                        if (invite !== 'womenjiehunba') { alert('❌ 内推码错误'); return; }
+
+                        const existing = getStoredUser();
+                        if (existing) {
+                            if (!window.confirm(`⚠️ 已有账号「${existing.username}」。\n注册新账号将清除旧数据，是否继续？`)) return;
+                            clearUser();
+                        }
+                        saveUser(username, password);
+                        alert(`✨ 注册成功！\n欢迎「${username}」，请登录。`);
+                        closeModal();
+                    } catch (err) {
+                        alert('注册出错：' + err.message);
+                        console.error(err);
+                    }
+                };
+                overlay.classList.add('active');
+            }
+
+            function showLoginModal() {
+                closeModal();
+                const overlay = document.createElement('div');
+                overlay.className = 'arg-overlay';
+                overlay.innerHTML = `
+                    <div class="arg-modal">
+                        <span class="arg-close">&times;</span>
+                        <h3>🔐 登录</h3>
+                        <div class="arg-group"><label>用户名</label><input type="text" id="login_user" placeholder="你的注册名"></div>
+                        <div class="arg-group"><label>密码</label><input type="password" id="login_pwd" placeholder="密码"></div>
+                        <div class="forgot-link"><a id="forgot_btn">忘记密码？</a></div>
+                        <div class="arg-buttons"><button class="arg-btn-primary" id="login_submit">登陆</button><button class="arg-btn-secondary" id="login_cancel">取消</button></div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                currentModal = overlay;
+
+                overlay.querySelector('.arg-close').onclick = closeModal;
+                overlay.querySelector('#login_cancel').onclick = closeModal;
+                overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
+                overlay.querySelector('#forgot_btn').onclick = (e) => { e.preventDefault(); forgotPassword(); };
+
+                const loginBtn = overlay.querySelector('#login_submit');
+                loginBtn.onclick = () => {
+                    const username = overlay.querySelector('#login_user').value.trim();
+                    const password = overlay.querySelector('#login_pwd').value;
+                    if (!username || !password) {
+                        alert('❌ 用户名和密码都不能为空');
                         return;
                     }
-                    clearUser();
-                }
-                saveUser(username, password);
-                alert(`✨ 注册成功！\n欢迎「${username}」，请登录。`);
-                closeModal();
-            } catch (err) {
-                alert('注册出错：' + err.message);
-                console.error(err);
+                    let loginSuccess = false;
+                    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                        loginSuccess = true;
+                        currentUser = ADMIN_USERNAME;
+                        redFlash();
+                    } else {
+                        const stored = getStoredUser();
+                        if (stored && stored.username === username && stored.password === password) {
+                            loginSuccess = true;
+                            currentUser = username;
+                        }
+                    }
+                    if (loginSuccess) {
+                        alert(`✅ 登陆成功！欢迎回来，${username}`);
+                        closeModal();
+                        updateNavButtons();
+                    } else {
+                        alert('❌ 用户名或密码错误');
+                    }
+                };
+                overlay.classList.add('active');
             }
-        };
-        overlay.classList.add('active');
-    }
 
-    // 登录模态框
-    function showLoginModal() {
-        closeModal();
-        const overlay = document.createElement('div');
-        overlay.className = 'arg-overlay';
-        overlay.innerHTML = `
-            <div class="arg-modal">
-                <span class="arg-close">&times;</span>
-                <h3>🔐 登录</h3>
-                <div class="arg-group">
-                    <label>用户名</label>
-                    <input type="text" id="login_user" placeholder="你的注册名">
-                </div>
-                <div class="arg-group">
-                    <label>密码</label>
-                    <input type="password" id="login_pwd" placeholder="密码">
-                </div>
-                <div class="forgot-link"><a id="forgot_btn">忘记密码？</a></div>
-                <div class="arg-buttons">
-                    <button class="arg-btn-primary" id="login_submit">登陆</button>
-                    <button class="arg-btn-secondary" id="login_cancel">取消</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-        currentModal = overlay;
+            // 暴露全局函数
+            window.handleLogin = showLoginModal;
+            window.handleRegister = showRegisterModal;
 
-        overlay.querySelector('.arg-close').onclick = closeModal;
-        overlay.querySelector('#login_cancel').onclick = closeModal;
-        overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
-        overlay.querySelector('#forgot_btn').onclick = (e) => {
-            e.preventDefault();
-            forgotPassword();
-        };
+            // 页面加载完成后初始化导航栏按钮状态
+            window.addEventListener('DOMContentLoaded', function() {
+                updateNavButtons();
+            });
+        })();
 
-        const loginBtn = overlay.querySelector('#login_submit');
-        loginBtn.onclick = () => {
-            const username = overlay.querySelector('#login_user').value.trim();
-            const password = overlay.querySelector('#login_pwd').value;
-            if (!username || !password) {
-                alert('❌ 用户名和密码都不能为空');
-                return;
-            }
-            const stored = getStoredUser();
-            if (!stored) {
-                alert('❌ 尚未注册，请先注册。');
-                return;
-            }
-            if (stored.username === username && stored.password === password) {
-                alert(`✅ 登陆成功！欢迎回来，${username}`);
-                closeModal();
+        // 显示登录提示（保持原有）
+        function showLoginPrompt(event) {
+            event.preventDefault();
+            alert('🔒 请登录后查看');
+        }
+
+        // 搜索功能处理
+        document.querySelector('.search-btn').addEventListener('click', function() {
+            const searchType = document.getElementById('searchType').value;
+            const searchText = document.querySelector('.search-input').value;
+            if (searchText.trim()) {
+                const typeLabel = searchType === 'search' ? '搜索' : '地道搜索';
+                alert(`🔍 ${typeLabel}：${searchText}\n\n搜索功能开发中...`);
             } else {
-                alert('❌ 用户名或密码错误');
+                alert('请输入搜索内容');
             }
-        };
-        overlay.classList.add('active');
-    }
+        });
 
-    // 全局暴露
-    window.handleLogin = showLoginModal;
-    window.handleRegister = showRegisterModal;
-})();
-        
-    // 显示登陆提示
-    function showLoginPrompt(event) {
-        event.preventDefault();
-        alert('🔒 请登录后查看');
-    }
-
-    // 搜索功能处理
-    document.querySelector('.search-btn').addEventListener('click', function() {
-        const searchType = document.getElementById('searchType').value;
-        const searchText = document.querySelector('.search-input').value;
-        if (searchText.trim()) {
-            const typeLabel = searchType === 'search' ? '搜索' : '地道搜索';
-            alert(`🔍 ${typeLabel}：${searchText}\n\n搜索功能开发中...`);
-        } else {
-            alert('请输入搜索内容');
-        }
-    });
-
-    // 回车搜索
-    document.querySelector('.search-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            document.querySelector('.search-btn').click();
-        }
-    });
-</script>
-        
+        // 回车搜索
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.querySelector('.search-btn').click();
+            }
+        });
+    </script>
 </body>
 </html>
