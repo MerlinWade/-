@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>快888快捷导航</title>
     <style>
+        /* 宁源模式：全局黑白滤镜，天气栏特殊样式 */
+.ningyuan-mode {
+    filter: grayscale(1);
+}
+/* 确保天气栏在黑白模式下显示红色文字（覆盖滤镜影响） */
+.ningyuan-mode .weather-info {
+    filter: grayscale(0);      /* 取消天气栏的黑白效果 */
+    color: #ff0000 !important;
+    background: #000 !important;
+    border-color: #ff0000 !important;
+}
         * {
             margin: 0;
             padding: 0;
@@ -649,6 +660,21 @@
                 }
             `;
             document.head.appendChild(modalStyle);
+            
+            // 宁源账号样式
+            const themeStyle = document.createElement('style');
+    themeStyle.textContent = `
+        .ningyuan-mode {
+            filter: grayscale(1);
+        }
+        .ningyuan-mode .weather-info {
+            filter: grayscale(0);
+            color: #ff0000 !important;
+            background: #000000 !important;
+            border-color: #ff0000 !important;
+        }
+    `;
+    document.head.appendChild(themeStyle);
 
             // 音频相关
             let audioCtx = null;
@@ -770,7 +796,28 @@
             function clearUser() {
                 localStorage.removeItem(STORAGE_KEY);
             }
+            
+// 应用宁源主题（黑白 + 天气栏修改）
+    function applyNingyuanTheme() {
+        document.body.classList.add('ningyuan-mode');
+        const weatherDiv = document.querySelector('.weather-info');
+        if (weatherDiv) {
+            weatherDiv.textContent = '📍 ？？？ -8层';
+            weatherDiv.style.color = '#ff0000';
+        }
+    }
 
+    // 恢复默认主题
+    function restoreDefaultTheme() {
+        document.body.classList.remove('ningyuan-mode');
+        const weatherDiv = document.querySelector('.weather-info');
+        if (weatherDiv) {
+            weatherDiv.textContent = '📍 北淀市 -18℃ 雨';
+            weatherDiv.style.color = '';      // 恢复默认颜色
+            weatherDiv.style.backgroundColor = '#fff3cd'; // 恢复背景（如果有覆盖）
+        }
+    }
+            
             // 增强红色闪烁效果（全屏红色遮罩 + 强烈闪烁）
     function redFlash() {
         // 创建临时红色遮罩层
@@ -834,10 +881,14 @@
             }
 
             function logout() {
-                currentUser = null;
-                updateNavButtons();
-                alert('已安全登出');
-            }
+        // 如果当前登录的是宁源，先恢复主题
+        if (currentUser === ADMIN_USERNAME) {
+            restoreDefaultTheme();
+        }
+        currentUser = null;
+        updateNavButtons();
+        alert('已安全登出');
+    }
 
 // 显示大量红色"再见"占满屏幕，每隔几个字播放一次警告音，全部出现后红色闪烁    
 function showRedGoodbye() {        
@@ -915,6 +966,7 @@ function showRedGoodbye() {
     setTimeout(() => {
             showRedGoodbye();                        // 新增：大量红色“再见”特效
          }, 2800);   // 这里的数字为延时毫秒数（2800 = 2.8秒）
+            restoreDefaultTheme();   // 注销前恢复主题（因为即将清空 currentUser）
             currentUser = null;
             updateNavButtons();
             return;
@@ -1049,16 +1101,11 @@ function showRedGoodbye() {
                     }
                     let loginSuccess = false;
                     if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                        loginSuccess = true;
-                        currentUser = ADMIN_USERNAME;
-                        redFlash();
-                    } else {
-                        const stored = getStoredUser();
-                        if (stored && stored.username === username && stored.password === password) {
-                            loginSuccess = true;
-                            currentUser = username;
-                        }
-                    }
+                loginSuccess = true;
+                currentUser = ADMIN_USERNAME;
+                redFlash();
+                applyNingyuanTheme();    // 新增：应用黑白主题
+            }
                     if (loginSuccess) {
                         alert(`✅ 登陆成功！欢迎回来，${username}`);
                         closeModal();
