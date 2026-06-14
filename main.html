@@ -501,7 +501,7 @@
         
 //单用户注册/登录模态框
 (function() {
-    // 注入样式（淡蓝色主题）
+    // 注入样式（淡蓝色主题，使用标准CSS注释）
     const modalStyle = document.createElement('style');
     modalStyle.textContent = `
         .arg-overlay {
@@ -610,7 +610,7 @@
             text-decoration: none;
             cursor: pointer;
         }
-        // 警告提示框（纯红底）
+        /* 警告提示框（纯红底，固定定位） */
         .custom-toast {
             position: fixed;
             top: 40%;
@@ -628,7 +628,7 @@
             white-space: nowrap;
             pointer-events: none;
         }
-        // 黑屏遮罩
+        /* 黑屏遮罩 */
         .blackout {
             position: fixed;
             top: 0;
@@ -653,7 +653,7 @@
     `;
     document.head.appendChild(modalStyle);
 
-    // 播放警告音（使用 Web Audio 生成刺耳警报声）
+    // 播放警告音（可自行修改音高、时长）
     let audioCtx = null;
     function playWarningSound() {
         try {
@@ -667,11 +667,17 @@
             const gainNode = audioCtx.createGain();
             oscillator.connect(gainNode);
             gainNode.connect(audioCtx.destination);
-            oscillator.frequency.value = 880;
-            gainNode.gain.value = 0.5;
+            
+            // ===== 修改以下参数来改变警告音 =====
+            oscillator.frequency.value = 880;   // 音高（赫兹），可改 440~2000
+            oscillator.frequency.value = 440;
+            oscillator.frequency.value = 1320;
+            gainNode.gain.value = 0.8;          // 音量（0~1）
             oscillator.start();
+            // 声音渐变消失（时长0.8秒）
             gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.8);
             oscillator.stop(audioCtx.currentTime + 0.8);
+            // ==================================
         } catch(e) {
             console.warn('无法播放警告音', e);
         }
@@ -692,8 +698,8 @@
         }, durationMs);
     }
 
-    // 显示警告提示框（无动画）
-    function showWarning(message, duration = 2000) {
+    // 显示警告提示框（自动消失）
+    function showWarning(message, duration = 3000) {
         const toast = document.createElement('div');
         toast.className = 'custom-toast';
         toast.textContent = message;
@@ -794,7 +800,6 @@
                 const confirm = overlay.querySelector('#reg_confirm').value;
                 const invite = overlay.querySelector('#reg_invite').value.trim();
 
-                // 非空校验
                 if (!username) { alert('❌ 用户名不能为空'); return; }
                 if (!password) { alert('❌ 密码不能为空'); return; }
                 if (!confirm) { alert('❌ 请确认密码'); return; }
@@ -813,9 +818,7 @@
                     return;
                 }
 
-                // 密码一致性校验
                 if (password !== confirm) { alert('⚠️ 两次输入的密码不一致'); return; }
-                // 内推码校验
                 if (invite !== 'womenjiehunba') { alert('❌ 内推码错误'); return; }
 
                 const existing = getStoredUser();
@@ -864,7 +867,6 @@
         document.body.appendChild(overlay);
         currentModal = overlay;
 
-        // 关闭事件绑定
         overlay.querySelector('.arg-close').onclick = closeModal;
         overlay.querySelector('#login_cancel').onclick = closeModal;
         overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
@@ -896,7 +898,7 @@
         overlay.classList.add('active');
     }
 
-    // 全局暴露注册/登录函数
+    // 全局暴露
     window.handleLogin = showLoginModal;
     window.handleRegister = showRegisterModal;
 })();
