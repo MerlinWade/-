@@ -497,207 +497,250 @@
         <p>© 2026 MerlinWade. All rights reserved. | 本作品受著作权保护。未经许可，不得以任何形式转载或复制。</p>
     </div>
         
-<script>
-    // ========== 单用户注册/登录模态框（ARG沉浸体验）==========
-    (function() {
-        // 动态注入模态框样式 
-        const modalStyle = document.createElement('style');
-        modalStyle.textContent = `
-            .arg-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.6);
-                backdrop-filter: blur(4px);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 10000;
-                visibility: hidden;
-                opacity: 0;
-                transition: 0.2s;
-            }
-            .arg-overlay.active {
-                visibility: visible;
-                opacity: 1;
-            }
-            .arg-modal {
-                background: #fff;
-                width: 90%;
-                max-width: 420px;
-                border-radius: 28px;
-                padding: 24px 22px 32px;
-                box-shadow: 0 20px 35px rgba(0,0,0,0.3);
-                transform: scale(0.96);
-                transition: transform 0.2s;
-            }
-            .arg-overlay.active .arg-modal {
-                transform: scale(1);
-            }
-            .arg-modal h3 {
-                font-size: 1.7rem;
-                margin: 0 0 12px 0;
-                background: linear-gradient(135deg, #ff8c00, #ff2b4d);
-                background-clip: text;
-                -webkit-background-clip: text;
-                color: transparent;
-                border-bottom: 2px solid #eee;
-                padding-bottom: 10px;
-            }
-            .arg-close {
-                float: right;
-                font-size: 28px;
-                cursor: pointer;
-                color: #aaa;
-            }
-            .arg-close:hover { color: #ff2b4d; }
-            .arg-group {
-                margin-bottom: 18px;
-            }
-            .arg-group label {
-                display: block;
-                font-weight: 600;
-                margin-bottom: 6px;
-                color: #1e293b;
-            }
-            .arg-group input {
-                width: 100%;
-                padding: 10px 14px;
-                border: 1.5px solid #e2e8f0;
-                border-radius: 40px;
-                font-size: 1rem;
-                outline: none;
-            }
-            .arg-group input:focus {
-                border-color: #ff8c00;
-                box-shadow: 0 0 0 3px rgba(255,140,0,0.2);
-            }
-            .arg-buttons {
-                display: flex;
-                gap: 12px;
-                margin-top: 24px;
-            }
-            .arg-buttons button {
-                flex: 1;
-                padding: 10px;
-                border-radius: 40px;
-                font-weight: bold;
-                border: none;
-                cursor: pointer;
-                font-size: 1rem;
-            }
-            .arg-btn-primary {
-                background: linear-gradient(135deg, #ff8c00, #ff2b4d);
-                color: white;
-            }
-            .arg-btn-secondary {
-                background: #f1f5f9;
-                color: #334155;
-                border: 1px solid #ddd;
-            }
-            .forgot-link {
-                text-align: right;
-                margin: -8px 0 12px;
-            }
-            .forgot-link a {
-                font-size: 0.8rem;
-                color: #ff8c00;
-                text-decoration: none;
-                cursor: pointer;
-            }
-            @media (max-width: 550px) {
-                .arg-modal { padding: 18px; }
-                .arg-modal h3 { font-size: 1.4rem; }
-            }
-        `;
-        document.head.appendChild(modalStyle);
-
-        // 存储 key 
-        const STORAGE_KEY = 'arg_single_user';
-
-        function getStoredUser() {
-            const raw = localStorage.getItem(STORAGE_KEY);
-            if (raw) {
-                try { return JSON.parse(raw); } catch(e) { return null; }
-            }
-            return null;
+// ========== 单用户注册/登录模态框（ARG沉浸体验 淡蓝版 + 抖动彩蛋）==========
+(function() {
+    //动态注入模态框样式（淡蓝色主题）
+    const modalStyle = document.createElement('style');
+    modalStyle.textContent = `
+        .arg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
         }
-        function saveUser(username, password) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({ username, password }));
+        .arg-overlay.active {
+            visibility: visible;
+            opacity: 1;
         }
-        function clearUser() {
-            localStorage.removeItem(STORAGE_KEY);
+        .arg-modal {
+            background: #e6f0ff;  /* 淡蓝背景 */
+            width: 90%;
+            max-width: 420px;
+            border-radius: 28px;
+            padding: 24px 22px 32px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+            transform: scale(0.96);
+            transition: transform 0.2s;
+            border: 1px solid #b8d4ff;
         }
-
-        // 忘记密码：输入内推码后显示密码 
-        function forgotPassword() {
-            const user = getStoredUser();
-            if (!user) {
-                alert('❌ 尚无注册账号，请先注册。');
-                return;
-            }
-            const code = prompt('🔐 密码找回验证\n请输入内推码：');
-            if (code === null) return;
-            if (code === 'womenjiehunba') {
-                alert(`📝 当前账号「${user.username}」的密码是：${user.password}\n请妥善保管。`);
-            } else {
-                alert('❌ 内推码错误，无法获取密码。');
-            }
+        .arg-overlay.active .arg-modal {
+            transform: scale(1);
         }
+        .arg-modal h3 {
+            font-size: 1.7rem;
+            margin: 0 0 12px 0;
+            background: linear-gradient(135deg, #2c7da0, #1f6390);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            border-bottom: 2px solid #c0e0ff;
+            padding-bottom: 10px;
+        }
+        .arg-close {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            color: #5a8bb9;
+        }
+        .arg-close:hover { color: #1f6390; }
+        .arg-group {
+            margin-bottom: 18px;
+        }
+        .arg-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #1e4b6e;
+        }
+        .arg-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #c0d9f0;
+            border-radius: 40px;
+            font-size: 1rem;
+            outline: none;
+            background: white;
+        }
+        .arg-group input:focus {
+            border-color: #3c8dc5;
+            box-shadow: 0 0 0 3px rgba(60,141,197,0.2);
+        }
+        .arg-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .arg-buttons button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 40px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .arg-btn-primary {
+            background: linear-gradient(135deg, #3c8dc5, #2c6f9e);
+            color: white;
+        }
+        .arg-btn-secondary {
+            background: #d9eaff;
+            color: #1e4b6e;
+            border: 1px solid #b0cce8;
+        }
+        .forgot-link {
+            text-align: right;
+            margin: -8px 0 12px;
+        }
+        .forgot-link a {
+            font-size: 0.8rem;
+            color: #2c7da0;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* 自定义抖动+闪烁提示框 */
+        .custom-toast {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #c00000;
+            color: white;
+            padding: 16px 28px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 0 20px rgba(255,0,0,0.6);
+            z-index: 20000;
+            text-align: center;
+            white-space: nowrap;
+            animation: shakeBlink 0.5s ease-in-out 3;
+            pointer-events: none;
+        }
+        @keyframes shakeBlink {
+            0% { transform: translate(-50%, -50%) translateX(0); opacity: 1; background: #c00000; }
+            25% { transform: translate(-50%, -50%) translateX(-8px); background: #ff4444; text-shadow: 0 0 3px white; }
+            50% { transform: translate(-50%, -50%) translateX(8px); background: #c00000; }
+            75% { transform: translate(-50%, -50%) translateX(-4px); background: #ff4444; }
+            100% { transform: translate(-50%, -50%) translateX(0); opacity: 1; background: #c00000; }
+        }
+        @media (max-width: 550px) {
+            .arg-modal { padding: 18px; }
+            .arg-modal h3 { font-size: 1.4rem; }
+            .custom-toast { font-size: 1rem; padding: 12px 20px; white-space: normal; width: 80%; text-align: center; }
+        }
+    `;
+    document.head.appendChild(modalStyle);
 
-        // 创建模态框（动态生成）
-        let currentModal = null; // 当前显示的模态框元素
+    //自定义提示框（自动消失）
+    function showFloatingWarning(message, duration = 2000) {
+        const toast = document.createElement('div');
+        toast.className = 'custom-toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.remove();
+        }, duration);
+    }
 
-        function closeModal() {
-            if (currentModal) {
-                currentModal.classList.remove('active');
+    //存储 key
+    const STORAGE_KEY = 'arg_single_user';
+
+    function getStoredUser() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+            try { return JSON.parse(raw); } catch(e) { return null; }
+        }
+        return null;
+    }
+    function saveUser(username, password) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ username, password }));
+    }
+    function clearUser() {
+        localStorage.removeItem(STORAGE_KEY);
+    }
+
+    //忘记密码：输入内推码后显示密码 
+    function forgotPassword() {
+        const user = getStoredUser();
+        if (!user) {
+            alert('❌ 尚无注册账号，请先注册。');
+            return;
+        }
+        const code = prompt('🔐 密码找回验证\n请输入内推码：');
+        if (code === null) return;
+        if (code === '123456') {
+            alert(`📝 当前账号「${user.username}」的密码是：${user.password}\n请妥善保管。`);
+        } else {
+            alert('❌ 内推码错误，无法获取密码。');
+        }
+    }
+
+    //创建模态框（动态生成）
+    let currentModal = null;
+
+    function closeModal() {
+        if (currentModal) {
+            currentModal.classList.remove('active');
+            setTimeout(() => {
+                if (currentModal && currentModal.parentNode) currentModal.remove();
                 currentModal = null;
-            }
+            }, 200);
         }
+    }
 
-        function showRegisterModal() {
-            closeModal();
-            const overlay = document.createElement('div');
-            overlay.className = 'arg-overlay';
-            overlay.innerHTML = `
-                <div class="arg-modal">
-                    <span class="arg-close">&times;</span>
-                    <h3>📝 注册</h3>
-                    <div class="arg-group">
-                        <label>用户名</label>
-                        <input type="text" id="reg_user" placeholder="请输入用户名">
-                    </div>
-                    <div class="arg-group">
-                        <label>密码</label>
-                        <input type="password" id="reg_pwd" placeholder="设置密码">
-                    </div>
-                    <div class="arg-group">
-                        <label>确认密码</label>
-                        <input type="password" id="reg_confirm" placeholder="再次输入密码">
-                    </div>
-                    <div class="arg-group">
-                        <label>内推码</label>
-                        <input type="text" id="reg_invite" placeholder="请输入内推码">
-                    </div>
-                    <div class="arg-buttons">
-                        <button class="arg-btn-primary" id="reg_submit">注册</button>
-                        <button class="arg-btn-secondary" id="reg_cancel">取消</button>
-                    </div>
+    function showRegisterModal() {
+        closeModal();
+        const overlay = document.createElement('div');
+        overlay.className = 'arg-overlay';
+        overlay.innerHTML = `
+            <div class="arg-modal">
+                <span class="arg-close">&times;</span>
+                <h3>📝 注册</h3>
+                <div class="arg-group">
+                    <label>用户名</label>
+                    <input type="text" id="reg_user" placeholder="请输入用户名">
                 </div>
-            `;
-            document.body.appendChild(overlay);
-            currentModal = overlay;
+                <div class="arg-group">
+                    <label>密码</label>
+                    <input type="password" id="reg_pwd" placeholder="设置密码">
+                </div>
+                <div class="arg-group">
+                    <label>确认密码</label>
+                    <input type="password" id="reg_confirm" placeholder="再次输入密码">
+                </div>
+                <div class="arg-group">
+                    <label>内推码</label>
+                    <input type="text" id="reg_invite" placeholder="请输入内推码">
+                </div>
+                <div class="arg-buttons">
+                    <button class="arg-btn-primary" id="reg_submit">注册</button>
+                    <button class="arg-btn-secondary" id="reg_cancel">取消</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        currentModal = overlay;
 
-            // 关闭事件
-            overlay.querySelector('.arg-close').onclick = closeModal;
-            overlay.querySelector('#reg_cancel').onclick = closeModal;
-            overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
+        // 关闭事件
+        overlay.querySelector('.arg-close').onclick = closeModal;
+        overlay.querySelector('#reg_cancel').onclick = closeModal;
+        overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
 
-            // 注册逻辑
-            const submitBtn = overlay.querySelector('#reg_submit');
-            submitBtn.onclick = () => {
+        // 注册逻辑（含于源彩蛋）
+        const submitBtn = overlay.querySelector('#reg_submit');
+        submitBtn.onclick = () => {
+            try {
                 const username = overlay.querySelector('#reg_user').value.trim();
                 const password = overlay.querySelector('#reg_pwd').value;
                 const confirm = overlay.querySelector('#reg_confirm').value;
@@ -707,12 +750,20 @@
                 if (!password) { alert('❌ 密码不能为空'); return; }
                 if (!confirm) { alert('❌ 请确认密码'); return; }
                 if (!invite) { alert('❌ 内推码不能为空'); return; }
+
+                // 彩蛋：于源
+                if (username === '于源') {
+                    showFloatingWarning('⚠️ 该用户名已被占用 ⚠️', 1800);
+                    return;
+                }
+
                 if (password !== confirm) { alert('⚠️ 两次输入的密码不一致'); return; }
-                if (invite !== 'womenjiehunba') { alert('❌ 内推码错误'); return; }
+                if (invite !== '123456') { alert('❌ 内推码错误，必须是 123456'); return; }
 
                 const existing = getStoredUser();
                 if (existing) {
-                    if (!confirm(`⚠️ 已有账号「${existing.username}」。\n注册新账号将清除旧数据，是否继续？`)) {
+                    const userConfirmed = confirm(`⚠️ 已有账号「${existing.username}」。\n注册新账号将清除旧数据，是否继续？`);
+                    if (!userConfirmed) {
                         return;
                     }
                     clearUser();
@@ -720,78 +771,75 @@
                 saveUser(username, password);
                 alert(`✨ 注册成功！\n欢迎「${username}」，请登录。`);
                 closeModal();
-            };
-            overlay.classList.add('active');
-        }
+            } catch (err) {
+                alert('注册出错：' + err.message);
+                console.error(err);
+            }
+        };
+        overlay.classList.add('active');
+    }
 
-        function showLoginModal() {
-            closeModal();
-            const overlay = document.createElement('div');
-            overlay.className = 'arg-overlay';
-            overlay.innerHTML = `
-                <div class="arg-modal">
-                    <span class="arg-close">&times;</span>
-                    <h3>🔐 登录</h3>
-                    <div class="arg-group">
-                        <label>用户名</label>
-                        <input type="text" id="login_user" placeholder="你的注册名">
-                    </div>
-                    <div class="arg-group">
-                        <label>密码</label>
-                        <input type="password" id="login_pwd" placeholder="密码">
-                    </div>
-                    <div class="forgot-link"><a id="forgot_btn">忘记密码？</a></div>
-                    <div class="arg-buttons">
-                        <button class="arg-btn-primary" id="login_submit">登陆</button>
-                        <button class="arg-btn-secondary" id="login_cancel">取消</button>
-                    </div>
+    function showLoginModal() {
+        closeModal();
+        const overlay = document.createElement('div');
+        overlay.className = 'arg-overlay';
+        overlay.innerHTML = `
+            <div class="arg-modal">
+                <span class="arg-close">&times;</span>
+                <h3>🔐 登录</h3>
+                <div class="arg-group">
+                    <label>用户名</label>
+                    <input type="text" id="login_user" placeholder="你的注册名">
                 </div>
-            `;
-            document.body.appendChild(overlay);
-            currentModal = overlay;
+                <div class="arg-group">
+                    <label>密码</label>
+                    <input type="password" id="login_pwd" placeholder="密码">
+                </div>
+                <div class="forgot-link"><a id="forgot_btn">忘记密码？</a></div>
+                <div class="arg-buttons">
+                    <button class="arg-btn-primary" id="login_submit">登陆</button>
+                    <button class="arg-btn-secondary" id="login_cancel">取消</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        currentModal = overlay;
 
-            // 关闭事件
-            overlay.querySelector('.arg-close').onclick = closeModal;
-            overlay.querySelector('#login_cancel').onclick = closeModal;
-            overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
-            // 忘记密码
-            overlay.querySelector('#forgot_btn').onclick = (e) => {
-                e.preventDefault();
-                forgotPassword();
-            };
-            // 登录逻辑
-            const loginBtn = overlay.querySelector('#login_submit');
-            loginBtn.onclick = () => {
-                const username = overlay.querySelector('#login_user').value.trim();
-                const password = overlay.querySelector('#login_pwd').value;
-                if (!username || !password) {
-                    alert('❌ 用户名和密码都不能为空');
-                    return;
-                }
-                const stored = getStoredUser();
-                if (!stored) {
-                    alert('❌ 尚未注册，请先注册。');
-                    return;
-                }
-                if (stored.username === username && stored.password === password) {
-                    alert(`✅ 登陆成功！欢迎回来，${username}`);
-                    closeModal();
-                } else {
-                    alert('❌ 用户名或密码错误');
-                }
-            };
-            overlay.classList.add('active');
-        }
-
-        // 暴露全局函数供原有按钮调用
-        window.handleLogin = function() {
-            showLoginModal();
+        overlay.querySelector('.arg-close').onclick = closeModal;
+        overlay.querySelector('#login_cancel').onclick = closeModal;
+        overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
+        overlay.querySelector('#forgot_btn').onclick = (e) => {
+            e.preventDefault();
+            forgotPassword();
         };
-        window.handleRegister = function() {
-            showRegisterModal();
+        const loginBtn = overlay.querySelector('#login_submit');
+        loginBtn.onclick = () => {
+            const username = overlay.querySelector('#login_user').value.trim();
+            const password = overlay.querySelector('#login_pwd').value;
+            if (!username || !password) {
+                alert('❌ 用户名和密码都不能为空');
+                return;
+            }
+            const stored = getStoredUser();
+            if (!stored) {
+                alert('❌ 尚未注册，请先注册。');
+                return;
+            }
+            if (stored.username === username && stored.password === password) {
+                alert(`✅ 登陆成功！欢迎回来，${username}`);
+                closeModal();
+            } else {
+                alert('❌ 用户名或密码错误');
+            }
         };
-    })();
+        overlay.classList.add('active');
+    }
 
+    // 暴露全局函数
+    window.handleLogin = showLoginModal;
+    window.handleRegister = showRegisterModal;
+})();
+        
     // 显示登陆提示
     function showLoginPrompt(event) {
         event.preventDefault();
