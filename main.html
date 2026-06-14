@@ -501,7 +501,7 @@
         
 //单用户注册/登录模态框
 (function() {
-    //动态注入模态框样式（淡蓝色主题）
+    // 注入样式（淡蓝色主题）
     const modalStyle = document.createElement('style');
     modalStyle.textContent = `
         .arg-overlay {
@@ -525,7 +525,7 @@
             opacity: 1;
         }
         .arg-modal {
-            background: #e6f0ff;  /* 淡蓝背景 */
+            background: #e6f0ff;
             width: 90%;
             max-width: 420px;
             border-radius: 28px;
@@ -610,7 +610,7 @@
             text-decoration: none;
             cursor: pointer;
         }
-        /* 自定义抖动+闪烁提示框 */
+        // 警告提示框（纯红底）
         .custom-toast {
             position: fixed;
             top: 40%;
@@ -626,15 +626,24 @@
             z-index: 20000;
             text-align: center;
             white-space: nowrap;
-            animation: shakeBlink 0.5s ease-in-out 3;
             pointer-events: none;
         }
-        @keyframes shakeBlink {
-            0% { transform: translate(-50%, -50%) translateX(0); opacity: 1; background: #c00000; }
-            25% { transform: translate(-50%, -50%) translateX(-8px); background: #ff4444; text-shadow: 0 0 3px white; }
-            50% { transform: translate(-50%, -50%) translateX(8px); background: #c00000; }
-            75% { transform: translate(-50%, -50%) translateX(-4px); background: #ff4444; }
-            100% { transform: translate(-50%, -50%) translateX(0); opacity: 1; background: #c00000; }
+        // 黑屏遮罩
+        .blackout {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 30000;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .blackout.active {
+            opacity: 1;
+            pointer-events: auto;
         }
         @media (max-width: 550px) {
             .arg-modal { padding: 18px; }
@@ -644,8 +653,47 @@
     `;
     document.head.appendChild(modalStyle);
 
-    //自定义提示框（自动消失）
-    function showFloatingWarning(message, duration = 2000) {
+    // 播放警告音（使用 Web Audio 生成刺耳警报声）
+    let audioCtx = null;
+    function playWarningSound() {
+        try {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.frequency.value = 880;
+            gainNode.gain.value = 0.5;
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.8);
+            oscillator.stop(audioCtx.currentTime + 0.8);
+        } catch(e) {
+            console.warn('无法播放警告音', e);
+        }
+    }
+
+    // 黑屏函数
+    function blackout(durationMs, callback) {
+        let blackDiv = document.querySelector('.arg-blackout');
+        if (!blackDiv) {
+            blackDiv = document.createElement('div');
+            blackDiv.className = 'blackout arg-blackout';
+            document.body.appendChild(blackDiv);
+        }
+        blackDiv.classList.add('active');
+        setTimeout(() => {
+            blackDiv.classList.remove('active');
+            if (callback) callback();
+        }, durationMs);
+    }
+
+    // 显示警告提示框（无动画）
+    function showWarning(message, duration = 2000) {
         const toast = document.createElement('div');
         toast.className = 'custom-toast';
         toast.textContent = message;
@@ -655,9 +703,8 @@
         }, duration);
     }
 
-    //存储 key
+    // 存储逻辑
     const STORAGE_KEY = 'arg_single_user';
-
     function getStoredUser() {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
@@ -672,7 +719,7 @@
         localStorage.removeItem(STORAGE_KEY);
     }
 
-    //忘记密码：输入内推码后显示密码 
+    // 忘记密码（内推码验证后显示密码）
     function forgotPassword() {
         const user = getStoredUser();
         if (!user) {
@@ -681,16 +728,15 @@
         }
         const code = prompt('🔐 密码找回验证\n请输入内推码：');
         if (code === null) return;
-        if (code === '123456') {
+        if (code === 'womenjiehunba') {
             alert(`📝 当前账号「${user.username}」的密码是：${user.password}\n请妥善保管。`);
         } else {
             alert('❌ 内推码错误，无法获取密码。');
         }
     }
 
-    //创建模态框（动态生成）
+    // 模态框管理
     let currentModal = null;
-
     function closeModal() {
         if (currentModal) {
             currentModal.classList.remove('active');
@@ -701,6 +747,7 @@
         }
     }
 
+    // 注册模态框
     function showRegisterModal() {
         closeModal();
         const overlay = document.createElement('div');
@@ -734,12 +781,11 @@
         document.body.appendChild(overlay);
         currentModal = overlay;
 
-        // 关闭事件
+        // 关闭事件绑定
         overlay.querySelector('.arg-close').onclick = closeModal;
         overlay.querySelector('#reg_cancel').onclick = closeModal;
         overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
 
-        // 注册逻辑（含于源彩蛋）
         const submitBtn = overlay.querySelector('#reg_submit');
         submitBtn.onclick = () => {
             try {
@@ -748,23 +794,33 @@
                 const confirm = overlay.querySelector('#reg_confirm').value;
                 const invite = overlay.querySelector('#reg_invite').value.trim();
 
+                // 非空校验
                 if (!username) { alert('❌ 用户名不能为空'); return; }
                 if (!password) { alert('❌ 密码不能为空'); return; }
                 if (!confirm) { alert('❌ 请确认密码'); return; }
                 if (!invite) { alert('❌ 内推码不能为空'); return; }
 
-                // 彩蛋：于源
+                // 彩蛋：用户名为“于源”
                 if (username === '于源') {
-                    showFloatingWarning('⚠️ 该用户名已被占用 ⚠️', 1800);
+                    playWarningSound();                     // 播放警告音
+                    showWarning('⚠️ 该用户名已被占用 ⚠️', 1800); // 红色提示框
+                    blackout(1000);                         // 黑屏1秒
+                    // 清空所有输入框
+                    overlay.querySelector('#reg_user').value = '';
+                    overlay.querySelector('#reg_pwd').value = '';
+                    overlay.querySelector('#reg_confirm').value = '';
+                    overlay.querySelector('#reg_invite').value = '';
                     return;
                 }
 
+                // 密码一致性校验
                 if (password !== confirm) { alert('⚠️ 两次输入的密码不一致'); return; }
-                if (invite !== '123456') { alert('❌ 内推码错误，必须是 123456'); return; }
+                // 内推码校验
+                if (invite !== 'womenjiehunba') { alert('❌ 内推码错误'); return; }
 
                 const existing = getStoredUser();
                 if (existing) {
-                    const userConfirmed = confirm(`⚠️ 已有账号「${existing.username}」。\n注册新账号将清除旧数据，是否继续？`);
+                    const userConfirmed = window.confirm(`⚠️ 已有账号「${existing.username}」。\n注册新账号将清除旧数据，是否继续？`);
                     if (!userConfirmed) {
                         return;
                     }
@@ -781,6 +837,7 @@
         overlay.classList.add('active');
     }
 
+    // 登录模态框
     function showLoginModal() {
         closeModal();
         const overlay = document.createElement('div');
@@ -807,6 +864,7 @@
         document.body.appendChild(overlay);
         currentModal = overlay;
 
+        // 关闭事件绑定
         overlay.querySelector('.arg-close').onclick = closeModal;
         overlay.querySelector('#login_cancel').onclick = closeModal;
         overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
@@ -814,6 +872,7 @@
             e.preventDefault();
             forgotPassword();
         };
+
         const loginBtn = overlay.querySelector('#login_submit');
         loginBtn.onclick = () => {
             const username = overlay.querySelector('#login_user').value.trim();
@@ -837,7 +896,7 @@
         overlay.classList.add('active');
     }
 
-    // 暴露全局函数
+    // 全局暴露注册/登录函数
     window.handleLogin = showLoginModal;
     window.handleRegister = showRegisterModal;
 })();
