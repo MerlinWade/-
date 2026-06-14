@@ -701,20 +701,17 @@
             `;
             document.head.appendChild(modalStyle);
             
-            // 宁源账号样式
+           // 宁源账号样式（只保留天气栏红色样式，灰度由 .ningyuan-grayscale 控制）
             const themeStyle = document.createElement('style');
-    themeStyle.textContent = `
-        .ningyuan-mode {
-            filter: grayscale(1);
-        }
-        .ningyuan-mode .weather-info {
-            filter: grayscale(0);
-            color: #ff0000 !important;
-            background: #000000 !important;
-            border-color: #ff0000 !important;
-        }
-    `;
-    document.head.appendChild(themeStyle);
+            themeStyle.textContent = `
+                body.ningyuan-mode .weather-info {
+                    filter: grayscale(0);
+                    color: #ff0000 !important;
+                    background: #000000 !important;
+                    border-color: #ff0000 !important;
+                }
+            `;
+            document.head.appendChild(themeStyle);
 
             // 音频相关
             let audioCtx = null;
