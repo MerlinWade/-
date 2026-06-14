@@ -518,389 +518,397 @@
         
 <script>
     
-    // ---------- 单用户 ARG 沉浸式注册/登录模块 ----------
-    // 仅存储一个用户（localStorage），注册后不可重复注册，体现唯一体验
-    (function() {
-        // ----- 动态注入模态框样式（适配移动端 + 电脑端）-----
-        const modalStyle = document.createElement('style');
-        modalStyle.textContent = `
-            /* 遮罩层 */
-            .arg-modal-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.65);
-                backdrop-filter: blur(4px);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 10000;
-                visibility: hidden;
-                opacity: 0;
-                transition: visibility 0.2s, opacity 0.2s;
-            }
-            .arg-modal-overlay.active {
-                visibility: visible;
-                opacity: 1;
-            }
-            /* 弹窗容器 — 移动端/PC通用 */
+   // ---------- 单用户 ARG 沉浸式注册/登录模块 ----------
+// 仅存储一个用户（localStorage），支持覆盖旧账号，忘记密码提示
+(function() {
+    // ----- 动态注入模态框样式（适配移动端 + 电脑端）-----
+    const modalStyle = document.createElement('style');
+    modalStyle.textContent = `
+        /* 遮罩层 */
+        .arg-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.2s;
+        }
+        .arg-modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        /* 弹窗容器 — 移动端/PC通用 */
+        .arg-modal-container {
+            background: #ffffff;
+            width: 90%;
+            max-width: 440px;
+            border-radius: 36px;
+            box-shadow: 0 30px 40px rgba(0, 0, 0, 0.3);
+            padding: 24px 22px 32px;
+            transition: transform 0.2s ease;
+            transform: scale(0.96);
+        }
+        .arg-modal-overlay.active .arg-modal-container {
+            transform: scale(1);
+        }
+        .arg-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0eef2;
+            padding-bottom: 12px;
+        }
+        .arg-modal-header h3 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff8c00, #ff2b4d);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin: 0;
+        }
+        .arg-close {
+            font-size: 32px;
+            cursor: pointer;
+            line-height: 1;
+            color: #aaa;
+            transition: 0.2s;
+        }
+        .arg-close:hover {
+            color: #ff2b4d;
+        }
+        .arg-form-group {
+            margin-bottom: 20px;
+        }
+        .arg-form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+        .arg-form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 60px;
+            font-size: 1rem;
+            outline: none;
+            background: #fefefe;
+            transition: 0.2s;
+            box-sizing: border-box;
+        }
+        .arg-form-group input:focus {
+            border-color: #ff8c00;
+            box-shadow: 0 0 0 3px rgba(255,140,0,0.2);
+        }
+        .arg-buttons {
+            display: flex;
+            gap: 14px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+        .arg-buttons button {
+            flex: 1;
+            padding: 12px 0;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+        .arg-btn-primary {
+            background: linear-gradient(135deg, #ff8c00, #ff2b4d);
+            color: white;
+        }
+        .arg-btn-primary:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .arg-btn-secondary {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #ddd;
+        }
+        .arg-btn-secondary:hover {
+            background: #e6edf4;
+        }
+        @media (max-width: 550px) {
             .arg-modal-container {
-                background: #ffffff;
-                width: 90%;
-                max-width: 440px;
-                border-radius: 36px;
-                box-shadow: 0 30px 40px rgba(0, 0, 0, 0.3);
-                padding: 24px 22px 32px;
-                transition: transform 0.2s ease;
-                transform: scale(0.96);
-            }
-            .arg-modal-overlay.active .arg-modal-container {
-                transform: scale(1);
-            }
-            .arg-modal-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-                border-bottom: 2px solid #f0eef2;
-                padding-bottom: 12px;
+                padding: 20px 18px 26px;
             }
             .arg-modal-header h3 {
-                font-size: 1.7rem;
-                font-weight: 700;
-                background: linear-gradient(135deg, #ff8c00, #ff2b4d);
-                background-clip: text;
-                -webkit-background-clip: text;
-                color: transparent;
-                margin: 0;
-            }
-            .arg-close {
-                font-size: 32px;
-                cursor: pointer;
-                line-height: 1;
-                color: #aaa;
-                transition: 0.2s;
-            }
-            .arg-close:hover {
-                color: #ff2b4d;
-            }
-            .arg-form-group {
-                margin-bottom: 20px;
-            }
-            .arg-form-group label {
-                display: block;
-                font-weight: 600;
-                margin-bottom: 8px;
-                color: #1e293b;
-                font-size: 0.9rem;
+                font-size: 1.4rem;
             }
             .arg-form-group input {
-                width: 100%;
-                padding: 12px 16px;
-                border: 1.5px solid #e2e8f0;
-                border-radius: 60px;
-                font-size: 1rem;
-                outline: none;
-                background: #fefefe;
-                transition: 0.2s;
-                box-sizing: border-box;
-            }
-            .arg-form-group input:focus {
-                border-color: #ff8c00;
-                box-shadow: 0 0 0 3px rgba(255,140,0,0.2);
-            }
-            .arg-buttons {
-                display: flex;
-                gap: 14px;
-                margin-top: 28px;
-                flex-wrap: wrap;
-            }
-            .arg-buttons button {
-                flex: 1;
-                padding: 12px 0;
-                border-radius: 60px;
-                font-weight: 700;
-                font-size: 1rem;
-                cursor: pointer;
-                border: none;
-                transition: 0.2s;
-            }
-            .arg-btn-primary {
-                background: linear-gradient(135deg, #ff8c00, #ff2b4d);
-                color: white;
-            }
-            .arg-btn-primary:hover {
-                transform: translateY(-2px);
-                filter: brightness(1.02);
-            }
-            .arg-btn-secondary {
-                background: #f1f5f9;
-                color: #334155;
-                border: 1px solid #ddd;
-            }
-            .arg-btn-secondary:hover {
-                background: #e6edf4;
-            }
-            @media (max-width: 550px) {
-                .arg-modal-container {
-                    padding: 20px 18px 26px;
-                }
-                .arg-modal-header h3 {
-                    font-size: 1.4rem;
-                }
-                .arg-form-group input {
-                    padding: 10px 14px;
-                }
-            }
-        `;
-        document.head.appendChild(modalStyle);
-
-   // 忘记密码 -> 通过内推码验证后提示当前密码
-        function handleForgotPassword() {
-            const storedUser = getStoredUser();
-            if (!storedUser) {
-                alert('❌ 尚未有任何注册档案，请先注册。');
-                return;
-            }
-            const inputCode = prompt('密码找回验证\n请输入内推码');
-            if (inputCode === null) return;
-            // 注意：这里的内推码应与注册时保持一致
-            if (inputCode === 'womenjiehunba') { 
-                alert(`当前账号「${storedUser.username}」的密码是：${storedUser.password}\n\n请妥善保管，或重新登录。`);
-            } else {
-                alert('❌ 内推码错误，无法获取密码。');
+                padding: 10px 14px;
             }
         }
-        
-                // 注册表单
-                const fields = [
-                    { label: '用户名', id: 'arg_reg_username', type: 'text', placeholder: '请输入用户名' },
-                    { label: '密码', id: 'arg_reg_password', type: 'password', placeholder: '输入密码' },
-                    { label: '确认密码', id: 'arg_reg_confirm', type: 'password', placeholder: '再次输入密码' },
-                    { label: '内推码', id: 'arg_reg_invite', type: 'text', placeholder: '请输入内推码' }
-                ];
-                fields.forEach(f => {
-                    const group = document.createElement('div');
-                    group.className = 'arg-form-group';
-                    const label = document.createElement('label');
-                    label.textContent = f.label;
-                    const input = document.createElement('input');
-                    input.type = f.type;
-                    input.id = f.id;
-                    input.placeholder = f.placeholder;
-                    group.appendChild(label);
-                    group.appendChild(input);
-                    container.appendChild(group);
-                });
-                const btnDiv = document.createElement('div');
-                btnDiv.className = 'arg-buttons';
-                const submitBtn = document.createElement('button');
-                submitBtn.textContent = '注册';
-                submitBtn.className = 'arg-btn-primary';
-                const cancelBtn = document.createElement('button');
-                cancelBtn.textContent = '取消';
-                cancelBtn.className = 'arg-btn-secondary';
-                btnDiv.appendChild(submitBtn);
-                btnDiv.appendChild(cancelBtn);
-                container.appendChild(btnDiv);
-                
-                submitBtn.addEventListener('click', () => handleRegisterSubmit());
-                cancelBtn.addEventListener('click', () => closeModal(overlay));
-           } else {
-                // 登录表单
-                const userGroup = document.createElement('div');
-                userGroup.className = 'arg-form-group';
-                const userLabel = document.createElement('label');
-                userLabel.textContent = '用户名';
-                const userInput = document.createElement('input');
-                userInput.type = 'text';
-                userInput.id = 'arg_login_username';
-                userInput.placeholder = '你的注册名';
-                userGroup.appendChild(userLabel);
-                userGroup.appendChild(userInput);
-                container.appendChild(userGroup);
-                
-                const pwdGroup = document.createElement('div');
-                pwdGroup.className = 'arg-form-group';
-                const pwdLabel = document.createElement('label');
-                pwdLabel.textContent = '密码';
-                const pwdInput = document.createElement('input');
-                pwdInput.type = 'password';
-                pwdInput.id = 'arg_login_password';
-                pwdInput.placeholder = '密码';
-                pwdGroup.appendChild(pwdLabel);
-                pwdGroup.appendChild(pwdInput);
-                container.appendChild(pwdGroup);
-                
-                // 新增：忘记密码按钮区域
-                const forgotDiv = document.createElement('div');
-                forgotDiv.style.textAlign = 'right';
-                forgotDiv.style.marginTop = '-8px';
-                forgotDiv.style.marginBottom = '12px';
-                const forgotLink = document.createElement('a');
-                forgotLink.href = 'javascript:void(0)';
-                forgotLink.textContent = '忘记密码？';
-                forgotLink.style.fontSize = '0.8rem';
-                forgotLink.style.color = '#ff8c00';
-                forgotLink.style.textDecoration = 'none';
-                forgotLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    handleForgotPassword();
-                });
-                forgotDiv.appendChild(forgotLink);
-                container.appendChild(forgotDiv);
-                
-                const btnDiv = document.createElement('div');
-                btnDiv.className = 'arg-buttons';
-                const loginBtn = document.createElement('button');
-                loginBtn.textContent = '登陆';
-                loginBtn.className = 'arg-btn-primary';
-                const cancelBtn = document.createElement('button');
-                cancelBtn.textContent = '取消';
-                cancelBtn.className = 'arg-btn-secondary';
-                btnDiv.appendChild(loginBtn);
-                btnDiv.appendChild(cancelBtn);
-                container.appendChild(btnDiv);
-                
-                loginBtn.addEventListener('click', () => handleLoginSubmit());
-                cancelBtn.addEventListener('click', () => closeModal(overlay));
-            }
-            
-            // 点击遮罩关闭
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) closeModal(overlay);
+    `;
+    document.head.appendChild(modalStyle);
+
+    // ----- 存储逻辑 -----
+    const STORED_USER_KEY = 'arg_single_user';
+
+    function getStoredUser() {
+        const raw = localStorage.getItem(STORED_USER_KEY);
+        if (raw) {
+            try {
+                return JSON.parse(raw);
+            } catch(e) { return null; }
+        }
+        return null;
+    }
+
+    function saveUser(username, password) {
+        localStorage.setItem(STORED_USER_KEY, JSON.stringify({ username, password }));
+    }
+
+    // ----- 忘记密码（提示密码）-----
+    function handleForgotPassword() {
+        const storedUser = getStoredUser();
+        if (!storedUser) {
+            alert('❌ 尚未有任何注册档案，请先注册。');
+            return;
+        }
+        const inputCode = prompt('密码找回验证\n请输入内推码');
+        if (inputCode === null) return;
+        // 内推码与注册时保持一致
+        if (inputCode === 'womenjiehunba') {
+            alert(`当前账号「${storedUser.username}」的密码是：${storedUser.password}\n\n请妥善保管，或重新登录。`);
+        } else {
+            alert('❌ 内推码错误，无法获取密码。');
+        }
+    }
+
+    // ----- 创建模态框DOM（注册 & 登录）-----
+    function createModal(type) {
+        const overlay = document.createElement('div');
+        overlay.className = 'arg-modal-overlay';
+        overlay.id = `arg-${type}-modal`;
+
+        const container = document.createElement('div');
+        container.className = 'arg-modal-container';
+
+        const header = document.createElement('div');
+        header.className = 'arg-modal-header';
+        const title = document.createElement('h3');
+        title.textContent = type === 'register' ? ' 注册' : ' 登录';
+        const closeSpan = document.createElement('span');
+        closeSpan.className = 'arg-close';
+        closeSpan.innerHTML = '&times;';
+        header.appendChild(title);
+        header.appendChild(closeSpan);
+        container.appendChild(header);
+
+        if (type === 'register') {
+            // 注册表单
+            const fields = [
+                { label: '用户名', id: 'arg_reg_username', type: 'text', placeholder: '请输入用户名' },
+                { label: '密码', id: 'arg_reg_password', type: 'password', placeholder: '输入密码' },
+                { label: '确认密码', id: 'arg_reg_confirm', type: 'password', placeholder: '再次输入密码' },
+                { label: '内推码', id: 'arg_reg_invite', type: 'text', placeholder: '请输入内推码' }
+            ];
+            fields.forEach(f => {
+                const group = document.createElement('div');
+                group.className = 'arg-form-group';
+                const label = document.createElement('label');
+                label.textContent = f.label;
+                const input = document.createElement('input');
+                input.type = f.type;
+                input.id = f.id;
+                input.placeholder = f.placeholder;
+                group.appendChild(label);
+                group.appendChild(input);
+                container.appendChild(group);
             });
-            closeSpan.addEventListener('click', () => closeModal(overlay));
-            document.body.appendChild(overlay);
-            return overlay;
-        }
-        
-        function closeModal(modalEl) {
-            if (modalEl) modalEl.classList.remove('active');
-        }
-        
-        function showModal(type) {
-            let modal = document.getElementById(`arg-${type}-modal`);
-            if (!modal) {
-                modal = createModal(type);
-            }
-            // 每次打开前重置表单内容
-            if (type === 'register') {
-                const uname = document.getElementById('arg_reg_username');
-                const pwd = document.getElementById('arg_reg_password');
-                const confirm = document.getElementById('arg_reg_confirm');
-                const invite = document.getElementById('arg_reg_invite');
-                if (uname) uname.value = '';
-                if (pwd) pwd.value = '';
-                if (confirm) confirm.value = '';
-                if (invite) invite.value = '';
-            } else {
-                const uname = document.getElementById('arg_login_username');
-                const pwd = document.getElementById('arg_login_password');
-                if (uname) uname.value = '';
-                if (pwd) pwd.value = '';
-            }
-            modal.classList.add('active');
-        }
-        
-        // ----- 单用户存储逻辑 (localStorage) -----
-        const STORED_USER_KEY = 'arg_single_user';
-        
-        function getStoredUser() {
-            const raw = localStorage.getItem(STORED_USER_KEY);
-            if (raw) {
-                try {
-                    return JSON.parse(raw);
-                } catch(e) { return null; }
-            }
-            return null;
-        }
-        
-        function saveUser(username, password) {
-            localStorage.setItem(STORED_USER_KEY, JSON.stringify({ username, password }));
-        }
-        
-         // 注册提交逻辑 (单用户体验，已注册时可选择覆盖)
-        function handleRegisterSubmit() {
-            const username = document.getElementById('arg_reg_username').value.trim();
-            const password = document.getElementById('arg_reg_password').value;
-            const confirmPwd = document.getElementById('arg_reg_confirm').value;
-            const inviteCode = document.getElementById('arg_reg_invite').value.trim();
-            
-            // 1. 非空校验
-            if (!username) { alert('❌ 用户名不能为空'); return; }
-            if (!password) { alert('❌ 密码不能为空'); return; }
-            if (!confirmPwd) { alert('❌ 请确认密码'); return; }
-            if (!inviteCode) { alert('❌ 内推码不能为空'); return; }
-            
-            // 2. 密码一致性
-            if (password !== confirmPwd) { alert('⚠️ 两次输入的密码不一致'); return; }
-            
-            // 3. 内推码必须为 womenjiehunba
-            if (inviteCode !== 'womenjiehunba') { alert('❌ 内推码错误'); return; }
-            
-             // 4. 检查是否已有用户（单用户覆盖逻辑）
-            const existing = getStoredUser();
-            if (existing !== null) {
-                // 询问是否覆盖旧档案
-                const confirmOverwrite = confirm(`⚠️ 检测到本地已有账号「${existing.username}」。\n仍要注册新账号吗？（旧账号将被清除）`);
-                if (!confirmOverwrite) {
-                    // 取消覆盖：关闭注册弹窗
-                    const regModal = document.getElementById('arg-register-modal');
-                    if (regModal) closeModal(regModal);
-                    return;
-                }
-                // 用户确认覆盖：清除旧数据
-                localStorage.removeItem(STORED_USER_KEY);
-            }
-            
-            // 注册成功，保存用户信息
-            saveUser(username, password);
-            alert(`✨ 注册成功！\n欢迎你，「${username}」\赶快「登陆」吧。`);
-            const regModal = document.getElementById('arg-register-modal');
-            if (regModal) closeModal(regModal);
-        }
-        
-        // 登录提交逻辑 (匹配保存的唯一用户)
-        function handleLoginSubmit() {
-            const username = document.getElementById('arg_login_username').value.trim();
-            const password = document.getElementById('arg_login_password').value;
-            
-            if (!username || !password) {
-                alert('❌ 用户名和密码都不能为空');
-                return;
-            }
-            
-            const storedUser = getStoredUser();
-            if (!storedUser) {
-                alert('❌ 尚未注册任何身份。请先点击「注册」创建你的账号。');
-                const loginModal = document.getElementById('arg-login-modal');
-                if (loginModal) closeModal(loginModal);
-                return;
-            }
-            
-            if (storedUser.username === username && storedUser.password === password) {
-                alert(`✅ 登陆成功！\n欢迎回来，${username}\n`);
-                const loginModal = document.getElementById('arg-login-modal');
-                if (loginModal) closeModal(loginModal);
-            } else {
-                alert('❌ 用户名或密码错误，无法进入。请检查你的身份凭证。');
-            }
-        }
-        
-        // ----- 重写原有的 handleLogin 和 handleRegister 函数（全局暴露）-----
-        window.handleLogin = function() {
-            showModal('login');
-        };
-        
-        window.handleRegister = function() {
-            showModal('register');
-        };
+            const btnDiv = document.createElement('div');
+            btnDiv.className = 'arg-buttons';
+            const submitBtn = document.createElement('button');
+            submitBtn.textContent = '注册';
+            submitBtn.className = 'arg-btn-primary';
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = '取消';
+            cancelBtn.className = 'arg-btn-secondary';
+            btnDiv.appendChild(submitBtn);
+            btnDiv.appendChild(cancelBtn);
+            container.appendChild(btnDiv);
 
-        // 额外清理一下可能残留的手动调用（保证原有onclick可以正常弹出）
-    })();
+            submitBtn.addEventListener('click', () => handleRegisterSubmit());
+            cancelBtn.addEventListener('click', () => closeModal(overlay));
+        } else {
+            // 登录表单
+            const userGroup = document.createElement('div');
+            userGroup.className = 'arg-form-group';
+            const userLabel = document.createElement('label');
+            userLabel.textContent = '用户名';
+            const userInput = document.createElement('input');
+            userInput.type = 'text';
+            userInput.id = 'arg_login_username';
+            userInput.placeholder = '你的注册名';
+            userGroup.appendChild(userLabel);
+            userGroup.appendChild(userInput);
+            container.appendChild(userGroup);
+
+            const pwdGroup = document.createElement('div');
+            pwdGroup.className = 'arg-form-group';
+            const pwdLabel = document.createElement('label');
+            pwdLabel.textContent = '密码';
+            const pwdInput = document.createElement('input');
+            pwdInput.type = 'password';
+            pwdInput.id = 'arg_login_password';
+            pwdInput.placeholder = '密码';
+            pwdGroup.appendChild(pwdLabel);
+            pwdGroup.appendChild(pwdInput);
+            container.appendChild(pwdGroup);
+
+            // 忘记密码按钮区域
+            const forgotDiv = document.createElement('div');
+            forgotDiv.style.textAlign = 'right';
+            forgotDiv.style.marginTop = '-8px';
+            forgotDiv.style.marginBottom = '12px';
+            const forgotLink = document.createElement('a');
+            forgotLink.href = 'javascript:void(0)';
+            forgotLink.textContent = '忘记密码？';
+            forgotLink.style.fontSize = '0.8rem';
+            forgotLink.style.color = '#ff8c00';
+            forgotLink.style.textDecoration = 'none';
+            forgotLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleForgotPassword();
+            });
+            forgotDiv.appendChild(forgotLink);
+            container.appendChild(forgotDiv);
+
+            const btnDiv = document.createElement('div');
+            btnDiv.className = 'arg-buttons';
+            const loginBtn = document.createElement('button');
+            loginBtn.textContent = '登陆';
+            loginBtn.className = 'arg-btn-primary';
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = '取消';
+            cancelBtn.className = 'arg-btn-secondary';
+            btnDiv.appendChild(loginBtn);
+            btnDiv.appendChild(cancelBtn);
+            container.appendChild(btnDiv);
+
+            loginBtn.addEventListener('click', () => handleLoginSubmit());
+            cancelBtn.addEventListener('click', () => closeModal(overlay));
+        }
+
+        // 点击遮罩关闭
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeModal(overlay);
+        });
+        closeSpan.addEventListener('click', () => closeModal(overlay));
+        document.body.appendChild(overlay);
+        return overlay;
+    }
+
+    function closeModal(modalEl) {
+        if (modalEl) modalEl.classList.remove('active');
+    }
+
+    function showModal(type) {
+        let modal = document.getElementById(`arg-${type}-modal`);
+        if (!modal) {
+            modal = createModal(type);
+        }
+        // 每次打开前重置表单内容
+        if (type === 'register') {
+            const uname = document.getElementById('arg_reg_username');
+            const pwd = document.getElementById('arg_reg_password');
+            const confirm = document.getElementById('arg_reg_confirm');
+            const invite = document.getElementById('arg_reg_invite');
+            if (uname) uname.value = '';
+            if (pwd) pwd.value = '';
+            if (confirm) confirm.value = '';
+            if (invite) invite.value = '';
+        } else {
+            const uname = document.getElementById('arg_login_username');
+            const pwd = document.getElementById('arg_login_password');
+            if (uname) uname.value = '';
+            if (pwd) pwd.value = '';
+        }
+        modal.classList.add('active');
+    }
+
+    // 注册提交逻辑（支持覆盖旧账号）
+    function handleRegisterSubmit() {
+        const username = document.getElementById('arg_reg_username').value.trim();
+        const password = document.getElementById('arg_reg_password').value;
+        const confirmPwd = document.getElementById('arg_reg_confirm').value;
+        const inviteCode = document.getElementById('arg_reg_invite').value.trim();
+
+        if (!username) { alert('❌ 用户名不能为空'); return; }
+        if (!password) { alert('❌ 密码不能为空'); return; }
+        if (!confirmPwd) { alert('❌ 请确认密码'); return; }
+        if (!inviteCode) { alert('❌ 内推码不能为空'); return; }
+        if (password !== confirmPwd) { alert('⚠️ 两次输入的密码不一致'); return; }
+        if (inviteCode !== 'womenjiehunba') { alert('❌ 内推码错误'); return; }
+
+        const existing = getStoredUser();
+        if (existing !== null) {
+            const confirmOverwrite = confirm(`⚠️ 检测到本地已有账号「${existing.username}」。\n仍要注册新账号吗？（旧账号将被清除）`);
+            if (!confirmOverwrite) {
+                const regModal = document.getElementById('arg-register-modal');
+                if (regModal) closeModal(regModal);
+                return;
+            }
+            localStorage.removeItem(STORED_USER_KEY);
+        }
+
+        saveUser(username, password);
+        alert(`✨ 注册成功！\n欢迎你，「${username}」\n赶快「登陆」吧。`);
+        const regModal = document.getElementById('arg-register-modal');
+        if (regModal) closeModal(regModal);
+    }
+
+    // 登录提交逻辑
+    function handleLoginSubmit() {
+        const username = document.getElementById('arg_login_username').value.trim();
+        const password = document.getElementById('arg_login_password').value;
+
+        if (!username || !password) {
+            alert('❌ 用户名和密码都不能为空');
+            return;
+        }
+
+        const storedUser = getStoredUser();
+        if (!storedUser) {
+            alert('❌ 尚未注册任何身份。请先点击「注册」创建你的账号。');
+            const loginModal = document.getElementById('arg-login-modal');
+            if (loginModal) closeModal(loginModal);
+            return;
+        }
+
+        if (storedUser.username === username && storedUser.password === password) {
+            alert(`✅ 登陆成功！\n欢迎回来，${username}`);
+            const loginModal = document.getElementById('arg-login-modal');
+            if (loginModal) closeModal(loginModal);
+        } else {
+            alert('❌ 用户名或密码错误，无法进入。请检查你的身份凭证。');
+        }
+    }
+
+    // 暴露全局函数供按钮调用
+    window.handleLogin = function() {
+        showModal('login');
+    };
+    window.handleRegister = function() {
+        showModal('register');
+    };
+})();
 
         // 显示登陆提示
         function showLoginPrompt(event) {
