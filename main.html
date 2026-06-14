@@ -880,8 +880,8 @@
         
         words.forEach((word, idx) => {
             setTimeout(() => {
-                word.style.opacity = '1';
-                playWarningSound();      // 每个“再见”出现时播放警告音
+                word.style.opacity = '4';
+                playWarningSound();      // 每4个“再见”出现时播放警告音
                 completedCount++;
                 if (completedCount === wordCount) {
                     redFlash();          // 全部出现后红色闪烁
@@ -889,7 +889,7 @@
             }, delays[idx]);
         });
         
-        // 最后清理（保留文字1.5秒后淡出移除）
+        // 最后清理（保留文字1秒后淡出移除）
         setTimeout(() => {
             words.forEach(word => {
                 word.style.transition = 'opacity 0.3s';
@@ -898,17 +898,18 @@
             setTimeout(() => {
                 container.remove();
             }, 400);
-        }, 1500);
+        }, 1000);
     }
             
             function deleteAccount() {
                 const isAdmin = (currentUser === ADMIN_USERNAME);
                 if (isAdmin) {
+                    playWarningSound();
             showWarning('没关系，下次再见~', 1800);   // 原有的红色警告框
-                    // 例如延迟 0.2 秒后再开始出现“再见”
+                    // 例如延迟 1 秒后再开始出现“再见”
     setTimeout(() => {
             showRedGoodbye();                        // 新增：大量红色“再见”特效
-         }, 200);   // 这里的数字为延时毫秒数（200 = 0.2秒）
+         }, 1000);   // 这里的数字为延时毫秒数（1000 = 1秒）
             currentUser = null;
             updateNavButtons();
             return;
