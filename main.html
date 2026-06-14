@@ -1,81 +1,35 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-    </style>
-   <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>快888快捷导航</title>
     <style>
         /* 宁源模式：全局黑白滤镜，天气栏特殊样式 */
-        .ningyuan-mode {
-            filter: grayscale(1);
-        }
-        /* 确保天气栏在黑白模式下显示红色文字（覆盖滤镜影响） */
-        .ningyuan-mode .weather-info {
-            filter: grayscale(0);
-            color: #ff0000 !important;
-            background: #000 !important;
-            border-color: #ff0000 !important;
-        }
+.ningyuan-mode {
+    filter: grayscale(1);
+}
+/* 确保天气栏在黑白模式下显示红色文字（覆盖滤镜影响） */
+.ningyuan-mode .weather-info {
+    filter: grayscale(0);      /* 取消天气栏的黑白效果 */
+    color: #ff0000 !important;
+    background: #000 !important;
+    border-color: #ff0000 !important;
+}
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* 修改背景为灰色，并添加挽联 */
         body {
             font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
-            background: #3a3f44;  /* 深灰色背景 */
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             padding: 15px;
             display: flex;
             flex-direction: column;
-            position: relative;
         }
-
-        /* 挽联：左右两侧白色楷体 */
-       /* 基础样式（电脑端，原样保留或稍作调整） */
-body::before,
-body::after {
-    content: "死生有命  富贵在天";
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    font-family: "楷体", "华文楷书", "Microsoft YaHei", serif;
-    font-size: 24px;
-    color: white;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    letter-spacing: 8px;
-    font-weight: bold;
-    opacity: 0.8;
-    z-index: 1;
-    pointer-events: none;
-    white-space: nowrap;
-}
-body::before {
-    left: 10px;
-}
-body::after {
-    right: 10px;
-}
-
-/* 移动端适配：可见，但缩小字号并调整位置 */
-@media (max-width: 768px) {
-    body::before,
-    body::after {
-        font-size: 14px;          /* 缩小字号 */
-        letter-spacing: 4px;      /* 减小字间距 */
-        opacity: 0.6;             /* 稍微透明，减少遮挡感 */
-    }
-    body::before {
-        left: 2px;                /* 更靠近边缘 */
-    }
-    body::after {
-        right: 2px;
-    }
-}
 
         /* 顶部导航栏 */
         .navbar {
@@ -90,17 +44,403 @@ body::after {
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
-            position: relative;
-            z-index: 2;
         }
-    <style>
-        /* 以下为原有完整样式，为节省篇幅省略，实际代码中应完整保留 */
-        /* ... 原有所有样式 ... */
-        /* 但为了答案完整，我会在最终代码中输出全部样式 */
+
+        .navbar-brand {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1e3c72;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .weather-info {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 3px;
+            padding: 6px 10px;
+            font-size: 0.85em;
+            color: #856404;
+            font-weight: bold;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .navbar-search {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .search-select {
+            padding: 7px 10px;
+            border: 1px solid #999;
+            border-radius: 3px;
+            font-size: 0.9em;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 7px 10px;
+            border: 1px solid #999;
+            border-radius: 3px;
+            font-size: 0.9em;
+            background: white;
+            color: #333;
+            min-width: 120px;
+        }
+
+        .search-btn {
+            padding: 7px 18px;
+            background: linear-gradient(to bottom, #0066cc, #0052a3);
+            color: white;
+            border: 1px solid #003d82;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(to bottom, #0052a3, #003d82);
+        }
+
+        .navbar-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .login-btn {
+            padding: 7px 16px;
+            background: white;
+            color: #0066cc;
+            border: 1px solid #0066cc;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s, color 0.3s;
+            white-space: nowrap;
+        }
+
+        .login-btn:hover {
+            background: #0066cc;
+            color: white;
+        }
+
+        .register-btn {
+            padding: 7px 16px;
+            background: #ff6600;
+            color: white;
+            border: 1px solid #ff6600;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+
+        .register-btn:hover {
+            background: #ff5500;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* 导航板块 */
+        .nav-section {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-header {
+            background: linear-gradient(to right, #f0f0f0, #e0e0e0);
+            border-bottom: 2px solid #0066cc;
+            padding: 12px 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #1e3c72;
+            letter-spacing: 1px;
+        }
+
+        .nav-content {
+            padding: 20px;
+        }
+
+        .link-list {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .link-row {
+            display: table-row;
+        }
+
+        .link-cell {
+            display: table-cell;
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .link-item {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #0066cc;
+            display: inline-block;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .link-item:hover {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        /* 虚拟页脚区域 */
+        .virtual-footer-section {
+            margin-bottom: 25px;
+        }
+
+        .virtual-footer {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .virtual-footer p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+
+        .virtual-footer a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .virtual-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 真实页脚 */
+        .real-footer {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .real-footer p {
+            color: #666;
+            font-size: 0.85em;
+            margin: 5px 0;
+        }
+
+        .real-footer a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .real-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .navbar {
+                padding: 10px 12px;
+                gap: 10px;
+            }
+
+            .navbar-brand {
+                font-size: 1.1em;
+            }
+
+            .navbar-search {
+                min-width: 200px;
+            }
+
+            .search-input {
+                min-width: 100px;
+            }
+
+            .weather-info {
+                font-size: 0.8em;
+                padding: 5px 8px;
+            }
+
+            .link-cell {
+                padding: 8px;
+            }
+
+            .link-item {
+                font-size: 0.9em;
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+                gap: 8px;
+            }
+
+            .navbar-brand {
+                text-align: center;
+                font-size: 1.1em;
+            }
+
+            .weather-info {
+                text-align: center;
+                width: 100%;
+            }
+
+            .navbar-search {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .navbar-right {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .link-list {
+                display: block;
+            }
+
+            .link-row {
+                display: flex;
+                flex-wrap: wrap;
+                margin-bottom: 10px;
+            }
+
+            .link-cell {
+                display: flex;
+                justify-content: center;
+                padding: 5px;
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .link-item {
+                width: 100%;
+                text-align: center;
+                font-size: 0.9em;
+            }
+
+            .virtual-footer p {
+                font-size: 0.85em;
+            }
+
+            .real-footer p {
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-brand {
+                font-size: 1em;
+                letter-spacing: 0.5px;
+            }
+
+            .search-select {
+                font-size: 0.85em;
+                padding: 6px 8px;
+            }
+
+            .search-input {
+                font-size: 0.85em;
+                padding: 6px 8px;
+                min-width: 80px;
+            }
+
+            .search-btn {
+                font-size: 0.85em;
+                padding: 6px 14px;
+            }
+
+            .login-btn,
+            .register-btn {
+                font-size: 0.85em;
+                padding: 6px 12px;
+            }
+
+            .weather-info {
+                font-size: 0.75em;
+                padding: 4px 6px;
+            }
+
+            .nav-content {
+                padding: 15px;
+            }
+
+            .link-cell {
+                padding: 4px;
+                min-width: 100px;
+            }
+
+            .link-item {
+                font-size: 0.85em;
+                padding: 8px 10px;
+            }
+
+            .virtual-footer p {
+                font-size: 0.8em;
+            }
+
+            .real-footer p {
+                font-size: 0.75em;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- 顶部导航栏（未改动） -->
+    <!-- 顶部导航栏 -->
     <div class="navbar">
         <div class="navbar-brand">🌐 快888快捷导航</div>
         <div class="weather-info">📍 北淀市 -18℃ 雨</div>
@@ -118,196 +458,519 @@ body::after {
         </div>
     </div>
 
-    <!-- 主容器等其他 HTML 结构不变（省略） -->
-    <!-- ... 原有 body 内容 ... -->
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 个人常用网址导航 -->
+        <div class="nav-section">
+            <div class="nav-header">⭐ 个人常用网址导航</div>
+            <div class="nav-content">
+                <div class="link-list">
+                    <div class="link-row">
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">淘沙网</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">拼夕夕</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">AlieAlie啊咧视频</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">嗨奇异</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">终点文学城</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">造浪新闻</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">啾啾空间</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">地气论坛</a></div>
+                    </div>
+                    <div class="link-row">
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">脸盆博客</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">2333小游戏</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">帅喵音乐</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">难闲邮箱</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">996全城</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">知忽</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">缘缘婚恋网</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">历史浏览</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 虚拟页脚区域 -->
+    <div class="virtual-footer-section">
+        <div class="virtual-footer">
+            <p>© 2018 快888快捷导航 | <a href="#">关于我们</a> | <a href="#">联系方式</a> | <a href="#">用户协议</a>| <a href="#">广告服务</a></p>
+        </div>
+    </div>
+
+    <!-- 真实页脚 -->
+    <div class="real-footer">
+        <p>本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关。</p>
+        <p>© 2026 MerlinWade. All rights reserved. | 本作品受著作权保护。未经许可，不得以任何形式转载或复制。</p>
+    </div>
 
     <script>
         // ========== 单用户注册/登录模态框（淡蓝 + 彩蛋 + 宁源特殊登录）==========
         (function() {
             // 全局状态
-            let currentUser = null;
-            const ADMIN_USERNAME = '宁源';
-            const ADMIN_PASSWORD = '20180417';
+            let currentUser = null;            // 当前登录的用户名
+            const ADMIN_USERNAME = '宁源';     // 内置特殊用户名
+            const ADMIN_PASSWORD = '20180417'; // 内置特殊密码
 
-            // 注入模态框样式（保持不变）
+            // 注入样式
             const modalStyle = document.createElement('style');
-            modalStyle.textContent = `/* ... 原有模态框样式 ... */`;
-            document.head.appendChild(modalStyle);
-
-            // 宁源主题样式（不变）
-            const themeStyle = document.createElement('style');
-            themeStyle.textContent = `
-                .ningyuan-mode {
-                    filter: grayscale(1);
+            modalStyle.textContent = `
+                .arg-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.6);
+                    backdrop-filter: blur(4px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                    visibility: hidden;
+                    opacity: 0;
+                    transition: 0.2s;
                 }
-                .ningyuan-mode .weather-info {
-                    filter: grayscale(0);
-                    color: #ff0000 !important;
-                    background: #000 !important;
-                    border-color: #ff0000 !important;
+                .arg-overlay.active {
+                    visibility: visible;
+                    opacity: 1;
+                }
+                .arg-modal {
+                    background: #e6f0ff;
+                    width: 90%;
+                    max-width: 420px;
+                    border-radius: 28px;
+                    padding: 24px 22px 32px;
+                    box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+                    transform: scale(0.96);
+                    transition: transform 0.2s;
+                    border: 1px solid #b8d4ff;
+                }
+                .arg-overlay.active .arg-modal {
+                    transform: scale(1);
+                }
+                .arg-modal h3 {
+                    font-size: 1.7rem;
+                    margin: 0 0 12px 0;
+                    background: linear-gradient(135deg, #2c7da0, #1f6390);
+                    background-clip: text;
+                    -webkit-background-clip: text;
+                    color: transparent;
+                    border-bottom: 2px solid #c0e0ff;
+                    padding-bottom: 10px;
+                }
+                .arg-close {
+                    float: right;
+                    font-size: 28px;
+                    cursor: pointer;
+                    color: #5a8bb9;
+                }
+                .arg-close:hover { color: #1f6390; }
+                .arg-group {
+                    margin-bottom: 18px;
+                }
+                .arg-group label {
+                    display: block;
+                    font-weight: 600;
+                    margin-bottom: 6px;
+                    color: #1e4b6e;
+                }
+                .arg-group input {
+                    width: 100%;
+                    padding: 10px 14px;
+                    border: 1.5px solid #c0d9f0;
+                    border-radius: 40px;
+                    font-size: 1rem;
+                    outline: none;
+                    background: white;
+                }
+                .arg-group input:focus {
+                    border-color: #3c8dc5;
+                    box-shadow: 0 0 0 3px rgba(60,141,197,0.2);
+                }
+                .arg-buttons {
+                    display: flex;
+                    gap: 12px;
+                    margin-top: 24px;
+                }
+                .arg-buttons button {
+                    flex: 1;
+                    padding: 10px;
+                    border-radius: 40px;
+                    font-weight: bold;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 1rem;
+                }
+                .arg-btn-primary {
+                    background: linear-gradient(135deg, #3c8dc5, #2c6f9e);
+                    color: white;
+                }
+                .arg-btn-secondary {
+                    background: #d9eaff;
+                    color: #1e4b6e;
+                    border: 1px solid #b0cce8;
+                }
+                .forgot-link {
+                    text-align: right;
+                    margin: -8px 0 12px;
+                }
+                .forgot-link a {
+                    font-size: 0.8rem;
+                    color: #2c7da0;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+                .custom-toast {
+                    position: fixed;
+                    top: 40%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: #c00000;
+                    color: white;
+                    padding: 16px 28px;
+                    border-radius: 12px;
+                    font-weight: bold;
+                    font-size: 1.2rem;
+                    box-shadow: 0 0 20px rgba(255,0,0,0.6);
+                    z-index: 20000;
+                    text-align: center;
+                    white-space: nowrap;
+                    pointer-events: none;
+                }
+                .blackout {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: black;
+                    z-index: 30000;
+                    opacity: 0;
+                    transition: opacity 0.2s;
+                    pointer-events: none;
+                }
+                .blackout.active {
+                    opacity: 1;
+                    pointer-events: auto;
+                }
+                @media (max-width: 550px) {
+                    .arg-modal { padding: 18px; }
+                    .arg-modal h3 { font-size: 1.4rem; }
+                    .custom-toast { font-size: 1rem; padding: 12px 20px; white-space: normal; width: 80%; text-align: center; }
                 }
             `;
-            document.head.appendChild(themeStyle);
+            document.head.appendChild(modalStyle);
+            
+            // 宁源账号样式
+            const themeStyle = document.createElement('style');
+    themeStyle.textContent = `
+        .ningyuan-mode {
+            filter: grayscale(1);
+        }
+        .ningyuan-mode .weather-info {
+            filter: grayscale(0);
+            color: #ff0000 !important;
+            background: #000000 !important;
+            border-color: #ff0000 !important;
+        }
+    `;
+    document.head.appendChild(themeStyle);
 
-            // 音频相关函数（保持不变）
+            // 音频相关
             let audioCtx = null;
-            function playWarningSound() { /* 原有代码 */ }
+            function playWarningSound() {
+                try {
+                    if (!audioCtx) {
+                        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    const currentTime = audioCtx.currentTime;
+                    // 声音1: 低音
+                    const osc1 = audioCtx.createOscillator();
+                    const gain1 = audioCtx.createGain();
+                    osc1.connect(gain1);
+                    gain1.connect(audioCtx.destination);
+                    osc1.type = 'sawtooth';
+                    osc1.frequency.value = 440;
+                    gain1.gain.value = 0;
+                    osc1.start();
+                    gain1.gain.linearRampToValueAtTime(0.3, currentTime + 0.02);
+                    gain1.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.2);
+                    osc1.stop(currentTime + 0.2);
+                    // 声音2: 高音
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.type = 'square';
+                    osc2.frequency.value = 880;
+                    gain2.gain.value = 0;
+                    osc2.start(currentTime + 0.1);
+                    gain2.gain.linearRampToValueAtTime(0.25, currentTime + 0.12);
+                    gain2.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.6);
+                    osc2.stop(currentTime + 0.6);
+                    // 白噪音
+                    const bufferSize = 4096;
+                    const noiseNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+                    noiseNode.onaudioprocess = function(e) {
+                        const output = e.outputBuffer.getChannelData(0);
+                        for (let i = 0; i < bufferSize; i++) {
+                            output[i] = (Math.random() * 2 - 1) * 0.8;
+                        }
+                    };
+                    const noiseGain = audioCtx.createGain();
+                    noiseNode.connect(noiseGain);
+                    noiseGain.connect(audioCtx.destination);
+                    noiseGain.gain.value = 0;
+                    noiseGain.gain.linearRampToValueAtTime(0.15, currentTime + 0.05);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.4);
+                    noiseNode.start(currentTime);
+                    noiseNode.stop(currentTime + 0.4);
+                    setTimeout(() => {
+                        try { noiseNode.disconnect(); } catch(e) {}
+                    }, 500);
+                } catch(e) {
+                    console.warn('警告音效播放失败', e);
+                }
+            }
 
-            // 黑屏 + 乱码特效（保持不变）
-            function blackout(durationMs = 1500) { /* 原有代码 */ }
+            // 黑屏 + 乱码特效
+            function blackout(durationMs = 1500) {
+                let blackDiv = document.querySelector('.arg-blackout');
+                if (!blackDiv) {
+                    blackDiv = document.createElement('div');
+                    blackDiv.className = 'blackout arg-blackout';
+                    document.body.appendChild(blackDiv);
+                }
+                const toast = document.querySelector('.custom-toast');
+                if (toast) toast.style.zIndex = '30001';
+                blackDiv.classList.add('active');
+                setTimeout(() => {
+                    blackDiv.classList.remove('active');
+                    const bodyElement = document.body;
+                    bodyElement.style.transition = 'all 0.1s';
+                    bodyElement.style.filter = 'blur(2px)';
+                    let counter = 0;
+                    const interval = setInterval(() => {
+                        if (counter >= 3) {
+                            clearInterval(interval);
+                            bodyElement.style.filter = '';
+                            bodyElement.style.transition = '';
+                            if (toast && toast.parentNode) toast.remove();
+                            return;
+                        }
+                        if (counter % 2 === 0) {
+                            bodyElement.style.filter = 'blur(3px) grayscale(1)';
+                            bodyElement.style.opacity = '0.95';
+                        } else {
+                            bodyElement.style.filter = '';
+                            bodyElement.style.opacity = '';
+                        }
+                        counter++;
+                    }, 150);
+                }, durationMs);
+            }
 
-            function showWarning(message, duration = 3000) { /* 原有代码 */ }
+            function showWarning(message, duration = 3000) {
+                const toast = document.createElement('div');
+                toast.className = 'custom-toast';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), duration);
+            }
 
-            // 存储逻辑（保持不变）
+            // 存储逻辑
             const STORAGE_KEY = 'arg_single_user';
-            function getStoredUser() { /* 原有代码 */ }
-            function saveUser(username, password) { /* 原有代码 */ }
-            function clearUser() { /* 原有代码 */ }
-
-            // 应用宁源主题（保持不变）
-            function applyNingyuanTheme() {
-                document.body.classList.add('ningyuan-mode');
-                const weatherDiv = document.querySelector('.weather-info');
-                if (weatherDiv) {
-                    weatherDiv.textContent = '📍 ？？？ -8层';
-                    weatherDiv.style.color = '#ff0000';
+            function getStoredUser() {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    try { return JSON.parse(raw); } catch(e) { return null; }
                 }
+                return null;
             }
-
-            // 恢复默认主题（保持不变）
-            function restoreDefaultTheme() {
-                document.body.classList.remove('ningyuan-mode');
-                const weatherDiv = document.querySelector('.weather-info');
-                if (weatherDiv) {
-                    weatherDiv.textContent = '📍 北淀市 -18℃ 雨';
-                    weatherDiv.style.color = '';
-                    weatherDiv.style.backgroundColor = '#fff3cd';
-                }
+            function saveUser(username, password) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ username, password }));
             }
-
-            // 增强红色闪烁效果（延长保持时间，确保可见）
-            function redFlash() {
-                const flashOverlay = document.createElement('div');
-                flashOverlay.style.position = 'fixed';
-                flashOverlay.style.top = '0';
-                flashOverlay.style.left = '0';
-                flashOverlay.style.width = '100%';
-                flashOverlay.style.height = '100%';
-                flashOverlay.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
-                flashOverlay.style.zIndex = '99999';
-                flashOverlay.style.pointerEvents = 'none';
-                flashOverlay.style.transition = 'opacity 0.3s';
-                flashOverlay.style.opacity = '1';
-                document.body.appendChild(flashOverlay);
-                
-                // 保持红色 0.2 秒，然后淡出 0.1 秒
-                setTimeout(() => {
-                    flashOverlay.style.opacity = '0';
-                    setTimeout(() => {
-                        flashOverlay.remove();
-                    }, 100);
-                }, 200);
+            function clearUser() {
+                localStorage.removeItem(STORAGE_KEY);
             }
+            
+// 应用宁源主题（黑白 + 天气栏修改）
+    function applyNingyuanTheme() {
+        document.body.classList.add('ningyuan-mode');
+        const weatherDiv = document.querySelector('.weather-info');
+        if (weatherDiv) {
+            weatherDiv.textContent = '📍 ？？？ -8层';
+            weatherDiv.style.color = '#ff0000';
+        }
+    }
 
-            // 更新顶部导航栏（保持不变）
-            function updateNavButtons() { /* 原有代码 */ }
-
-            // 登出函数（保持不变）
-            function logout() {
-                if (currentUser === ADMIN_USERNAME) {
-                    restoreDefaultTheme();
-                }
-                currentUser = null;
-                updateNavButtons();
-                alert('已安全登出');
-            }
-
-            // 显示大量红色"再见"（增加回调参数，用于全部特效完成后执行）
-            function showRedGoodbye(onComplete) {
-                const container = document.createElement('div');
-                container.style.position = 'fixed';
-                container.style.top = '0';
-                container.style.left = '0';
-                container.style.width = '100%';
-                container.style.height = '100%';
-                container.style.zIndex = '40000';
-                container.style.pointerEvents = 'none';
-                container.style.overflow = 'hidden';
-                document.body.appendChild(container);
-                
-                const wordCount = 200;
-                const words = [];
-                for (let i = 0; i < wordCount; i++) {
-                    const span = document.createElement('span');
-                    span.textContent = '再见';
-                    span.style.position = 'absolute';
-                    span.style.color = '#ff0000';
-                    const fontSize = Math.floor(Math.random() * 80 + 20);
-                    span.style.fontSize = fontSize + 'px';
-                    span.style.fontWeight = 'bold';
-                    span.style.fontFamily = 'monospace';
-                    span.style.whiteSpace = 'nowrap';
-                    span.style.opacity = '0';
-                    span.style.transition = 'opacity 0.05s linear';
-                    span.style.left = Math.random() * 100 + '%';
-                    span.style.top = Math.random() * 100 + '%';
-                    span.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
-                    container.appendChild(span);
-                    words.push(span);
-                }
-                
-                const delays = words.map(() => Math.random() * 800);
-                let completedCount = 0;
-                const soundInterval = 25;
-                const soundOffset = 0;
-                
-                words.forEach((word, idx) => {
-                    setTimeout(() => {
-                        word.style.opacity = '1';
-                        if ((idx - soundOffset) % soundInterval === 0) {
-                            playWarningSound();
-                        }
-                        completedCount++;
-                        if (completedCount === wordCount) {
-                            redFlash();  // 全部出现后红色闪烁
-                            // 闪烁结束后（约 0.7秒后）执行回调
-                            setTimeout(() => {
-                                if (onComplete) onComplete();
-                            }, 700);
-                        }
-                    }, delays[idx]);
-                });
-                
-                // 最后清理（1.5秒后移除所有文字）
-                setTimeout(() => {
-                    words.forEach(word => {
-                        word.style.transition = 'opacity 0.3s';
-                        word.style.opacity = '0';
+    // 恢复默认主题
+    function restoreDefaultTheme() {
+        document.body.classList.remove('ningyuan-mode');
+        const weatherDiv = document.querySelector('.weather-info');
+        if (weatherDiv) {
+            weatherDiv.textContent = '📍 北淀市 -18℃ 雨';
+            weatherDiv.style.color = '';      // 恢复默认颜色
+            weatherDiv.style.backgroundColor = '#fff3cd'; // 恢复背景（如果有覆盖）
+        }
+    }
+            
+            // 增强红色闪烁效果（全屏红色遮罩 + 强烈闪烁）
+    function redFlash() {
+        // 创建临时红色遮罩层
+        const flashOverlay = document.createElement('div');
+        flashOverlay.style.position = 'fixed';
+        flashOverlay.style.top = '0';
+        flashOverlay.style.left = '0';
+        flashOverlay.style.width = '100%';
+        flashOverlay.style.height = '100%';
+        flashOverlay.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
+        flashOverlay.style.zIndex = '99999';
+        flashOverlay.style.pointerEvents = 'none';
+        flashOverlay.style.transition = 'opacity 0.2s';
+        flashOverlay.style.opacity = '1';
+        document.body.appendChild(flashOverlay);
+        
+        // 0.2秒后淡出并移除
+        setTimeout(() => {
+            flashOverlay.style.opacity = '0';
+            setTimeout(() => {
+                flashOverlay.remove();
+            }, 100);     // 淡出用时 0.1秒
+        }, 200);      // 保持完全红色 0.1秒
+    }
+            // 更新顶部导航栏
+            function updateNavButtons() {
+                const navRight = document.querySelector('.navbar-right');
+                if (!navRight) return;
+                if (currentUser) {
+                    navRight.innerHTML = `
+                        <div class="user-menu-container" style="position: relative;">
+                            <button class="user-menu-btn" style="padding: 7px 16px; background: #0066cc; color: white; border: none; border-radius: 3px; cursor: pointer;">👤 ${currentUser}</button>
+                            <div class="user-dropdown" style="display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000; min-width: 100px;">
+                                <button class="dropdown-logout" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer;">🚪 登出</button>
+                                <button class="dropdown-delete" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer; color: #d32f2f;">🗑️ 注销账号</button>
+                            </div>
+                        </div>
+                    `;
+                    const menuBtn = navRight.querySelector('.user-menu-btn');
+                    const dropdown = navRight.querySelector('.user-dropdown');
+                    menuBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+                    };
+                    document.addEventListener('click', function closeDropdown(e) {
+                        if (!navRight.contains(e.target)) dropdown.style.display = 'none';
                     });
-                    setTimeout(() => {
-                        container.remove();
-                    }, 400);
-                }, 1500);
+                    navRight.querySelector('.dropdown-logout').onclick = () => {
+                        if (confirm('确定要登出吗？')) logout();
+                    };
+                    navRight.querySelector('.dropdown-delete').onclick = () => {
+                        if (confirm(`确定要注销账号「${currentUser}」吗？\n（只删除账号，浏览记录及更改仍保留）`)) deleteAccount();
+                    };
+                } else {
+                    navRight.innerHTML = `<button class="login-btn">登陆</button><button class="register-btn">注册</button>`;
+                    const loginBtn = navRight.querySelector('.login-btn');
+                    const registerBtn = navRight.querySelector('.register-btn');
+                    if (loginBtn) loginBtn.onclick = () => window.handleLogin();
+                    if (registerBtn) registerBtn.onclick = () => window.handleRegister();
+                }
             }
 
-            // 注销账号（修改宁源分支：在红色闪烁结束后恢复主题）
+            function logout() {
+        // 如果当前登录的是宁源，先恢复主题
+        if (currentUser === ADMIN_USERNAME) {
+            restoreDefaultTheme();
+        }
+        currentUser = null;
+        updateNavButtons();
+        alert('已安全登出');
+    }
+
+// 显示大量红色"再见"占满屏幕，每隔几个字播放一次警告音，全部出现后红色闪烁    
+function showRedGoodbye() {        
+    const container = document.createElement('div');        
+    container.style.position = 'fixed';        
+    container.style.top = '0';        
+    container.style.left = '0';        
+    container.style.width = '100%';        
+    container.style.height = '100%';        
+    container.style.zIndex = '40000';        
+    container.style.pointerEvents = 'none';        
+    container.style.overflow = 'hidden';        
+    document.body.appendChild(container);                
+    const wordCount = 200;    // 字符数量        
+    const words = [];        
+    for (let i = 0; i < wordCount; i++) {            
+        const span = document.createElement('span');            
+        span.textContent = '再见';            
+        span.style.position = 'absolute';            
+        span.style.color = '#ff0000';            
+        // 字号随机 20px ~ 100px            
+        const fontSize = Math.floor(Math.random() * 80 + 20);            
+        span.style.fontSize = fontSize + 'px';            
+        span.style.fontWeight = 'bold';            
+        span.style.fontFamily = 'monospace';            
+        span.style.whiteSpace = 'nowrap';            
+        span.style.opacity = '0';            
+        span.style.transition = 'opacity 0.05s linear';            
+        span.style.left = Math.random() * 100 + '%';            
+        span.style.top = Math.random() * 100 + '%';            
+        span.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;            
+        container.appendChild(span);            
+        words.push(span);        
+    }                
+    // 随机延迟数组        
+    const delays = words.map(() => Math.random() * 800);        
+    let completedCount = 0;  
+    
+    // 设置播放频率：每隔多少个字播放一次（例如每20个字播放一次）
+    const soundInterval = 25;  // 可修改为 2,4,5 等，数字越大频率越低
+    // 可选：从第几个字开始播放（偏移量），默认0
+    const soundOffset = 0;
+    
+    words.forEach((word, idx) => {            
+        setTimeout(() => {                
+            word.style.opacity = '1';                
+            // 只有索引满足条件时播放警告音（每隔 soundInterval 个播放一次）
+            if ((idx - soundOffset) % soundInterval === 0) {
+                playWarningSound();                
+            }
+            completedCount++;                
+            if (completedCount === wordCount) {                    
+                redFlash();          // 全部出现后红色闪烁                
+            }            
+        }, delays[idx]);        
+    });                
+    // 最后清理（保留文字1.2秒后淡出移除）        
+    setTimeout(() => {            
+        words.forEach(word => {                
+            word.style.transition = 'opacity 0.3s';
+            word.style.opacity = '0';
+        });
+        setTimeout(() => {
+            container.remove();
+        }, 400);
+    }, 1200);
+}
+            
             function deleteAccount() {
                 const isAdmin = (currentUser === ADMIN_USERNAME);
                 if (isAdmin) {
                     playWarningSound();
-                    showWarning('没关系，下次再见~', 1800);
-                    // 延迟 2.8 秒后开始出现“再见”特效
-                    setTimeout(() => {
-                        showRedGoodbye(() => {
-                            // 所有特效（包括红色闪烁）完成后，再恢复主题和清空状态
-                            restoreDefaultTheme();
-                            currentUser = null;
-                            updateNavButtons();
-                        });
-                    }, 2800);
-                    return;
-                }
-                // 普通用户注销
+            showWarning('没关系，下次再见~', 1800);   // 原有的红色警告框
+                    // 例如延迟 2.8 秒后再开始出现“再见”
+    setTimeout(() => {
+            showRedGoodbye();                        // 新增：大量红色“再见”特效
+         }, 2800);   // 这里的数字为延时毫秒数（2800 = 2.8秒）
+            restoreDefaultTheme();   // 注销前恢复主题（因为即将清空 currentUser）
+            currentUser = null;
+            updateNavButtons();
+            return;
+        }
                 const stored = getStoredUser();
                 if (stored && stored.username === currentUser) {
                     clearUser();
@@ -317,17 +980,95 @@ body::after {
                 updateNavButtons();
             }
 
-            // 忘记密码（保持不变）
-            function forgotPassword() { /* 原有代码 */ }
+            function forgotPassword() {
+                const user = getStoredUser();
+                if (!user) {
+                    alert('❌ 尚无注册账号，请先注册。');
+                    return;
+                }
+                const code = prompt('🔐 密码找回验证\n请输入内推码：');
+                if (code === null) return;
+                if (code === 'womenjiehunba') {
+                    alert(`当前账号「${user.username}」的密码是：${user.password}\n请妥善保管。`);
+                } else {
+                    alert('❌ 内推码错误，无法获取密码。');
+                }
+            }
 
-            // 模态框管理（保持不变）
             let currentModal = null;
-            function closeModal() { /* 原有代码 */ }
+            function closeModal() {
+                if (currentModal) {
+                    currentModal.classList.remove('active');
+                    setTimeout(() => {
+                        if (currentModal && currentModal.parentNode) currentModal.remove();
+                        currentModal = null;
+                    }, 200);
+                }
+            }
 
-            // 注册模态框（保持不变）
-            function showRegisterModal() { /* 原有代码 */ }
+            function showRegisterModal() {
+                closeModal();
+                const overlay = document.createElement('div');
+                overlay.className = 'arg-overlay';
+                overlay.innerHTML = `
+                    <div class="arg-modal">
+                        <span class="arg-close">&times;</span>
+                        <h3>📝 注册</h3>
+                        <div class="arg-group"><label>用户名</label><input type="text" id="reg_user" placeholder="请输入用户名"></div>
+                        <div class="arg-group"><label>密码</label><input type="password" id="reg_pwd" placeholder="设置密码"></div>
+                        <div class="arg-group"><label>确认密码</label><input type="password" id="reg_confirm" placeholder="再次输入密码"></div>
+                        <div class="arg-group"><label>内推码</label><input type="text" id="reg_invite" placeholder="请输入内推码"></div>
+                        <div class="arg-buttons"><button class="arg-btn-primary" id="reg_submit">注册</button><button class="arg-btn-secondary" id="reg_cancel">取消</button></div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                currentModal = overlay;
 
-            // 登录模态框（修复普通用户登录验证）
+                overlay.querySelector('.arg-close').onclick = closeModal;
+                overlay.querySelector('#reg_cancel').onclick = closeModal;
+                overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
+
+                const submitBtn = overlay.querySelector('#reg_submit');
+                submitBtn.onclick = () => {
+                    try {
+                        const username = overlay.querySelector('#reg_user').value.trim();
+                        const password = overlay.querySelector('#reg_pwd').value;
+                        const confirm = overlay.querySelector('#reg_confirm').value;
+                        const invite = overlay.querySelector('#reg_invite').value.trim();
+
+                        if (!username) { alert('❌ 用户名不能为空'); return; }
+                        if (!password) { alert('❌ 密码不能为空'); return; }
+                        if (!confirm) { alert('❌ 请确认密码'); return; }
+                        if (!invite) { alert('❌ 内推码不能为空'); return; }
+                        if (username === '宁源') {
+                            playWarningSound();
+                            showWarning('⚠️ 该用户名已被占用 ⚠️', 1800);
+                            blackout(2000);
+                            overlay.querySelector('#reg_user').value = '';
+                            overlay.querySelector('#reg_pwd').value = '';
+                            overlay.querySelector('#reg_confirm').value = '';
+                            overlay.querySelector('#reg_invite').value = '';
+                            return;
+                        }
+                        if (password !== confirm) { alert('⚠️ 两次输入的密码不一致'); return; }
+                        if (invite !== 'womenjiehunba') { alert('❌ 内推码错误'); return; }
+
+                        const existing = getStoredUser();
+                        if (existing) {
+                            if (!window.confirm(`⚠️ 已有账号「${existing.username}」。\n注册新账号将清除旧数据，是否继续？`)) return;
+                            clearUser();
+                        }
+                        saveUser(username, password);
+                        alert(`✨ 注册成功！\n欢迎「${username}」，请登录。`);
+                        closeModal();
+                    } catch (err) {
+                        alert('注册出错：' + err.message);
+                        console.error(err);
+                    }
+                };
+                overlay.classList.add('active');
+            }
+
             function showLoginModal() {
                 closeModal();
                 const overlay = document.createElement('div');
@@ -359,20 +1100,12 @@ body::after {
                         return;
                     }
                     let loginSuccess = false;
-                    // 宁源特殊登录
                     if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                        loginSuccess = true;
-                        currentUser = ADMIN_USERNAME;
-                        redFlash();
-                        applyNingyuanTheme();
-                    } else {
-                        // 普通用户验证（修复缺失的代码）
-                        const stored = getStoredUser();
-                        if (stored && stored.username === username && stored.password === password) {
-                            loginSuccess = true;
-                            currentUser = username;
-                        }
-                    }
+                loginSuccess = true;
+                currentUser = ADMIN_USERNAME;
+                redFlash();
+                applyNingyuanTheme();    // 新增：应用黑白主题
+            }
                     if (loginSuccess) {
                         alert(`✅ 登陆成功！欢迎回来，${username}`);
                         closeModal();
@@ -394,13 +1127,13 @@ body::after {
             });
         })();
 
-        // 显示登录提示（保持不变）
+        // 显示登录提示（保持原有）
         function showLoginPrompt(event) {
             event.preventDefault();
             alert('🔒 请登录后查看');
         }
 
-        // 搜索功能处理（保持不变）
+        // 搜索功能处理
         document.querySelector('.search-btn').addEventListener('click', function() {
             const searchType = document.getElementById('searchType').value;
             const searchText = document.querySelector('.search-input').value;
