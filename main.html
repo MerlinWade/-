@@ -819,7 +819,7 @@ function blackout(durationMs = 1500) {
         }, 200);
     }
 
-    // 更新顶部导航栏按钮（根据登录状态）
+  // 更新顶部导航栏按钮（根据登录状态）
     function updateNavButtons() {
         const navRight = document.querySelector('.navbar-right');
         if (!navRight) return;
@@ -858,12 +858,16 @@ function blackout(durationMs = 1500) {
                 }
             };
         } else {
-            // 未登录：显示原始登录注册按钮
+            // 未登录：显示原始登录注册按钮，并重新绑定 onclick 事件
             navRight.innerHTML = `
-                <button class="login-btn" onclick="handleLogin()">登陆</button>
-                <button class="register-btn" onclick="handleRegister()">注册</button>
+                <button class="login-btn">登陆</button>
+                <button class="register-btn">注册</button>
             `;
-            // 重新绑定样式（可选，原有样式已存在）
+            // 重新获取按钮并绑定全局函数
+            const loginBtn = navRight.querySelector('.login-btn');
+            const registerBtn = navRight.querySelector('.register-btn');
+            if (loginBtn) loginBtn.onclick = () => window.handleLogin();
+            if (registerBtn) registerBtn.onclick = () => window.handleRegister();
         }
     }
 
