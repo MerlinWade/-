@@ -787,13 +787,13 @@
         flashOverlay.style.opacity = '1';
         document.body.appendChild(flashOverlay);
         
-        // 0.1秒后淡出并移除
+        // 0.2秒后淡出并移除
         setTimeout(() => {
             flashOverlay.style.opacity = '0';
             setTimeout(() => {
                 flashOverlay.remove();
             }, 100);     // 淡出用时 0.1秒
-        }, 100);      // 保持完全红色 0.1秒
+        }, 200);      // 保持完全红色 0.1秒
     }
             // 更新顶部导航栏
             function updateNavButtons() {
@@ -877,7 +877,7 @@ function showRedGoodbye() {
     let completedCount = 0;  
     
     // 设置播放频率：每隔多少个字播放一次（例如每20个字播放一次）
-    const soundInterval = 20;  // 可修改为 2,4,5 等，数字越大频率越低
+    const soundInterval = 25;  // 可修改为 2,4,5 等，数字越大频率越低
     // 可选：从第几个字开始播放（偏移量），默认0
     const soundOffset = 0;
     
