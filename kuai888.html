@@ -590,7 +590,7 @@ body.ningyuan-mode::after {
 }
 .card-img {
     width: 100%;
-    height: 85%;
+    height: 75%;
     object-fit: cover;
     display: block;
 }
@@ -690,11 +690,11 @@ body.ningyuan-mode::after {
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     background-size: cover;
-    height: auto;
-    margin-bottom: 20px;
     background-position: center;
+    min-height: 260px;        /* 保证卡片有足够高度，与背景图片比例协调 */
+    height: auto;
     transition: transform 0.2s;
-    text-decoration: none;   /* 去除下划线 */
+    text-decoration: none;
     cursor: pointer;
 }
 .pair-card:hover {
