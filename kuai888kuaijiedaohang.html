@@ -566,6 +566,84 @@ body.ningyuan-mode::after {
         font-size: 24px;
     }
 }
+        /* 外推图片区域：左右弹性布局 */
+.external-push-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 20px auto 25px auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.external-push-item {
+    flex: 1;
+    min-width: 200px;  /* 防止过窄 */
+}
+
+/* 大图样式（调整高度与右侧卡片匹配） */
+.external-push-img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: cover;  /* 确保图片覆盖区域不变形 */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+.external-push-img:hover {
+    transform: scale(1.01);
+}
+
+/* 右侧图文卡片样式 */
+.card-image {
+    width: 100%;
+    height: auto;
+}
+.card-img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+}
+.card-img:hover {
+    transform: scale(1.01);
+}
+.card-text {
+    text-align: center;
+    margin-top: 12px;
+}
+.card-link {
+    display: inline-block;
+    background: #0066cc;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+.card-link:hover {
+    background: #ff5500;
+}
+
+/* 响应式：小屏幕时堆叠 */
+@media (max-width: 768px) {
+    .external-push-wrapper {
+        flex-direction: column;
+        gap: 25px;
+    }
+    .external-push-img, .card-img {
+        max-height: none;  /* 小屏不限高度，按比例显示 */
+        object-fit: contain;
+    }
+}
         
     </style>
     
@@ -621,9 +699,22 @@ body.ningyuan-mode::after {
         </div>
     </div>
     
-<!-- 外推图片区域 -->
-<div class="external-push-section">
-    <img id="external-push-img" src="images/外推1.jpg" alt="外推音乐推荐" class="external-push-img">
+<!-- 外推图片区域：左右并排（大屏），上下堆叠（小屏） -->
+<div class="external-push-wrapper">
+    <!-- 左侧大图 -->
+    <div class="external-push-item">
+        <img id="external-push-img" src="images/外推1.jpg" alt="外推音乐推荐" class="external-push-img">
+    </div>
+    
+    <!-- 右侧图文卡片 -->
+    <div class="external-push-item">
+        <div class="card-image">
+            <img src="images/警惕诈骗.jpg" alt="警惕诈骗" class="card-img">
+        </div>
+        <div class="card-text">
+            <a href="#" class="card-link" onclick="alert('⚠️ 这是一则防诈骗提醒，后续将链接到相关页面。'); return false;">警惕诈骗</a>
+        </div>
+    </div>
 </div>
     
     <!-- 虚拟页脚区域 -->
@@ -933,7 +1024,7 @@ body.ningyuan-mode::after {
 // 应用宁源主题（灰色背景 + 挽联 + 主要内容灰度 + 浮动元素灰度）
 function applyNingyuanTheme() {
     document.body.classList.add('ningyuan-mode');
-    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer, .external-push-section');
+    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer, .external-push-wrapper');
     grayscaleTargets.forEach(el => el.classList.add('ningyuan-grayscale'));
     
     // 添加对浮动元素的灰度（如果它们已存在）
@@ -948,12 +1039,30 @@ function applyNingyuanTheme() {
         weatherDiv.style.color = '';
         weatherDiv.style.backgroundColor = '';
     }
+    
+    // 替换右侧卡片内容为宁源专属
+    const cardImg = document.querySelector('.card-img');
+    const cardLink = document.querySelector('.card-link');
+    if (cardImg && cardLink) {
+        // 保存原始内容到元素属性中，以便恢复
+        if (!cardImg.hasAttribute('data-original-src')) {
+            cardImg.setAttribute('data-original-src', cardImg.src);
+            cardLink.setAttribute('data-original-href', cardLink.href);
+            cardLink.setAttribute('data-original-text', cardLink.innerText);
+        }
+        // 替换为宁源内容（请根据实际文件路径修改）
+        cardImg.src = 'images/20180417.jpg';
+        cardLink.onclick = function(e) {
+            e.preventDefault();
+            alert('进入宁源专属页面（演示）');
+        };
+    }
 }
 
 // 恢复默认主题
 function restoreDefaultTheme() {
     document.body.classList.remove('ningyuan-mode');
-    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer, .external-push-section');
+    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer, .external-push-wrapper');
     grayscaleTargets.forEach(el => el.classList.remove('ningyuan-grayscale'));
     
     // 移除浮动元素的灰度
@@ -967,6 +1076,17 @@ function restoreDefaultTheme() {
         weatherDiv.textContent = '📍 北淀市 -18℃ 雨';
         weatherDiv.style.color = '';
         weatherDiv.style.backgroundColor = '';
+    }
+        // 恢复右侧卡片原始内容
+    const cardImg = document.querySelector('.card-img');
+    const cardLink = document.querySelector('.card-link');
+    if (cardImg && cardLink) {
+        const originalSrc = cardImg.getAttribute('data-original-src');
+        const originalHref = cardLink.getAttribute('data-original-href');
+        const originalText = cardLink.getAttribute('data-original-text');
+        if (originalSrc) cardImg.src = originalSrc;
+        if (originalHref) cardLink.href = originalHref;
+        if (originalText) cardLink.innerText = originalText;
     }
 }
             
