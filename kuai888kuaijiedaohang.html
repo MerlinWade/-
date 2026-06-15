@@ -884,43 +884,88 @@ function restoreDefaultTheme() {
             }, 200);     // 淡出用时 0.2秒
         }, 200);      // 保持完全红色 0.2秒
     }
-            // 更新顶部导航栏
-            function updateNavButtons() {
-                const navRight = document.querySelector('.navbar-right');
-                if (!navRight) return;
-                if (currentUser) {
-                    navRight.innerHTML = `
-                        <div class="user-menu-container" style="position: relative;">
-                            <button class="user-menu-btn" style="padding: 7px 16px; background: #0066cc; color: white; border: none; border-radius: 3px; cursor: pointer;">👤 ${currentUser}</button>
-                            <div class="user-dropdown" style="display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 15000; min-width: 100px;">
-                                <button class="dropdown-logout" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer;">🚪 登出</button>
-                                <button class="dropdown-delete" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer; color: #d32f2f;">🗑️ 注销账号</button>
-                            </div>
-                        </div>
-                    `;
-                    const menuBtn = navRight.querySelector('.user-menu-btn');
-                    const dropdown = navRight.querySelector('.user-dropdown');
-                    menuBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-                    };
-                    document.addEventListener('click', function closeDropdown(e) {
-                        if (!navRight.contains(e.target)) dropdown.style.display = 'none';
-                    });
-                    navRight.querySelector('.dropdown-logout').onclick = () => {
-                        if (confirm('确定要登出吗？')) logout();
-                    };
-                    navRight.querySelector('.dropdown-delete').onclick = () => {
-                        if (confirm(`确定要注销账号「${currentUser}」吗？\n（只删除账号，浏览记录及更改仍保留）`)) deleteAccount();
-                    };
-                } else {
-                    navRight.innerHTML = `<button class="login-btn">登陆</button><button class="register-btn">注册</button>`;
-                    const loginBtn = navRight.querySelector('.login-btn');
-                    const registerBtn = navRight.querySelector('.register-btn');
-                    if (loginBtn) loginBtn.onclick = () => window.handleLogin();
-                    if (registerBtn) registerBtn.onclick = () => window.handleRegister();
-                }
+// 在 updateNavButtons 中，当 currentUser 存在时，不再在 navRight 内部构造下拉菜单，
+// 而是创建一个独立的浮层，并动态定位。
+
+function updateNavButtons() {
+    const navRight = document.querySelector('.navbar-right');
+    if (!navRight) return;
+    if (currentUser) {
+        // 创建按钮
+        navRight.innerHTML = `<button class="user-menu-btn" style="padding: 7px 16px; background: #0066cc; color: white; border: none; border-radius: 3px; cursor: pointer;">👤 ${currentUser}</button>`;
+        const menuBtn = navRight.querySelector('.user-menu-btn');
+        
+        // 移除已有的浮层（避免重复）
+        const existingDropdown = document.getElementById('global-user-dropdown');
+        if (existingDropdown) existingDropdown.remove();
+        
+        // 创建浮层并添加到 body
+        const dropdown = document.createElement('div');
+        dropdown.id = 'global-user-dropdown';
+        dropdown.style.position = 'fixed';
+        dropdown.style.backgroundColor = 'white';
+        dropdown.style.border = '1px solid #ccc';
+        dropdown.style.borderRadius = '4px';
+        dropdown.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+        dropdown.style.zIndex = '15000';
+        dropdown.style.minWidth = '100px';
+        dropdown.style.display = 'none';
+        dropdown.innerHTML = `
+            <button class="dropdown-logout" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer;">🚪 登出</button>
+            <button class="dropdown-delete" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer; color: #d32f2f;">🗑️ 注销账号</button>
+        `;
+        document.body.appendChild(dropdown);
+        
+        // 定位函数
+        function positionDropdown() {
+            const rect = menuBtn.getBoundingClientRect();
+            dropdown.style.left = rect.right - dropdown.offsetWidth + 'px';
+            dropdown.style.top = rect.bottom + window.scrollY + 'px';
+        }
+        
+        menuBtn.onclick = (e) => {
+            e.stopPropagation();
+            const isVisible = dropdown.style.display === 'block';
+            if (!isVisible) {
+                positionDropdown();
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.style.display = 'none';
             }
+        };
+        
+        // 点击其他地方关闭
+        const closeHandler = (e) => {
+            if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        };
+        document.addEventListener('click', closeHandler);
+        
+        // 滚动或窗口改变时重新定位
+        window.addEventListener('scroll', positionDropdown);
+        window.addEventListener('resize', positionDropdown);
+        
+        // 绑定按钮事件
+        dropdown.querySelector('.dropdown-logout').onclick = () => {
+            if (confirm('确定要登出吗？')) logout();
+            dropdown.style.display = 'none';
+        };
+        dropdown.querySelector('.dropdown-delete').onclick = () => {
+            if (confirm(`确定要注销账号「${currentUser}」吗？\n（只删除账号，浏览记录及更改仍保留）`)) deleteAccount();
+            dropdown.style.display = 'none';
+        };
+    } else {
+        // 未登录时清除浮层并恢复按钮
+        const existingDropdown = document.getElementById('global-user-dropdown');
+        if (existingDropdown) existingDropdown.remove();
+        navRight.innerHTML = `<button class="login-btn">登陆</button><button class="register-btn">注册</button>`;
+        const loginBtn = navRight.querySelector('.login-btn');
+        const registerBtn = navRight.querySelector('.register-btn');
+        if (loginBtn) loginBtn.onclick = () => window.handleLogin();
+        if (registerBtn) registerBtn.onclick = () => window.handleRegister();
+    }
+}
 
             function logout() {
         // 如果当前登录的是宁源，先恢复主题
