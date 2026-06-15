@@ -708,14 +708,34 @@ body.ningyuan-mode::after {
     text-align: center;
     color: white;
 }
-/* 响应式：小屏幕堆叠时，卡片高度自适应 */
+/* 两列等高布局 */
+.external-push-wrapper.two-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: stretch;  /* 使两列等高 */
+}
+.two-columns .left-column {
+    flex: 2;               /* 左列宽度占比 2/3 */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.two-columns .right-column {
+    flex: 1;               /* 右列宽度占比 1/3 */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 响应式：小屏幕恢复垂直排列 */
 @media (max-width: 768px) {
-    .external-push-wrapper {
+    .external-push-wrapper.two-columns {
         flex-direction: column;
     }
-    .external-push-img, .card-img {
-        max-height: none;
-        object-fit: contain;
+    .two-columns .left-column,
+    .two-columns .right-column {
+        flex: auto;
     }
 }
   
@@ -773,25 +793,10 @@ body.ningyuan-mode::after {
         </div>
     </div>
     
-<!-- 外推图片区域：左右并排（大屏），上下堆叠（小屏） -->
-<div class="external-push-wrapper">
-    <!-- 左侧：外推大图（不变） -->
-    <div class="external-push-item">
-        <img id="external-push-img" src="images/外推1.jpg" alt="外推音乐推荐" class="external-push-img">
-    </div>
-
-    <!-- 中间：配对卡片（原图片3） -->
-    <div class="external-push-item">
-        <a href="#" class="pair-card" id="pair-card" style="background-image: url('images/配对.jpg'); background-size: cover; background-position: center; text-decoration: none;">
-            <div class="pair-card-content">
-                <h3 class="pair-title">姓名配对缘分测试</h3>
-                <p class="pair-desc">输入双方姓名，测测你们之间的缘分吧</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- 右侧：防诈骗卡片（上） + 问答卡片（下） -->
-    <div class="external-push-item column-third">
+<!-- 外推图片区域：两列等高布局 -->
+<div class="external-push-wrapper two-columns">
+    <!-- 左列（较宽）：防诈骗卡片 + 问答卡片 -->
+    <div class="external-push-item left-column">
         <!-- 防诈骗卡片（原图片2） -->
         <a href="#" class="card-link-wrapper" id="card-link-wrapper">
             <div class="card-image">
@@ -813,8 +818,19 @@ body.ningyuan-mode::after {
             <div class="quiz-feedback"></div>
         </div>
     </div>
-</div>
-    
+
+    <!-- 右列（较窄）：外推图片 + 配对卡片 -->
+    <div class="external-push-item right-column">
+        <!-- 外推图片 -->
+        <img id="external-push-img" src="images/外推1.jpg" alt="外推音乐推荐" class="external-push-img">
+        <!-- 配对卡片 -->
+        <a href="#" class="pair-card" id="pair-card" style="background-image: url('images/配对.jpg'); background-size: cover; background-position: center; text-decoration: none;">
+            <div class="pair-card-content">
+                <h3 class="pair-title">姓名配对缘分测试</h3>
+                <p class="pair-desc">输入双方姓名，测测你们之间的缘分吧</p>
+            </div>
+        </a>
+    </div>
 </div>
     
     <!-- 虚拟页脚区域 -->
