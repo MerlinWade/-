@@ -609,10 +609,13 @@ body.ningyuan-mode::after {
     backdrop-filter: blur(4px); /* 可选毛玻璃效果 */
 }
 .card-title {
-    display: inline-block;
-    background: rgba(0,0,0,0.5);
-    padding: 4px 12px;
-    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.card-desc {
+    font-size: 0.85rem;
+    opacity: 0.9;
 }
 
 /* 响应式：小屏幕堆叠时，卡片高度自适应 */
@@ -694,8 +697,9 @@ body.ningyuan-mode::after {
                 <img id="card-img" src="images/警惕诈骗.jpg" alt="警惕诈骗" class="card-img">
             </div>
             <div class="card-text-overlay">
-                <span class="card-title">近期网络诈骗频发，请留意上当受骗\n记者了解到……</span>
-            </div>
+    <div class="card-title">近期网络诈骗频发，请留意上当受骗</div>
+    <div class="card-desc">记者了解到，诈骗手段层出不穷，请提高警惕。</div>
+</div>
         </a>
     </div>
 </div>
@@ -1010,7 +1014,6 @@ function applyNingyuanTheme() {
     const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer, .external-push-wrapper');
     grayscaleTargets.forEach(el => el.classList.add('ningyuan-grayscale'));
     
-    // 添加对浮动元素的灰度（如果它们已存在）
     const dropdown = document.getElementById('global-user-dropdown');
     if (dropdown) dropdown.classList.add('ningyuan-grayscale');
     const previewOverlay = document.querySelector('.img-preview-overlay');
@@ -1023,35 +1026,45 @@ function applyNingyuanTheme() {
         weatherDiv.style.backgroundColor = '';
     }
     
-        // 替换右侧卡片内容为宁源专属（整卡链接）
+    // 替换右侧卡片内容为宁源专属
     const cardLink = document.getElementById('card-link-wrapper');
     const cardImg = document.getElementById('card-img');
-    if (cardLink && cardImg) {
+    const cardTextOverlay = document.querySelector('.card-text-overlay');
+    if (cardLink && cardImg && cardTextOverlay) {
         // 保存原始内容
         if (!cardLink.hasAttribute('data-original-href')) {
             cardLink.setAttribute('data-original-href', cardLink.href);
             cardImg.setAttribute('data-original-src', cardImg.src);
-            cardLink.setAttribute('data-original-title', document.querySelector('.card-title').innerText);
+            // 保存原始标题和正文
+            const originalTitle = document.querySelector('.card-title')?.innerText || '';
+            const originalDesc = document.querySelector('.card-desc')?.innerText || '';
+            cardLink.setAttribute('data-original-title', originalTitle);
+            cardLink.setAttribute('data-original-desc', originalDesc);
         }
         // 替换为宁源内容
         cardImg.src = 'images/20180417.jpg';
-        <div class="card-text-overlay">                
-<span class="card-title">逝者已去\n记者了解到……</span>            
-</div>
+        // 修改卡片内的文字结构（标题+正文）
+        cardTextOverlay.innerHTML = `
+            <div class="card-title">逝者已去</div>
+            <div class="card-desc">记者了解到，这背后隐藏着另一个秘密……</div>
+        `;
+        // 修改链接行为（点击时提示并跳转）
+        cardLink.href = 'special.html';   // 替换为实际链接
         cardLink.onclick = function(e) {
+            // 可选：弹出提示
             // alert('进入宁源专属页面');
-            // return true; // 允许跳转
+            // 允许跳转（注释掉 alert 即可正常跳转）
+            return true;
         };
     }
 }
-
+            
 // 恢复默认主题
 function restoreDefaultTheme() {
     document.body.classList.remove('ningyuan-mode');
     const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer, .external-push-wrapper');
     grayscaleTargets.forEach(el => el.classList.remove('ningyuan-grayscale'));
     
-    // 移除浮动元素的灰度
     const dropdown = document.getElementById('global-user-dropdown');
     if (dropdown) dropdown.classList.remove('ningyuan-grayscale');
     const previewOverlay = document.querySelector('.img-preview-overlay');
@@ -1063,21 +1076,29 @@ function restoreDefaultTheme() {
         weatherDiv.style.color = '';
         weatherDiv.style.backgroundColor = '';
     }
-        // 单独存放的恢复右侧卡片原始内容函数
-    function restoreCardContent() {
+}
+            
+            // 恢复右侧卡片原始内容（仅卡片，不影响其他主题）
+function restoreCardContent() {
     const cardLink = document.getElementById('card-link-wrapper');
     const cardImg = document.getElementById('card-img');
-    if (cardLink && cardImg) {
+    const cardTextOverlay = document.querySelector('.card-text-overlay');
+    if (cardLink && cardImg && cardTextOverlay) {
         const originalHref = cardLink.getAttribute('data-original-href');
         const originalSrc = cardImg.getAttribute('data-original-src');
         const originalTitle = cardLink.getAttribute('data-original-title');
+        const originalDesc = cardLink.getAttribute('data-original-desc');
         if (originalHref) cardLink.href = originalHref;
         if (originalSrc) cardImg.src = originalSrc;
-        const titleSpan = cardLink.querySelector('.card-title');
-        if (titleSpan && originalTitle) titleSpan.innerText = originalTitle;
-        cardLink.onclick = null;
+        // 恢复原始文字结构（标题+正文）
+        if (originalTitle && originalDesc) {
+            cardTextOverlay.innerHTML = `
+                <div class="card-title">${originalTitle}</div>
+                <div class="card-desc">${originalDesc}</div>
+            `;
+        } else {
+        cardLink.onclick = null; // 恢复默认点击行为（由 HTML 原有 a 标签决定）
     }
-}
 }
             
             // 增强红色闪烁效果（全屏红色遮罩 + 强烈闪烁）
