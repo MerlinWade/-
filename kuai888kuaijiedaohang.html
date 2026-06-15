@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+
+    /* 图片预加载 */
+    <link rel="preload" as="image" href="images/外推1.jpg">
+    <link rel="preload" as="image" href="images/外推2.jpg">
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>快888快捷导航</title>
@@ -480,9 +485,11 @@
         
         /* 外推图片区域样式 */
 .external-push-section {
-    margin: 20px 0;
-    text-align: left;  /* 左对齐 */
-    cursor: pointer;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 15px;   /* 可选，与 .container 的内边距保持一致 */
+    box-sizing: border-box;
 }
 .external-push-img {
     max-width: 100%;
@@ -1400,7 +1407,7 @@ previewOverlay.innerHTML = `
     previewImg.src = 'images/外推2.jpg';   // 直接指定放大图片的路径
     previewOverlay.classList.add('active');
 }
-    unction hideImagePreview() {
+    function hideImagePreview() {
     previewOverlay.classList.remove('active');
     // 不要清空 src，保持图片缓存
 }
