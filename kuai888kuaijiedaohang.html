@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-
-    /* 图片预加载 */
-    <link rel="preload" as="image" href="images/外推1.jpg">
+    
+    <link rel="preload" as="image" href="images/外推1.jpg">    /* 图片预加载 */
     <link rel="preload" as="image" href="images/外推2.jpg">
     
     <meta charset="UTF-8">
@@ -15,23 +14,25 @@
             background: #333333;
         }
         body.ningyuan-mode::before,
-        body.ningyuan-mode::after {
-            content: "";
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            font-family: "楷体", "华文楷书", "KaiTi", serif;
-            font-size: 24px;
-            color: white;
-            background: transparent;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            white-space: nowrap;
-            z-index: 5000;
-            pointer-events: none;
-            letter-spacing: 8px;
-            text-shadow: 0 0 6px rgba(0,0,0,0.5);
-        }
+body.ningyuan-mode::after {
+    content: "";
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: "楷体", "华文楷书", "KaiTi", serif;
+    font-size: 24px;
+    color: white;
+    background: transparent;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    white-space: nowrap;
+    z-index: 5000;
+    pointer-events: none;
+    letter-spacing: 8px;
+    /* 增强清晰度：深色描边 + 多层阴影 */
+    -webkit-text-stroke: 1px rgba(0,0,0,0.6);
+    text-shadow: 0 0 8px black, 0 0 4px black;
+}
         body.ningyuan-mode::before {
             right: 10px;
             content: "死生有命";
@@ -486,9 +487,9 @@
         /* 外推图片区域样式 */
 .external-push-section {
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 20px auto 25px auto;  /* 上边距20px，下边距25px，与板块间距一致 */
     width: 100%;
-    padding: 0 15px;   /* 可选，与 .container 的内边距保持一致 */
+    padding: 0px;   /* 可选，与 .container 的内边距保持一致 */
     box-sizing: border-box;
 }
 .external-push-img {
