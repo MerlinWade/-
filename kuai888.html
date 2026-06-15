@@ -1286,7 +1286,7 @@ function restoreCardContent() {
             setTimeout(() => {
                 flashOverlay.remove();
             }, 200);     // 淡出用时 0.2秒
-        }, 200);      // 保持完全红色 0.2秒
+        }, 300);      // 保持完全红色 0.3秒
     }
 function updateNavButtons() {
     const navRight = document.querySelector('.navbar-right');
@@ -1417,6 +1417,7 @@ function updateNavButtons() {
         // 如果当前登录的是宁源，先恢复主题
         if (currentUser === ADMIN_USERNAME) {
             restoreDefaultTheme();
+            restoreCardContent();
         }
         currentUser = null;
         updateNavButtons();
