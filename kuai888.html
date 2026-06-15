@@ -44,12 +44,17 @@ body.ningyuan-mode::after {
             content: "富贵在天";
         }
         @media (max-width: 768px) {
-            body.ningyuan-mode::before,
-            body.ningyuan-mode::after {
-                font-size: 16px;
-                letter-spacing: 4px;
-            }
-        }
+    .external-push-wrapper.two-columns {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    /* 重置内部卡片的下边距，避免与父级 gap 叠加 */
+    .two-columns .left-column .quiz-card,
+    .two-columns .right-column .pair-card {
+        margin-bottom: 0;
+    }
+}
 
         /* 需要变灰的主要内容区域（不包含固定浮动层） */
         .ningyuan-grayscale {
@@ -623,7 +628,6 @@ body.ningyuan-mode::after {
     backdrop-filter: blur(8px);
     border-radius: 12px;
     padding: 16px 12px;
-    margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     transition: transform 0.2s;
 }
