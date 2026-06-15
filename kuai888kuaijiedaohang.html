@@ -5,6 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>快888快捷导航</title>
     <style>
+              /* 宁源模式下的背景和挽联（不变） */
+        body.ningyuan-mode {
+            background: #333333;
+        }
+        body.ningyuan-mode::before,
+        body.ningyuan-mode::after {
+            content: "";
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: "楷体", "华文楷书", "KaiTi", serif;
+            font-size: 24px;
+            color: white;
+            background: transparent;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            white-space: nowrap;
+            z-index: 5000;
+            pointer-events: none;
+            letter-spacing: 8px;
+            text-shadow: 0 0 6px rgba(0,0,0,0.5);
+        }
+        body.ningyuan-mode::before {
+            right: 10px;
+            content: "死生有命";
+        }
+        body.ningyuan-mode::after {
+            left: 10px;
+            content: "富贵在天";
+        }
+        @media (max-width: 768px) {
+            body.ningyuan-mode::before,
+            body.ningyuan-mode::after {
+                font-size: 16px;
+                letter-spacing: 4px;
+            }
+        }
+
+        /* 需要变灰的主要内容区域（不包含固定浮动层） */
+        .ningyuan-grayscale {
+            filter: grayscale(1);
+        }
+        /* 天气栏在宁源模式下强制红色（不受灰度影响） */
+        body.ningyuan-mode .weather-info {
+            filter: grayscale(0);
+            color: #ff0000 !important;
+            background: #000000 !important;
+            border-color: #ff0000 !important;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -13,13 +63,14 @@
 
         body {
             font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); /* 默认蓝色背景 */
             min-height: 100vh;
             padding: 15px;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
-
+       
         /* 顶部导航栏 */
         .navbar {
             background: linear-gradient(to bottom, #f5f5f5, #e8e8e8);
@@ -649,6 +700,18 @@
                 }
             `;
             document.head.appendChild(modalStyle);
+            
+           // 宁源账号样式（只保留天气栏红色样式，灰度由 .ningyuan-grayscale 控制）
+            const themeStyle = document.createElement('style');
+            themeStyle.textContent = `
+                body.ningyuan-mode .weather-info {
+                    filter: grayscale(0);
+                    color: #ff0000 !important;
+                    background: #000000 !important;
+                    border-color: #ff0000 !important;
+                }
+            `;
+            document.head.appendChild(themeStyle);
 
             // 音频相关
             let audioCtx = null;
@@ -770,7 +833,33 @@
             function clearUser() {
                 localStorage.removeItem(STORAGE_KEY);
             }
-
+            
+ // 应用宁源主题（灰色背景 + 挽联 + 主要内容灰度）
+   function applyNingyuanTheme() {
+    document.body.classList.add('ningyuan-mode');
+    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer');
+    grayscaleTargets.forEach(el => el.classList.add('ningyuan-grayscale'));
+    const weatherDiv = document.querySelector('.weather-info');
+    if (weatherDiv) {
+        weatherDiv.textContent = '📍 ？？？ -8层';
+        // 删除内联样式，完全依赖 CSS 类
+        weatherDiv.style.color = '';
+        weatherDiv.style.backgroundColor = '';
+    }
+}
+ // 回复正常主题
+function restoreDefaultTheme() {
+    document.body.classList.remove('ningyuan-mode');
+    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer');
+    grayscaleTargets.forEach(el => el.classList.remove('ningyuan-grayscale'));
+    const weatherDiv = document.querySelector('.weather-info');
+    if (weatherDiv) {
+        weatherDiv.textContent = '📍 北淀市 -18℃ 雨';
+        weatherDiv.style.color = '';
+        weatherDiv.style.backgroundColor = '';
+    }
+}
+            
             // 增强红色闪烁效果（全屏红色遮罩 + 强烈闪烁）
     function redFlash() {
         // 创建临时红色遮罩层
@@ -792,55 +881,142 @@
             flashOverlay.style.opacity = '0';
             setTimeout(() => {
                 flashOverlay.remove();
-            }, 100);     // 淡出用时 0.1秒
-        }, 200);      // 保持完全红色 0.1秒
+            }, 200);     // 淡出用时 0.2秒
+        }, 200);      // 保持完全红色 0.2秒
     }
-            // 更新顶部导航栏
-            function updateNavButtons() {
-                const navRight = document.querySelector('.navbar-right');
-                if (!navRight) return;
-                if (currentUser) {
-                    navRight.innerHTML = `
-                        <div class="user-menu-container" style="position: relative;">
-                            <button class="user-menu-btn" style="padding: 7px 16px; background: #0066cc; color: white; border: none; border-radius: 3px; cursor: pointer;">👤 ${currentUser}</button>
-                            <div class="user-dropdown" style="display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1000; min-width: 100px;">
-                                <button class="dropdown-logout" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer;">🚪 登出</button>
-                                <button class="dropdown-delete" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer; color: #d32f2f;">🗑️ 注销账号</button>
-                            </div>
-                        </div>
-                    `;
-                    const menuBtn = navRight.querySelector('.user-menu-btn');
-                    const dropdown = navRight.querySelector('.user-dropdown');
-                    menuBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-                    };
-                    document.addEventListener('click', function closeDropdown(e) {
-                        if (!navRight.contains(e.target)) dropdown.style.display = 'none';
-                    });
-                    navRight.querySelector('.dropdown-logout').onclick = () => {
-                        if (confirm('确定要登出吗？')) logout();
-                    };
-                    navRight.querySelector('.dropdown-delete').onclick = () => {
-                        if (confirm(`确定要注销账号「${currentUser}」吗？\n（只删除账号，浏览记录及更改仍保留）`)) deleteAccount();
-                    };
-                } else {
-                    navRight.innerHTML = `<button class="login-btn">登陆</button><button class="register-btn">注册</button>`;
-                    const loginBtn = navRight.querySelector('.login-btn');
-                    const registerBtn = navRight.querySelector('.register-btn');
-                    if (loginBtn) loginBtn.onclick = () => window.handleLogin();
-                    if (registerBtn) registerBtn.onclick = () => window.handleRegister();
-                }
+function updateNavButtons() {
+    const navRight = document.querySelector('.navbar-right');
+    if (!navRight) return;
+    
+    if (currentUser) {
+        // 显示用户名按钮
+        navRight.innerHTML = `<button class="user-menu-btn" style="padding: 7px 16px; background: #0066cc; color: white; border: none; border-radius: 3px; cursor: pointer;">👤 ${currentUser}</button>`;
+        const menuBtn = navRight.querySelector('.user-menu-btn');
+        
+        // 移除已存在的下拉菜单
+        const oldDropdown = document.getElementById('global-user-dropdown');
+        if (oldDropdown) oldDropdown.remove();
+        
+        // 创建下拉菜单
+        const dropdown = document.createElement('div');
+        dropdown.id = 'global-user-dropdown';
+        dropdown.style.position = 'fixed';
+        dropdown.style.backgroundColor = 'white';
+        dropdown.style.border = '1px solid #ccc';
+        dropdown.style.borderRadius = '4px';
+        dropdown.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+        dropdown.style.zIndex = '15000';
+        dropdown.style.minWidth = '100px';
+        dropdown.style.display = 'none';
+        dropdown.innerHTML = `
+            <button class="dropdown-logout" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer;">🚪 登出</button>
+            <button class="dropdown-delete" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer; color: #d32f2f;">🗑️ 注销账号</button>
+        `;
+        document.body.appendChild(dropdown);
+        
+        // 定位函数：让下拉菜单出现在按钮正下方，左边缘对齐，并自动避免超出屏幕
+        function positionDropdown() {
+            const rect = menuBtn.getBoundingClientRect();
+            // 先设置临时位置，以便获取其宽高
+            dropdown.style.left = '0px';
+            dropdown.style.top = '0px';
+            dropdown.style.display = 'block';
+            const dropdownRect = dropdown.getBoundingClientRect();
+            dropdown.style.display = 'none';
+            
+            let left = rect.left;
+            let top = rect.bottom;
+            
+            // 左右边界检查
+            if (left + dropdownRect.width > window.innerWidth) {
+                left = window.innerWidth - dropdownRect.width - 10;
             }
+            if (left < 10) left = 10;
+            
+            // 底部空间不足时，显示在按钮上方
+            if (top + dropdownRect.height > window.innerHeight) {
+                top = rect.top - dropdownRect.height;
+                if (top < 10) top = 10; // 避免超出顶部
+            }
+            
+            dropdown.style.left = left + 'px';
+            dropdown.style.top = top + 'px';
+        }
+        
+        function showDropdown() {
+            positionDropdown();
+            dropdown.style.display = 'block';
+        }
+        
+        function hideDropdown() {
+            dropdown.style.display = 'none';
+        }
+        
+        // 点击按钮切换下拉菜单
+        menuBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (dropdown.style.display === 'block') {
+                hideDropdown();
+            } else {
+                showDropdown();
+            }
+        };
+        
+        // 点击其他区域关闭
+        const closeHandler = (e) => {
+            if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                hideDropdown();
+            }
+        };
+        document.addEventListener('click', closeHandler);
+        
+        // 滚动或窗口大小改变时自动关闭（避免位置错乱）
+        const resetDropdown = () => { hideDropdown(); };
+        window.addEventListener('scroll', resetDropdown);
+        window.addEventListener('resize', resetDropdown);
+        
+        // 绑定按钮事件
+        dropdown.querySelector('.dropdown-logout').onclick = () => {
+            if (confirm('确定要登出吗？')) logout();
+            hideDropdown();
+        };
+        dropdown.querySelector('.dropdown-delete').onclick = () => {
+            if (confirm(`确定要注销账号「${currentUser}」吗？\n（只删除账号，浏览记录及更改仍保留）`)) deleteAccount();
+            hideDropdown();
+        };
+        
+        // 可选：在页面关闭或卸载时移除事件监听（非必须，但为了规范）
+        window.addEventListener('beforeunload', () => {
+            document.removeEventListener('click', closeHandler);
+            window.removeEventListener('scroll', resetDropdown);
+            window.removeEventListener('resize', resetDropdown);
+        });
+        
+    } else {
+        // 未登录状态：移除下拉菜单，恢复原始登录注册按钮
+        const existingDropdown = document.getElementById('global-user-dropdown');
+        if (existingDropdown) existingDropdown.remove();
+        
+        navRight.innerHTML = `<button class="login-btn">登陆</button><button class="register-btn">注册</button>`;
+        const loginBtn = navRight.querySelector('.login-btn');
+        const registerBtn = navRight.querySelector('.register-btn');
+        if (loginBtn) loginBtn.onclick = () => window.handleLogin();
+        if (registerBtn) registerBtn.onclick = () => window.handleRegister();
+    }
+}
 
             function logout() {
-                currentUser = null;
-                updateNavButtons();
-                alert('已安全登出');
-            }
+        // 如果当前登录的是宁源，先恢复主题
+        if (currentUser === ADMIN_USERNAME) {
+            restoreDefaultTheme();
+        }
+        currentUser = null;
+        updateNavButtons();
+        alert('已安全登出');
+    }
 
 // 显示大量红色"再见"占满屏幕，每隔几个字播放一次警告音，全部出现后红色闪烁    
-function showRedGoodbye() {        
+function showRedGoodbye(callback) {        
     const container = document.createElement('div');        
     container.style.position = 'fixed';        
     container.style.top = '0';        
@@ -851,14 +1027,13 @@ function showRedGoodbye() {
     container.style.pointerEvents = 'none';        
     container.style.overflow = 'hidden';        
     document.body.appendChild(container);                
-    const wordCount = 200;    // 字符数量        
+    const wordCount = 200;        
     const words = [];        
     for (let i = 0; i < wordCount; i++) {            
         const span = document.createElement('span');            
         span.textContent = '再见';            
         span.style.position = 'absolute';            
         span.style.color = '#ff0000';            
-        // 字号随机 20px ~ 100px            
         const fontSize = Math.floor(Math.random() * 80 + 20);            
         span.style.fontSize = fontSize + 'px';            
         span.style.fontWeight = 'bold';            
@@ -872,29 +1047,24 @@ function showRedGoodbye() {
         container.appendChild(span);            
         words.push(span);        
     }                
-    // 随机延迟数组        
-    const delays = words.map(() => Math.random() * 800);        
+    const delays = words.map(() => Math.random() * 1000);        
     let completedCount = 0;  
     
-    // 设置播放频率：每隔多少个字播放一次（例如每20个字播放一次）
-    const soundInterval = 25;  // 可修改为 2,4,5 等，数字越大频率越低
-    // 可选：从第几个字开始播放（偏移量），默认0
+    const soundInterval = 25;   // 每25个字播放一次警告音
     const soundOffset = 0;
     
     words.forEach((word, idx) => {            
         setTimeout(() => {                
             word.style.opacity = '1';                
-            // 只有索引满足条件时播放警告音（每隔 soundInterval 个播放一次）
             if ((idx - soundOffset) % soundInterval === 0) {
                 playWarningSound();                
             }
             completedCount++;                
             if (completedCount === wordCount) {                    
-                redFlash();          // 全部出现后红色闪烁                
+                redFlash();                
             }            
         }, delays[idx]);        
     });                
-    // 最后清理（保留文字1.2秒后淡出移除）        
     setTimeout(() => {            
         words.forEach(word => {                
             word.style.transition = 'opacity 0.3s';
@@ -902,23 +1072,33 @@ function showRedGoodbye() {
         });
         setTimeout(() => {
             container.remove();
+            if (callback) callback();   // 特效全部结束后执行回调
         }, 400);
     }, 1200);
 }
             
             function deleteAccount() {
                 const isAdmin = (currentUser === ADMIN_USERNAME);
-                if (isAdmin) {
+              if (isAdmin) {
                     playWarningSound();
-            showWarning('没关系，下次再见~', 1800);   // 原有的红色警告框
-                    // 例如延迟 2.8 秒后再开始出现“再见”
-    setTimeout(() => {
-            showRedGoodbye();                        // 新增：大量红色“再见”特效
-         }, 2800);   // 这里的数字为延时毫秒数（2800 = 2.8秒）
-            currentUser = null;
-            updateNavButtons();
-            return;
-        }
+                    showWarning('没关系，下次再见~', 1800);   // 红色警告框，持续1.8秒
+                    
+                    // 第一步：在警告框消失的同时（1.8秒后）恢复彩色界面
+                    setTimeout(() => {
+                        restoreDefaultTheme();   // 移除灰度滤镜、恢复天气栏、移除挽联
+                    }, 1800);
+                    
+                    // 第二步：再延迟1秒（即总延迟2.8秒）开始显示红色“再见”特效
+                    setTimeout(() => {
+                        showRedGoodbye(() => {
+                            // 第三步：特效全部结束后才真正登出（清空用户、更新导航栏）
+                            currentUser = null;
+                            updateNavButtons();
+                        });
+                    }, 2800);
+                    
+                    return;
+                }
                 const stored = getStoredUser();
                 if (stored && stored.username === currentUser) {
                     clearUser();
@@ -1048,11 +1228,14 @@ function showRedGoodbye() {
                         return;
                     }
                     let loginSuccess = false;
-                    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                    // 先检查是否为宁源
+                  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
                         loginSuccess = true;
                         currentUser = ADMIN_USERNAME;
-                        redFlash();
+                        applyNingyuanTheme();   // 先应用主题
+                        redFlash();             // 再闪烁（内部会临时移除灰度再恢复）
                     } else {
+                        // 普通用户验证
                         const stored = getStoredUser();
                         if (stored && stored.username === username && stored.password === password) {
                             loginSuccess = true;
