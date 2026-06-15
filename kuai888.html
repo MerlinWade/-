@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    
+    <link rel="preload" as="image" href="images/外推1.jpg">
+    <link rel="preload" as="image" href="images/外推2.jpg">
+    <link rel="preload" as="image" href="images/警惕诈骗.jpg">
+    <link rel="preload" as="image" href="images/20180417.jpg">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快888快捷导航</title>
+    <style>
+              /* 宁源模式下的背景和挽联（不变） */
+        body.ningyuan-mode {
+            background: #333333;
+        }
+        body.ningyuan-mode::before,
+body.ningyuan-mode::after {
+    content: "";
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: "楷体", "华文楷书", "KaiTi", serif;
+    font-size: 24px;
+    color: white;
+    background: transparent;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    white-space: nowrap;
+    z-index: 5000;
+    pointer-events: none;
+    letter-spacing: 8px;
+    /* 增强清晰度：深色描边 + 多层阴影 */
+    -webkit-text-stroke: 1px rgba(0,0,0,0.4);
+    text-shadow: 0 0 4px black, 0 0 2px black;
+}
+        body.ningyuan-mode::before {
+            right: 10px;
+            content: "死生有命";
+        }
+        body.ningyuan-mode::after {
+            left: 10px;
+            content: "富贵在天";
+        }
+        @media (max-width: 768px) {
+    .external-push-wrapper.two-columns {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    /* 重置内部卡片的下边距，避免与父级 gap 叠加 */
+    .two-columns .left-column .quiz-card,
+    .two-columns .right-column .pair-card {
+        margin-bottom: 0;
+    }
+}
+
+        /* 需要变灰的主要内容区域（不包含固定浮动层） */
+        .ningyuan-grayscale {
+            filter: grayscale(1);
+        }
+        /* 天气栏在宁源模式下强制红色（不受灰度影响） */
+        body.ningyuan-mode .weather-info {
+            filter: grayscale(0);
+            color: #ff0000 !important;
+            background: #000000 !important;
+            border-color: #ff0000 !important;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); /* 默认蓝色背景 */
+            min-height: 100vh;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+       
+        /* 顶部导航栏 */
+        .navbar {
+            background: linear-gradient(to bottom, #f5f5f5, #e8e8e8);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 12px 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .navbar-brand {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1e3c72;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .weather-info {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 3px;
+            padding: 6px 10px;
+            font-size: 0.85em;
+            color: #856404;
+            font-weight: bold;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .navbar-search {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .search-select {
+            padding: 7px 10px;
+            border: 1px solid #999;
+            border-radius: 3px;
+            font-size: 0.9em;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 7px 10px;
+            border: 1px solid #999;
+            border-radius: 3px;
+            font-size: 0.9em;
+            background: white;
+            color: #333;
+            min-width: 120px;
+        }
+
+        .search-btn {
+            padding: 7px 18px;
+            background: linear-gradient(to bottom, #0066cc, #0052a3);
+            color: white;
+            border: 1px solid #003d82;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(to bottom, #0052a3, #003d82);
+        }
+
+        .navbar-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .login-btn {
+            padding: 7px 16px;
+            background: white;
+            color: #0066cc;
+            border: 1px solid #0066cc;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s, color 0.3s;
+            white-space: nowrap;
+        }
+
+        .login-btn:hover {
+            background: #0066cc;
+            color: white;
+        }
+
+        .register-btn {
+            padding: 7px 16px;
+            background: #ff6600;
+            color: white;
+            border: 1px solid #ff6600;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+
+        .register-btn:hover {
+            background: #ff5500;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* 导航板块 */
+        .nav-section {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-header {
+            background: linear-gradient(to right, #f0f0f0, #e0e0e0);
+            border-bottom: 2px solid #0066cc;
+            padding: 12px 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #1e3c72;
+            letter-spacing: 1px;
+        }
+
+        .nav-content {
+            padding: 20px;
+        }
+
+        .link-list {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .link-row {
+            display: table-row;
+        }
+
+        .link-cell {
+            display: table-cell;
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .link-item {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #0066cc;
+            display: inline-block;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .link-item:hover {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        /* 虚拟页脚区域 */
+        .virtual-footer-section {
+            margin-bottom: 25px;
+        }
+
+        .virtual-footer {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .virtual-footer p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+
+        .virtual-footer a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .virtual-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 真实页脚 */
+        .real-footer {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .real-footer p {
+            color: #666;
+            font-size: 0.85em;
+            margin: 5px 0;
+        }
+
+        .real-footer a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .real-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .navbar {
+                padding: 10px 12px;
+                gap: 10px;
+            }
+
+            .navbar-brand {
+                font-size: 1.1em;
+            }
+
+            .navbar-search {
+                min-width: 200px;
+            }
+
+            .search-input {
+                min-width: 100px;
+            }
+
+            .weather-info {
+                font-size: 0.8em;
+                padding: 5px 8px;
+            }
+
+            .link-cell {
+                padding: 8px;
+            }
+
+            .link-item {
+                font-size: 0.9em;
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+                gap: 8px;
+            }
+
+            .navbar-brand {
+                text-align: center;
+                font-size: 1.1em;
+            }
+
+            .weather-info {
+                text-align: center;
+                width: 100%;
+            }
+
+            .navbar-search {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .navbar-right {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .link-list {
+                display: block;
+            }
+
+            .link-row {
+                display: flex;
+                flex-wrap: wrap;
+                margin-bottom: 10px;
+            }
+
+            .link-cell {
+                display: flex;
+                justify-content: center;
+                padding: 5px;
+                flex: 1;
+                min-width: 1;
+            }
+
+            .link-item {
+                width: 100%;
+                text-align: center;
+                font-size: 0.9em;
+            }
+
+            .virtual-footer p {
+                font-size: 0.85em;
+            }
+
+            .real-footer p {
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-brand {
+                font-size: 1em;
+                letter-spacing: 0.5px;
+            }
+
+            .search-select {
+                font-size: 0.85em;
+                padding: 6px 8px;
+            }
+
+            .search-input {
+                font-size: 0.85em;
+                padding: 6px 8px;
+                min-width: 80px;
+            }
+
+            .search-btn {
+                font-size: 0.85em;
+                padding: 6px 14px;
+            }
+
+            .login-btn,
+            .register-btn {
+                font-size: 0.85em;
+                padding: 6px 12px;
+            }
+
+            .weather-info {
+                font-size: 0.75em;
+                padding: 4px 6px;
+            }
+
+            .nav-content {
+                padding: 15px;
+            }
+
+            .link-cell {
+                padding: 4px;
+                min-width: 100px;
+            }
+
+            .link-item {
+                font-size: 0.85em;
+                padding: 8px 10px;
+            }
+
+            .virtual-footer p {
+                font-size: 0.8em;
+            }
+
+            .real-footer p {
+                font-size: 0.75em;
+            }
+        }
+        
+/* 图片预览模态框（独立于登录模态框） */
+.img-preview-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 15000;      /* 低于警告框20000、黑屏30000等 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.2s, opacity 0.2s;
+}
+.img-preview-overlay.active {
+    visibility: visible;
+    opacity: 1;
+}
+.img-preview-container {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+}
+.img-preview-img {
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.img-preview-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    font-size: 36px;
+    color: white;
+    cursor: pointer;
+    background: rgba(0,0,0,0.5);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+.img-preview-close:hover {
+    background: rgba(255,0,0,0.7);
+    transform: scale(1.1);
+}
+@media (max-width: 550px) {
+    .img-preview-close {
+        top: -30px;
+        width: 30px;
+        height: 30px;
+        font-size: 24px;
+    }
+}
+      /* 左右弹性布局容器（已存在，若已定义则无需重复） */
+.external-push-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0px auto 20px auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+.external-push-item {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* 左侧大图样式 */
+.external-push-img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+.external-push-img:hover {
+    transform: scale(1.01);
+}
+
+/* 右侧卡片样式 */
+.card-link-wrapper {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+}
+.card-link-wrapper:hover {
+    transform: scale(1.01);
+}
+.card-img {
+    width: 100%;
+    height: 75%;
+    object-fit: cover;
+    display: block;
+}
+.card-text-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
+    color: white;
+    text-align: center;
+    padding: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    backdrop-filter: blur(4px); /* 可选毛玻璃效果 */
+}
+.card-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.card-desc {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+  /* 窗口四：问答卡片样式（只保留一份） */
+.quiz-card {
+    background: rgba(20, 20, 30, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 16px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+.quiz-card:hover {
+    transform: scale(1.01);
+}
+.quiz-question {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffd966;
+    text-align: center;
+    margin-bottom: 12px;
+}
+.quiz-options {
+    display: flex;
+    flex-direction: row;          /* 横向排列 */
+    justify-content: space-around;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+.quiz-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: white;
+    cursor: pointer;
+}
+.quiz-options input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+.quiz-feedback {
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: bold;
+    min-height: 32px;
+    padding: 4px;
+    border-radius: 20px;
+}
+.quiz-feedback.correct {
+    color: #a0ffa0;
+    background: rgba(0,100,0,0.3);
+}
+.quiz-feedback.wrong {
+    color: #ffa0a0;
+    background: rgba(100,0,0,0.3);
+}
+
+/* 让第三列内部上下排列 */
+.column-third {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+        
+/* 配对卡片样式（确保高度正常） */
+.pair-card {
+    display: flex;
+    align-items: flex-end;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    background-size: cover;
+    background-position: center;
+    min-height: 260px;        /* 保证卡片有足够高度，与背景图片比例协调 */
+    height: auto;
+    transition: transform 0.2s;
+    text-decoration: none;
+    cursor: pointer;
+}
+.pair-card:hover {
+    transform: scale(1.01);  /* 悬停放大，与图2一致 */
+}
+        
+.pair-card-content {
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px);
+    width: 100%;
+    padding: 20px 16px;
+    text-align: center;
+    color: white;
+}
+.external-push-wrapper.two-columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr;  /* 宽度比例 */
+    gap: 20px;
+    align-items: stretch;            /* 高度拉伸对齐 */
+}
+.two-columns .left-column,
+.two-columns .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;                    /* 重要：让 flex 容器填满网格单元格 */
+}
+
+/* 响应式：小屏幕恢复垂直排列 */
+@media (max-width: 768px) {
+    .external-push-wrapper.two-columns {
+        display: flex;
+        flex-direction: column;
+    }
+}
+}
+  
+    </style>
+    
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <div class="navbar-brand">🌐 快888快捷导航</div>
+        <div class="weather-info">📍 北淀市 -18℃ 雨</div>
+        <div class="navbar-search">
+            <select class="search-select" id="searchType">
+                <option value="search">搜索</option>
+                <option value="daodelao">地道搜索</option>
+            </select>
+            <input type="text" class="search-input" placeholder="搜索网站、新闻、资讯...">
+            <button class="search-btn">搜索</button>
+        </div>
+        <div class="navbar-right">
+            <button class="login-btn" onclick="handleLogin()">登陆</button>
+            <button class="register-btn" onclick="handleRegister()">注册</button>
+        </div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 个人常用网址导航 -->
+        <div class="nav-section">
+            <div class="nav-header">⭐ 个人常用网址导航</div>
+            <div class="nav-content">
+                <div class="link-list">
+                    <div class="link-row">
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">淘沙网</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">拼夕夕</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">AlieAlie啊咧视频</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">嗨奇异</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">终点文学城</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">造浪新闻</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">啾啾空间</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">地气论坛</a></div>
+                    </div>
+                    <div class="link-row">
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">脸盆博客</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">2333小游戏</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">帅喵音乐</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">难闲邮箱</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">996全城</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">知忽</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">缘缘婚恋网</a></div>
+                        <div class="link-cell"><a href="#" class="link-item" onclick="showLoginPrompt(event)">历史浏览</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<!-- 外推图片区域：两列等高布局 -->
+<div class="external-push-wrapper two-columns">
+    <!-- 左列（较宽）：防诈骗卡片 + 问答卡片 -->
+    <div class="external-push-item left-column">
+        <!-- 防诈骗卡片（原图片2） -->
+        <a href="#" class="card-link-wrapper" id="card-link-wrapper">
+            <div class="card-image">
+                <img id="card-img" src="images/警惕诈骗.jpg" alt="警惕诈骗" class="card-img">
+            </div>
+            <div class="card-text-overlay">
+                <div class="card-title">近期网络诈骗频发，请留意上当受骗</div>
+                <div class="card-desc">记者了解到，诈骗手段层出不穷，请提高警惕。</div>
+            </div>
+        </a>
+        <!-- 问答卡片 -->
+        <div class="quiz-card">
+            <div class="quiz-question">脑筋急转弯：不知天上宫阙，今夕是（）年？</div>
+            <div class="quiz-options">
+                <label><input type="radio" name="answer" value="0"> 何</label>
+                <label><input type="radio" name="answer" value="2018"> 2018</label>
+                <label><input type="radio" name="answer" value="2026"> 2026</label>
+            </div>
+            <div class="quiz-feedback"></div>
+        </div>
+    </div>
+
+    <!-- 右列（较窄）：外推图片 + 配对卡片 -->
+    <div class="external-push-item right-column">
+        <!-- 外推图片 -->
+        <img id="external-push-img" src="images/外推1.jpg" alt="外推音乐推荐" class="external-push-img">
+        <!-- 配对卡片 -->
+        <a href="#" class="pair-card" id="pair-card" style="background-image: url('images/配对.jpg'); background-size: cover; background-position: center; text-decoration: none;">
+            <div class="pair-card-content">
+                <h3 class="pair-title">姓名配对缘分测试</h3>
+                <p class="pair-desc">输入双方姓名，测测你们之间的缘分吧</p>
+            </div>
+        </a>
+    </div>
+</div>
+    
+    <!-- 虚拟页脚区域 -->
+    <div class="virtual-footer-section">
+        <div class="virtual-footer">
+            <p>© 2018 快888快捷导航 | <a href="#">关于我们</a> | <a href="#">联系方式</a> | <a href="#">用户协议</a>| <a href="#">广告服务</a></p>
+        </div>
+    </div>
+
+    <!-- 真实页脚 -->
+    <div class="real-footer">
+        <p>本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关。</p>
+        <p>© 2026 MerlinWade. All rights reserved. | 本作品受著作权保护。未经许可，不得以任何形式转载或复制。</p>
+    </div>
+
+    <script>
+        
+// 问答卡片交互逻辑
+(function() {
+    const quizRadios = document.querySelectorAll('input[name="answer"]');
+    const feedbackDiv = document.querySelector('.quiz-feedback');
+    if (quizRadios.length && feedbackDiv) {
+        function checkAnswer() {
+            let selectedValue = null;
+            for (let radio of quizRadios) {
+                if (radio.checked) {
+                    selectedValue = radio.value;
+                    break;
+                }
+            }
+            if (!selectedValue) {
+                feedbackDiv.textContent = '';
+                feedbackDiv.className = 'quiz-feedback';
+                return;
+            }
+            if (selectedValue === '2018') {
+               feedbackDiv.innerHTML = '✓ 正确！<b style="color: red;">password1</b>。';
+                feedbackDiv.classList.remove('wrong');
+                feedbackDiv.classList.add('correct');
+            } else {
+                feedbackDiv.textContent = '✗ 错误。';
+                feedbackDiv.classList.remove('correct');
+                feedbackDiv.classList.add('wrong');
+            }
+        }
+        quizRadios.forEach(radio => {
+            radio.addEventListener('change', checkAnswer);
+        });
+    }
+})();
+        
+        // ========== 单用户注册/登录模态框（淡蓝 + 彩蛋 + 宁源特殊登录）==========
+        (function() {
+            // 全局状态
+            let currentUser = null;            // 当前登录的用户名
+            const ADMIN_USERNAME = '宁源';     // 内置特殊用户名
+            const ADMIN_PASSWORD = '20180417'; // 内置特殊密码
+
+            // 注入样式
+            const modalStyle = document.createElement('style');
+            modalStyle.textContent = `
+                .arg-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.6);
+                    backdrop-filter: blur(4px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                    visibility: hidden;
+                    opacity: 0;
+                    transition: 0.2s;
+                }
+                .arg-overlay.active {
+                    visibility: visible;
+                    opacity: 1;
+                }
+                .arg-modal {
+                    background: #e6f0ff;
+                    width: 90%;
+                    max-width: 420px;
+                    border-radius: 28px;
+                    padding: 24px 22px 32px;
+                    box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+                    transform: scale(0.96);
+                    transition: transform 0.2s;
+                    border: 1px solid #b8d4ff;
+                }
+                .arg-overlay.active .arg-modal {
+                    transform: scale(1);
+                }
+                .arg-modal h3 {
+                    font-size: 1.7rem;
+                    margin: 0 0 12px 0;
+                    background: linear-gradient(135deg, #2c7da0, #1f6390);
+                    background-clip: text;
+                    -webkit-background-clip: text;
+                    color: transparent;
+                    border-bottom: 2px solid #c0e0ff;
+                    padding-bottom: 10px;
+                }
+                .arg-close {
+                    float: right;
+                    font-size: 28px;
+                    cursor: pointer;
+                    color: #5a8bb9;
+                }
+                .arg-close:hover { color: #1f6390; }
+                .arg-group {
+                    margin-bottom: 18px;
+                }
+                .arg-group label {
+                    display: block;
+                    font-weight: 600;
+                    margin-bottom: 6px;
+                    color: #1e4b6e;
+                }
+                .arg-group input {
+                    width: 100%;
+                    padding: 10px 14px;
+                    border: 1.5px solid #c0d9f0;
+                    border-radius: 40px;
+                    font-size: 1rem;
+                    outline: none;
+                    background: white;
+                }
+                .arg-group input:focus {
+                    border-color: #3c8dc5;
+                    box-shadow: 0 0 0 3px rgba(60,141,197,0.2);
+                }
+                .arg-buttons {
+                    display: flex;
+                    gap: 12px;
+                    margin-top: 24px;
+                }
+                .arg-buttons button {
+                    flex: 1;
+                    padding: 10px;
+                    border-radius: 40px;
+                    font-weight: bold;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 1rem;
+                }
+                .arg-btn-primary {
+                    background: linear-gradient(135deg, #3c8dc5, #2c6f9e);
+                    color: white;
+                }
+                .arg-btn-secondary {
+                    background: #d9eaff;
+                    color: #1e4b6e;
+                    border: 1px solid #b0cce8;
+                }
+                .forgot-link {
+                    text-align: right;
+                    margin: -8px 0 12px;
+                }
+                .forgot-link a {
+                    font-size: 0.8rem;
+                    color: #2c7da0;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+                .custom-toast {
+                    position: fixed;
+                    top: 40%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: #c00000;
+                    color: white;
+                    padding: 16px 28px;
+                    border-radius: 12px;
+                    font-weight: bold;
+                    font-size: 1.2rem;
+                    box-shadow: 0 0 20px rgba(255,0,0,0.6);
+                    z-index: 20000;
+                    text-align: center;
+                    white-space: nowrap;
+                    pointer-events: none;
+                }
+                .blackout {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: black;
+                    z-index: 30000;
+                    opacity: 0;
+                    transition: opacity 0.2s;
+                    pointer-events: none;
+                }
+                .blackout.active {
+                    opacity: 1;
+                    pointer-events: auto;
+                }
+                @media (max-width: 550px) {
+                    .arg-modal { padding: 18px; }
+                    .arg-modal h3 { font-size: 1.4rem; }
+                    .custom-toast { font-size: 1rem; padding: 12px 20px; white-space: normal; width: 80%; text-align: center; }
+                }
+            `;
+            document.head.appendChild(modalStyle);
+            
+           // 宁源账号样式（只保留天气栏红色样式，灰度由 .ningyuan-grayscale 控制）
+            const themeStyle = document.createElement('style');
+            themeStyle.textContent = `
+                body.ningyuan-mode .weather-info {
+                    filter: grayscale(0);
+                    color: #ff0000 !important;
+                    background: #000000 !important;
+                    border-color: #ff0000 !important;
+                }
+            `;
+            document.head.appendChild(themeStyle);
+
+            // 音频相关
+            let audioCtx = null;
+            function playWarningSound() {
+                try {
+                    if (!audioCtx) {
+                        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    const currentTime = audioCtx.currentTime;
+                    // 声音1: 低音
+                    const osc1 = audioCtx.createOscillator();
+                    const gain1 = audioCtx.createGain();
+                    osc1.connect(gain1);
+                    gain1.connect(audioCtx.destination);
+                    osc1.type = 'sawtooth';
+                    osc1.frequency.value = 440;
+                    gain1.gain.value = 0;
+                    osc1.start();
+                    gain1.gain.linearRampToValueAtTime(0.3, currentTime + 0.02);
+                    gain1.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.2);
+                    osc1.stop(currentTime + 0.2);
+                    // 声音2: 高音
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.type = 'square';
+                    osc2.frequency.value = 880;
+                    gain2.gain.value = 0;
+                    osc2.start(currentTime + 0.1);
+                    gain2.gain.linearRampToValueAtTime(0.25, currentTime + 0.12);
+                    gain2.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.6);
+                    osc2.stop(currentTime + 0.6);
+                    // 白噪音
+                    const bufferSize = 4096;
+                    const noiseNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+                    noiseNode.onaudioprocess = function(e) {
+                        const output = e.outputBuffer.getChannelData(0);
+                        for (let i = 0; i < bufferSize; i++) {
+                            output[i] = (Math.random() * 2 - 1) * 0.8;
+                        }
+                    };
+                    const noiseGain = audioCtx.createGain();
+                    noiseNode.connect(noiseGain);
+                    noiseGain.connect(audioCtx.destination);
+                    noiseGain.gain.value = 0;
+                    noiseGain.gain.linearRampToValueAtTime(0.15, currentTime + 0.05);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.0001, currentTime + 0.4);
+                    noiseNode.start(currentTime);
+                    noiseNode.stop(currentTime + 0.4);
+                    setTimeout(() => {
+                        try { noiseNode.disconnect(); } catch(e) {}
+                    }, 500);
+                } catch(e) {
+                    console.warn('警告音效播放失败', e);
+                }
+            }
+
+            // 黑屏 + 乱码特效
+            function blackout(durationMs = 1500) {
+                let blackDiv = document.querySelector('.arg-blackout');
+                if (!blackDiv) {
+                    blackDiv = document.createElement('div');
+                    blackDiv.className = 'blackout arg-blackout';
+                    document.body.appendChild(blackDiv);
+                }
+                const toast = document.querySelector('.custom-toast');
+                if (toast) toast.style.zIndex = '30001';
+                blackDiv.classList.add('active');
+                setTimeout(() => {
+                    blackDiv.classList.remove('active');
+                    const bodyElement = document.body;
+                    bodyElement.style.transition = 'all 0.1s';
+                    bodyElement.style.filter = 'blur(2px)';
+                    let counter = 0;
+                    const interval = setInterval(() => {
+                        if (counter >= 3) {
+                            clearInterval(interval);
+                            bodyElement.style.filter = '';
+                            bodyElement.style.transition = '';
+                            if (toast && toast.parentNode) toast.remove();
+                            return;
+                        }
+                        if (counter % 2 === 0) {
+                            bodyElement.style.filter = 'blur(3px) grayscale(1)';
+                            bodyElement.style.opacity = '0.95';
+                        } else {
+                            bodyElement.style.filter = '';
+                            bodyElement.style.opacity = '';
+                        }
+                        counter++;
+                    }, 150);
+                }, durationMs);
+            }
+
+            function showWarning(message, duration = 3000) {
+                const toast = document.createElement('div');
+                toast.className = 'custom-toast';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), duration);
+            }
+
+            // 存储逻辑
+            const STORAGE_KEY = 'arg_single_user';
+            function getStoredUser() {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    try { return JSON.parse(raw); } catch(e) { return null; }
+                }
+                return null;
+            }
+            function saveUser(username, password) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ username, password }));
+            }
+            function clearUser() {
+                localStorage.removeItem(STORAGE_KEY);
+            }
+            
+// 应用宁源主题（灰色背景 + 挽联 + 主要内容灰度 + 浮动元素灰度）
+function applyNingyuanTheme() {
+    document.body.classList.add('ningyuan-mode');
+    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer, .external-push-wrapper');
+    grayscaleTargets.forEach(el => el.classList.add('ningyuan-grayscale'));
+    
+    const dropdown = document.getElementById('global-user-dropdown');
+    if (dropdown) dropdown.classList.add('ningyuan-grayscale');
+    const previewOverlay = document.querySelector('.img-preview-overlay');
+    if (previewOverlay) previewOverlay.classList.add('ningyuan-grayscale');
+    
+    const weatherDiv = document.querySelector('.weather-info');
+    if (weatherDiv) {
+        weatherDiv.textContent = '📍 ？？？ -8层';
+        weatherDiv.style.color = '';
+        weatherDiv.style.backgroundColor = '';
+    }
+    
+    // 替换右侧卡片内容为宁源专属
+    const cardLink = document.getElementById('card-link-wrapper');
+    const cardImg = document.getElementById('card-img');
+    const cardTextOverlay = document.querySelector('.card-text-overlay');
+    if (cardLink && cardImg && cardTextOverlay) {
+        // 保存原始内容
+        if (!cardLink.hasAttribute('data-original-href')) {
+            cardLink.setAttribute('data-original-href', cardLink.href);
+            cardImg.setAttribute('data-original-src', cardImg.src);
+            // 保存原始标题和正文
+           const originalTitle = cardTextOverlay.querySelector('.card-title')?.innerText || '';
+           const originalDesc = cardTextOverlay.querySelector('.card-desc')?.innerText || '';
+            cardLink.setAttribute('data-original-title', originalTitle);
+            cardLink.setAttribute('data-original-desc', originalDesc);
+        }
+        // 替换为宁源内容
+        cardImg.src = 'images/20180417.jpg';
+        // 修改卡片内的文字结构（标题+正文）
+        cardTextOverlay.innerHTML = `
+            <div class="card-title">逝者已去</div>
+            <div class="card-desc">记者了解到，这背后隐藏着另一个秘密……</div>
+        `;
+        // 修改链接行为（点击时提示并跳转）
+        cardLink.href = 'special.html';   // 替换为实际链接
+        cardLink.onclick = function(e) {
+            // 可选：弹出提示
+            // alert('进入宁源专属页面');
+            // 允许跳转（注释掉 alert 即可正常跳转）
+            return true;
+        };
+    }
+}
+            
+// 恢复默认主题
+function restoreDefaultTheme() {
+    document.body.classList.remove('ningyuan-mode');
+    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer, .external-push-wrapper');
+    grayscaleTargets.forEach(el => el.classList.remove('ningyuan-grayscale'));
+    
+    const dropdown = document.getElementById('global-user-dropdown');
+    if (dropdown) dropdown.classList.remove('ningyuan-grayscale');
+    const previewOverlay = document.querySelector('.img-preview-overlay');
+    if (previewOverlay) previewOverlay.classList.remove('ningyuan-grayscale');
+    
+    const weatherDiv = document.querySelector('.weather-info');
+    if (weatherDiv) {
+        weatherDiv.textContent = '📍 北淀市 -18℃ 雨';
+        weatherDiv.style.color = '';
+        weatherDiv.style.backgroundColor = '';
+    }
+}
+            
+           // 恢复右侧卡片原始内容（仅卡片，不影响其他主题）
+function restoreCardContent() {
+    const cardLink = document.getElementById('card-link-wrapper');
+    const cardImg = document.getElementById('card-img');
+    const cardTextOverlay = document.querySelector('.card-text-overlay');
+    if (cardLink && cardImg && cardTextOverlay) {
+        const originalHref = cardLink.getAttribute('data-original-href');
+        const originalSrc = cardImg.getAttribute('data-original-src');
+        if (originalHref) cardLink.href = originalHref;
+        if (originalSrc) cardImg.src = originalSrc;
+        
+        // 恢复文字部分（仅当原始标题和正文都存在时）
+        const originalTitle = cardLink.getAttribute('data-original-title');
+        const originalDesc = cardLink.getAttribute('data-original-desc');
+        if (originalTitle && originalDesc) {
+            cardTextOverlay.innerHTML = `
+                <div class="card-title">${originalTitle}</div>
+                <div class="card-desc">${originalDesc}</div>
+            `;
+        }
+        // 清除自定义点击事件，恢复默认行为
+        cardLink.onclick = null;
+    }
+}
+            
+            // 增强红色闪烁效果（全屏红色遮罩 + 强烈闪烁）
+    function redFlash() {
+        // 创建临时红色遮罩层
+        const flashOverlay = document.createElement('div');
+        flashOverlay.style.position = 'fixed';
+        flashOverlay.style.top = '0';
+        flashOverlay.style.left = '0';
+        flashOverlay.style.width = '100%';
+        flashOverlay.style.height = '100%';
+        flashOverlay.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
+        flashOverlay.style.zIndex = '99999';
+        flashOverlay.style.pointerEvents = 'none';
+        flashOverlay.style.transition = 'opacity 0.2s';
+        flashOverlay.style.opacity = '1';
+        document.body.appendChild(flashOverlay);
+        
+        // 0.2秒后淡出并移除
+        setTimeout(() => {
+            flashOverlay.style.opacity = '0';
+            setTimeout(() => {
+                flashOverlay.remove();
+            }, 200);     // 淡出用时 0.2秒
+        }, 300);      // 保持完全红色 0.3秒
+    }
+function updateNavButtons() {
+    const navRight = document.querySelector('.navbar-right');
+    if (!navRight) return;
+    
+    if (currentUser) {
+        // 显示用户名按钮
+        navRight.innerHTML = `<button class="user-menu-btn" style="padding: 7px 16px; background: #0066cc; color: white; border: none; border-radius: 3px; cursor: pointer;">👤 ${currentUser}</button>`;
+        const menuBtn = navRight.querySelector('.user-menu-btn');
+        
+        // 移除已存在的下拉菜单
+        const oldDropdown = document.getElementById('global-user-dropdown');
+        if (oldDropdown) oldDropdown.remove();
+        
+        // 创建下拉菜单
+        const dropdown = document.createElement('div');
+        dropdown.id = 'global-user-dropdown';
+        dropdown.style.position = 'fixed';
+        dropdown.style.backgroundColor = 'white';
+        dropdown.style.border = '1px solid #ccc';
+        dropdown.style.borderRadius = '4px';
+        dropdown.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+        dropdown.style.zIndex = '15000';
+        dropdown.style.minWidth = '100px';
+        dropdown.style.display = 'none';
+        dropdown.innerHTML = `
+            <button class="dropdown-logout" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer;">🚪 登出</button>
+            <button class="dropdown-delete" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer; color: #d32f2f;">🗑️ 注销账号</button>
+        `;
+        document.body.appendChild(dropdown);
+                // 如果当前是宁源模式，给下拉菜单添加灰度类
+        if (document.body.classList.contains('ningyuan-mode')) {
+            dropdown.classList.add('ningyuan-grayscale');
+        }
+        
+        // 定位函数：让下拉菜单出现在按钮正下方，左边缘对齐，并自动避免超出屏幕
+        function positionDropdown() {
+            const rect = menuBtn.getBoundingClientRect();
+            // 先设置临时位置，以便获取其宽高
+            dropdown.style.left = '0px';
+            dropdown.style.top = '0px';
+            dropdown.style.display = 'block';
+            const dropdownRect = dropdown.getBoundingClientRect();
+            dropdown.style.display = 'none';
+            
+            let left = rect.left;
+            let top = rect.bottom;
+            
+            // 左右边界检查
+            if (left + dropdownRect.width > window.innerWidth) {
+                left = window.innerWidth - dropdownRect.width - 10;
+            }
+            if (left < 10) left = 10;
+            
+            // 底部空间不足时，显示在按钮上方
+            if (top + dropdownRect.height > window.innerHeight) {
+                top = rect.top - dropdownRect.height;
+                if (top < 10) top = 10; // 避免超出顶部
+            }
+            
+            dropdown.style.left = left + 'px';
+            dropdown.style.top = top + 'px';
+        }
+        
+        function showDropdown() {
+            positionDropdown();
+            dropdown.style.display = 'block';
+        }
+        
+        function hideDropdown() {
+            dropdown.style.display = 'none';
+        }
+        
+        // 点击按钮切换下拉菜单
+        menuBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (dropdown.style.display === 'block') {
+                hideDropdown();
+            } else {
+                showDropdown();
+            }
+        };
+        
+        // 点击其他区域关闭
+        const closeHandler = (e) => {
+            if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                hideDropdown();
+            }
+        };
+        document.addEventListener('click', closeHandler);
+        
+        // 滚动或窗口大小改变时自动关闭（避免位置错乱）
+        const resetDropdown = () => { hideDropdown(); };
+        window.addEventListener('scroll', resetDropdown);
+        window.addEventListener('resize', resetDropdown);
+        
+        // 绑定按钮事件
+        dropdown.querySelector('.dropdown-logout').onclick = () => {
+            if (confirm('确定要登出吗？')) logout();
+            hideDropdown();
+        };
+        dropdown.querySelector('.dropdown-delete').onclick = () => {
+            if (confirm(`确定要注销账号「${currentUser}」吗？\n（临时账号将被删除，浏览记录及所作更改仍会保留）`)) deleteAccount();
+            hideDropdown();
+        };
+        
+        // 可选：在页面关闭或卸载时移除事件监听（非必须，但为了规范）
+        window.addEventListener('beforeunload', () => {
+            document.removeEventListener('click', closeHandler);
+            window.removeEventListener('scroll', resetDropdown);
+            window.removeEventListener('resize', resetDropdown);
+        });
+        
+    } else {
+        // 未登录状态：移除下拉菜单，恢复原始登录注册按钮
+        const existingDropdown = document.getElementById('global-user-dropdown');
+        if (existingDropdown) existingDropdown.remove();
+        
+        navRight.innerHTML = `<button class="login-btn">登陆</button><button class="register-btn">注册</button>`;
+        const loginBtn = navRight.querySelector('.login-btn');
+        const registerBtn = navRight.querySelector('.register-btn');
+        if (loginBtn) loginBtn.onclick = () => window.handleLogin();
+        if (registerBtn) registerBtn.onclick = () => window.handleRegister();
+    }
+}
+
+            function logout() {
+        // 如果当前登录的是宁源，先恢复主题
+        if (currentUser === ADMIN_USERNAME) {
+            restoreDefaultTheme();
+            restoreCardContent();
+        }
+        currentUser = null;
+        updateNavButtons();
+        alert('已安全登出');
+    }
+
+// 显示大量红色"再见"占满屏幕，每隔几个字播放一次警告音，全部出现后红色闪烁    
+function showRedGoodbye(callback) {        
+    const container = document.createElement('div');        
+    container.style.position = 'fixed';        
+    container.style.top = '0';        
+    container.style.left = '0';        
+    container.style.width = '100%';        
+    container.style.height = '100%';        
+    container.style.zIndex = '40000';        
+    container.style.pointerEvents = 'none';        
+    container.style.overflow = 'hidden';        
+    document.body.appendChild(container);                
+    const wordCount = 200;        
+    const words = [];        
+    for (let i = 0; i < wordCount; i++) {            
+        const span = document.createElement('span');            
+        span.textContent = '再见';            
+        span.style.position = 'absolute';            
+        span.style.color = '#ff0000';            
+        const fontSize = Math.floor(Math.random() * 80 + 20);            
+        span.style.fontSize = fontSize + 'px';            
+        span.style.fontWeight = 'bold';            
+        span.style.fontFamily = 'monospace';            
+        span.style.whiteSpace = 'nowrap';            
+        span.style.opacity = '0';            
+        span.style.transition = 'opacity 0.05s linear';            
+        span.style.left = Math.random() * 100 + '%';            
+        span.style.top = Math.random() * 100 + '%';            
+        span.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;            
+        container.appendChild(span);            
+        words.push(span);        
+    }                
+    const delays = words.map(() => Math.random() * 1000);        
+    let completedCount = 0;  
+    
+    const soundInterval = 25;   // 每25个字播放一次警告音
+    const soundOffset = 0;
+    
+    words.forEach((word, idx) => {            
+        setTimeout(() => {                
+            word.style.opacity = '1';                
+            if ((idx - soundOffset) % soundInterval === 0) {
+                playWarningSound();                
+            }
+            completedCount++;                
+            if (completedCount === wordCount) {                    
+                redFlash();                
+            }            
+        }, delays[idx]);        
+    });                
+    setTimeout(() => {            
+        words.forEach(word => {                
+            word.style.transition = 'opacity 0.3s';
+            word.style.opacity = '0';
+        });
+        setTimeout(() => {
+            container.remove();
+            if (callback) callback();   // 特效全部结束后执行回调
+        }, 400);
+    }, 1200);
+}
+            
+            function deleteAccount() {
+                const isAdmin = (currentUser === ADMIN_USERNAME);
+              if (isAdmin) {
+                    playWarningSound();
+                    showWarning('没关系，下次再见~', 1800);   // 红色警告框，持续1.8秒
+                    
+                    // 第一步：在警告框消失的同时（1.8秒后）恢复彩色界面
+                    setTimeout(() => {
+                        restoreDefaultTheme();   // 移除灰度滤镜、恢复天气栏、移除挽联
+                    }, 1800);
+                    
+                    // 第二步：再延迟0.4秒（即总延迟2.2秒）开始显示红色“再见”特效
+                    setTimeout(() => {
+                        showRedGoodbye(() => {
+                            // 第三步：特效全部结束后才真正登出（清空用户、更新导航栏）
+                            restoreCardContent();       // 恢复卡片内容
+                            currentUser = null;
+                            updateNavButtons();
+                        });
+                    }, 2200);
+                    
+                    return;
+                }
+                const stored = getStoredUser();
+                if (stored && stored.username === currentUser) {
+                    clearUser();
+                    alert(`临时账号「${currentUser}」已注销。\n感谢您的使用！`);
+                }
+                currentUser = null;
+                updateNavButtons();
+            }
+
+            function forgotPassword() {
+                const user = getStoredUser();
+                if (!user) {
+                    alert('❌ 本机尚无注册账号信息，请先注册临时账号。');
+                    return;
+                }
+                const code = prompt('🔐 密码找回验证\n请输入内推码：');
+                if (code === null) return;
+                if (code === 'womenjiehunba') {
+                    alert(`当前临时账号「${user.username}」的密码是：${user.password}\n请妥善保管。`);
+                } else {
+                    alert('❌ 内推码错误，无法获取密码。');
+                }
+            }
+
+            let currentModal = null;
+            function closeModal() {
+                if (currentModal) {
+                    currentModal.classList.remove('active');
+                    setTimeout(() => {
+                        if (currentModal && currentModal.parentNode) currentModal.remove();
+                        currentModal = null;
+                    }, 200);
+                }
+            }
+
+            function showRegisterModal() {
+                closeModal();
+                const overlay = document.createElement('div');
+                overlay.className = 'arg-overlay';
+                overlay.innerHTML = `
+                    <div class="arg-modal">
+                        <span class="arg-close">&times;</span>
+                        <h3>📝 注册临时账号</h3>
+                        <div class="arg-group"><label>用户名</label><input type="text" id="reg_user" placeholder="请输入用户名"></div>
+                        <div class="arg-group"><label>密码</label><input type="password" id="reg_pwd" placeholder="设置密码"></div>
+                        <div class="arg-group"><label>确认密码</label><input type="password" id="reg_confirm" placeholder="再次输入密码"></div>
+                        <div class="arg-group"><label>内推码</label><input type="text" id="reg_invite" placeholder="请输入内推码"></div>
+                        <div class="arg-buttons"><button class="arg-btn-primary" id="reg_submit">注册</button><button class="arg-btn-secondary" id="reg_cancel">取消</button></div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                currentModal = overlay;
+
+                overlay.querySelector('.arg-close').onclick = closeModal;
+                overlay.querySelector('#reg_cancel').onclick = closeModal;
+                overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
+
+                const submitBtn = overlay.querySelector('#reg_submit');
+                submitBtn.onclick = () => {
+                    try {
+                        const username = overlay.querySelector('#reg_user').value.trim();
+                        const password = overlay.querySelector('#reg_pwd').value;
+                        const confirm = overlay.querySelector('#reg_confirm').value;
+                        const invite = overlay.querySelector('#reg_invite').value.trim();
+
+                        if (!username) { alert('❌ 用户名不能为空'); return; }
+                        if (!password) { alert('❌ 密码不能为空'); return; }
+                        if (!confirm) { alert('❌ 请确认密码'); return; }
+                        if (!invite) { alert('❌ 内推码不能为空'); return; }
+                        if (username === '宁源') {
+                            playWarningSound();
+                            showWarning('⚠️ 该用户名已被占用 ⚠️', 1800);
+                            blackout(2000);
+                            overlay.querySelector('#reg_user').value = '';
+                            overlay.querySelector('#reg_pwd').value = '';
+                            overlay.querySelector('#reg_confirm').value = '';
+                            overlay.querySelector('#reg_invite').value = '';
+                            return;
+                        }
+                        if (password !== confirm) { alert('⚠️ 两次输入的密码不一致'); return; }
+                        if (invite !== 'womenjiehunba') { alert('❌ 内推码错误'); return; }
+
+                        const existing = getStoredUser();
+                        if (existing) {
+                            if (!window.confirm(`⚠️ 已有账号「${existing.username}」。\n注册新临时账号将清除旧临时账号数据，是否继续？`)) return;
+                            clearUser();
+                        }
+                        saveUser(username, password);
+                        alert(`✨ 注册成功！\n欢迎「${username}」，请登录。`);
+                        closeModal();
+                    } catch (err) {
+                        alert('注册出错：' + err.message);
+                        console.error(err);
+                    }
+                };
+                overlay.classList.add('active');
+            }
+
+            function showLoginModal() {
+                closeModal();
+                const overlay = document.createElement('div');
+                overlay.className = 'arg-overlay';
+                overlay.innerHTML = `
+                    <div class="arg-modal">
+                        <span class="arg-close">&times;</span>
+                        <h3>🔐 登录</h3>
+                        <div class="arg-group"><label>用户名</label><input type="text" id="login_user" placeholder="你的注册名"></div>
+                        <div class="arg-group"><label>密码</label><input type="password" id="login_pwd" placeholder="密码"></div>
+                        <div class="forgot-link"><a id="forgot_btn">忘记密码？</a></div>
+                        <div class="arg-buttons"><button class="arg-btn-primary" id="login_submit">登陆</button><button class="arg-btn-secondary" id="login_cancel">取消</button></div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                currentModal = overlay;
+
+                overlay.querySelector('.arg-close').onclick = closeModal;
+                overlay.querySelector('#login_cancel').onclick = closeModal;
+                overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
+                overlay.querySelector('#forgot_btn').onclick = (e) => { e.preventDefault(); forgotPassword(); };
+
+                const loginBtn = overlay.querySelector('#login_submit');
+                loginBtn.onclick = () => {
+                    const username = overlay.querySelector('#login_user').value.trim();
+                    const password = overlay.querySelector('#login_pwd').value;
+                    if (!username || !password) {
+                        alert('❌ 用户名和密码都不能为空');
+                        return;
+                    }
+                    let loginSuccess = false;
+                    // 先检查是否为宁源
+                  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                        loginSuccess = true;
+                        currentUser = ADMIN_USERNAME;
+                        applyNingyuanTheme();   // 先应用主题
+                        redFlash();             // 再闪烁（内部会临时移除灰度再恢复）
+                    } else {
+                        // 普通用户验证
+                        const stored = getStoredUser();
+                        if (stored && stored.username === username && stored.password === password) {
+                            loginSuccess = true;
+                            currentUser = username;
+                        }
+                    }
+                    if (loginSuccess) {
+                        alert(`✅ 登陆成功！欢迎回来，${username}`);
+                        closeModal();
+                        updateNavButtons();
+                    } else {
+                        alert('❌ 用户名或密码错误');
+                    }
+                };
+                overlay.classList.add('active');
+            }
+
+            // 暴露全局函数
+            window.handleLogin = showLoginModal;
+            window.handleRegister = showRegisterModal;
+
+            // 页面加载完成后初始化导航栏按钮状态
+            window.addEventListener('DOMContentLoaded', function() {
+                updateNavButtons();
+            });
+             // 暴露获取当前用户信息的全局函数
+            window.getCurrentUser = function() {
+                return currentUser || null;
+            };
+            window.isAdminUser = function() {
+                return currentUser === ADMIN_USERNAME;
+            };
+        })();
+
+        // 图片预览功能（独立于登录注册系统）
+(function() {
+   // 创建预览浮层
+const previewOverlay = document.createElement('div');
+previewOverlay.className = 'img-preview-overlay';
+previewOverlay.innerHTML = `
+    <div class="img-preview-container">
+        <span class="img-preview-close">&times;</span>
+        <img class="img-preview-img" src="" alt="预览图">
+    </div>
+`;
+    document.body.appendChild(previewOverlay);
+        // 如果当前是宁源模式，给预览浮层添加灰度类
+    if (document.body.classList.contains('ningyuan-mode')) {
+        previewOverlay.classList.add('ningyuan-grayscale');
+    }
+    
+    const closeBtn = previewOverlay.querySelector('.img-preview-close');
+    const previewImg = previewOverlay.querySelector('.img-preview-img');
+    
+   function showImagePreview() {
+    previewImg.src = 'images/外推2.jpg';   // 直接指定放大图片的路径
+    previewOverlay.classList.add('active');
+}
+    function hideImagePreview() {
+    previewOverlay.classList.remove('active');
+    // 不要清空 src，保持图片缓存
+}
+    // 点击关闭按钮或遮罩关闭
+    closeBtn.onclick = hideImagePreview;
+    previewOverlay.onclick = (e) => {
+        if (e.target === previewOverlay) hideImagePreview();
+    };
+    // 绑定点击图片事件（确保图片加载后再绑定）
+   const pushImg = document.getElementById('external-push-img');
+if (pushImg) {
+    pushImg.onclick = () => {
+        showImagePreview();   // 无需传参
+    };
+}
+})();
+        
+        // 显示登录提示（保持原有）
+        function showLoginPrompt(event) {
+            event.preventDefault();
+            alert('🔒 请登录后查看');
+        }
+
+              // ========== 搜索功能（根据用户类型限制引擎）==========
+        function handleSearch() {
+            const currentUser = window.getCurrentUser();
+            if (!currentUser) {
+                alert('🔒 请先登录');
+                return;
+            }
+            
+            const searchType = document.getElementById('searchType').value;
+            const searchText = document.querySelector('.search-input').value;
+            if (!searchText.trim()) {
+                alert('请输入搜索内容');
+                return;
+            }
+            
+            const isAdmin = window.isAdminUser();
+            const typeLabel = searchType === 'search' ? '搜索' : '地道搜索';
+            
+            // 普通用户不能使用地道搜索
+            if (!isAdmin && searchType === 'daodelao') {
+                alert('❌ 此搜索引擎暂不向临时账号开放，敬请期待。');
+                return;
+            }
+            
+            // 执行搜索（目前仅弹出提示）
+            alert(`🔍 ${typeLabel}：${searchText}\n\n搜索功能开发中...`);
+        }
+
+        // 绑定搜索按钮和回车键
+        const searchBtn = document.querySelector('.search-btn');
+        const searchInput = document.querySelector('.search-input');
+        if (searchBtn) searchBtn.addEventListener('click', handleSearch);
+        if (searchInput) searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleSearch();
+        });
+        
+    </script>
+</body>
+</html>
