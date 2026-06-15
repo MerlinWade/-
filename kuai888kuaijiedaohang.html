@@ -1036,8 +1036,8 @@ function applyNingyuanTheme() {
             cardLink.setAttribute('data-original-href', cardLink.href);
             cardImg.setAttribute('data-original-src', cardImg.src);
             // 保存原始标题和正文
-            const originalTitle = document.querySelector('.card-title')?.innerText || '';
-            const originalDesc = document.querySelector('.card-desc')?.innerText || '';
+           const originalTitle = cardTextOverlay.querySelector('.card-title')?.innerText || '';
+           const originalDesc = cardTextOverlay.querySelector('.card-desc')?.innerText || '';
             cardLink.setAttribute('data-original-title', originalTitle);
             cardLink.setAttribute('data-original-desc', originalDesc);
         }
@@ -1078,7 +1078,7 @@ function restoreDefaultTheme() {
     }
 }
             
-            // 恢复右侧卡片原始内容（仅卡片，不影响其他主题）
+           // 恢复右侧卡片原始内容（仅卡片，不影响其他主题）
 function restoreCardContent() {
     const cardLink = document.getElementById('card-link-wrapper');
     const cardImg = document.getElementById('card-img');
@@ -1086,18 +1086,20 @@ function restoreCardContent() {
     if (cardLink && cardImg && cardTextOverlay) {
         const originalHref = cardLink.getAttribute('data-original-href');
         const originalSrc = cardImg.getAttribute('data-original-src');
-        const originalTitle = cardLink.getAttribute('data-original-title');
-        const originalDesc = cardLink.getAttribute('data-original-desc');
         if (originalHref) cardLink.href = originalHref;
         if (originalSrc) cardImg.src = originalSrc;
-        // 恢复原始文字结构（标题+正文）
+        
+        // 恢复文字部分（仅当原始标题和正文都存在时）
+        const originalTitle = cardLink.getAttribute('data-original-title');
+        const originalDesc = cardLink.getAttribute('data-original-desc');
         if (originalTitle && originalDesc) {
             cardTextOverlay.innerHTML = `
                 <div class="card-title">${originalTitle}</div>
                 <div class="card-desc">${originalDesc}</div>
             `;
-        } else {
-        cardLink.onclick = null; // 恢复默认点击行为（由 HTML 原有 a 标签决定）
+        }
+        // 清除自定义点击事件，恢复默认行为
+        cardLink.onclick = null;
     }
 }
             
