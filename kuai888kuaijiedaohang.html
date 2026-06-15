@@ -884,22 +884,20 @@ function restoreDefaultTheme() {
             }, 200);     // 淡出用时 0.2秒
         }, 200);      // 保持完全红色 0.2秒
     }
-// 在 updateNavButtons 中，当 currentUser 存在时，不再在 navRight 内部构造下拉菜单，
-// 而是创建一个独立的浮层，并动态定位。
-
 function updateNavButtons() {
     const navRight = document.querySelector('.navbar-right');
     if (!navRight) return;
+    
     if (currentUser) {
-        // 创建按钮
+        // 显示用户名按钮
         navRight.innerHTML = `<button class="user-menu-btn" style="padding: 7px 16px; background: #0066cc; color: white; border: none; border-radius: 3px; cursor: pointer;">👤 ${currentUser}</button>`;
         const menuBtn = navRight.querySelector('.user-menu-btn');
         
-        // 移除已有的浮层（避免重复）
-        const existingDropdown = document.getElementById('global-user-dropdown');
-        if (existingDropdown) existingDropdown.remove();
+        // 移除已存在的下拉菜单
+        const oldDropdown = document.getElementById('global-user-dropdown');
+        if (oldDropdown) oldDropdown.remove();
         
-        // 创建浮层并添加到 body
+        // 创建下拉菜单
         const dropdown = document.createElement('div');
         dropdown.id = 'global-user-dropdown';
         dropdown.style.position = 'fixed';
@@ -916,49 +914,89 @@ function updateNavButtons() {
         `;
         document.body.appendChild(dropdown);
         
-        // 定位函数
+        // 定位函数：让下拉菜单出现在按钮正下方，左边缘对齐，并自动避免超出屏幕
         function positionDropdown() {
             const rect = menuBtn.getBoundingClientRect();
-            dropdown.style.left = rect.right - dropdown.offsetWidth + 'px';
-            dropdown.style.top = rect.bottom + window.scrollY + 'px';
+            // 先设置临时位置，以便获取其宽高
+            dropdown.style.left = '0px';
+            dropdown.style.top = '0px';
+            dropdown.style.display = 'block';
+            const dropdownRect = dropdown.getBoundingClientRect();
+            dropdown.style.display = 'none';
+            
+            let left = rect.left;
+            let top = rect.bottom;
+            
+            // 左右边界检查
+            if (left + dropdownRect.width > window.innerWidth) {
+                left = window.innerWidth - dropdownRect.width - 10;
+            }
+            if (left < 10) left = 10;
+            
+            // 底部空间不足时，显示在按钮上方
+            if (top + dropdownRect.height > window.innerHeight) {
+                top = rect.top - dropdownRect.height;
+                if (top < 10) top = 10; // 避免超出顶部
+            }
+            
+            dropdown.style.left = left + 'px';
+            dropdown.style.top = top + 'px';
         }
         
+        function showDropdown() {
+            positionDropdown();
+            dropdown.style.display = 'block';
+        }
+        
+        function hideDropdown() {
+            dropdown.style.display = 'none';
+        }
+        
+        // 点击按钮切换下拉菜单
         menuBtn.onclick = (e) => {
             e.stopPropagation();
-            const isVisible = dropdown.style.display === 'block';
-            if (!isVisible) {
-                positionDropdown();
-                dropdown.style.display = 'block';
+            if (dropdown.style.display === 'block') {
+                hideDropdown();
             } else {
-                dropdown.style.display = 'none';
+                showDropdown();
             }
         };
         
-        // 点击其他地方关闭
+        // 点击其他区域关闭
         const closeHandler = (e) => {
             if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.style.display = 'none';
+                hideDropdown();
             }
         };
         document.addEventListener('click', closeHandler);
         
-        // 滚动或窗口改变时重新定位
-        window.addEventListener('scroll', positionDropdown);
-        window.addEventListener('resize', positionDropdown);
+        // 滚动或窗口大小改变时自动关闭（避免位置错乱）
+        const resetDropdown = () => { hideDropdown(); };
+        window.addEventListener('scroll', resetDropdown);
+        window.addEventListener('resize', resetDropdown);
         
         // 绑定按钮事件
         dropdown.querySelector('.dropdown-logout').onclick = () => {
             if (confirm('确定要登出吗？')) logout();
-            dropdown.style.display = 'none';
+            hideDropdown();
         };
         dropdown.querySelector('.dropdown-delete').onclick = () => {
             if (confirm(`确定要注销账号「${currentUser}」吗？\n（只删除账号，浏览记录及更改仍保留）`)) deleteAccount();
-            dropdown.style.display = 'none';
+            hideDropdown();
         };
+        
+        // 可选：在页面关闭或卸载时移除事件监听（非必须，但为了规范）
+        window.addEventListener('beforeunload', () => {
+            document.removeEventListener('click', closeHandler);
+            window.removeEventListener('scroll', resetDropdown);
+            window.removeEventListener('resize', resetDropdown);
+        });
+        
     } else {
-        // 未登录时清除浮层并恢复按钮
+        // 未登录状态：移除下拉菜单，恢复原始登录注册按钮
         const existingDropdown = document.getElementById('global-user-dropdown');
         if (existingDropdown) existingDropdown.remove();
+        
         navRight.innerHTML = `<button class="login-btn">登陆</button><button class="register-btn">注册</button>`;
         const loginBtn = navRight.querySelector('.login-btn');
         const registerBtn = navRight.querySelector('.register-btn');
