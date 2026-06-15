@@ -694,7 +694,7 @@ body.ningyuan-mode::after {
                 <img id="card-img" src="images/警惕诈骗.jpg" alt="警惕诈骗" class="card-img">
             </div>
             <div class="card-text-overlay">
-                <span class="card-title">警惕诈骗</span>
+                <span class="card-title">近期网络诈骗频发，请留意上当受骗\n记者了解到……</span>
             </div>
         </a>
     </div>
@@ -1035,6 +1035,9 @@ function applyNingyuanTheme() {
         }
         // 替换为宁源内容
         cardImg.src = 'images/20180417.jpg';
+        <div class="card-text-overlay">                
+<span class="card-title">逝者已去\n记者了解到……</span>            
+</div>
         cardLink.onclick = function(e) {
             // alert('进入宁源专属页面');
             // return true; // 允许跳转
@@ -1060,7 +1063,8 @@ function restoreDefaultTheme() {
         weatherDiv.style.color = '';
         weatherDiv.style.backgroundColor = '';
     }
-        // 恢复右侧卡片原始内容
+        // 单独存放的恢复右侧卡片原始内容函数
+    function restoreCardContent() {
     const cardLink = document.getElementById('card-link-wrapper');
     const cardImg = document.getElementById('card-img');
     if (cardLink && cardImg) {
@@ -1071,7 +1075,9 @@ function restoreDefaultTheme() {
         if (originalSrc) cardImg.src = originalSrc;
         const titleSpan = cardLink.querySelector('.card-title');
         if (titleSpan && originalTitle) titleSpan.innerText = originalTitle;
+        cardLink.onclick = null;
     }
+}
 }
             
             // 增强红色闪烁效果（全屏红色遮罩 + 强烈闪烁）
@@ -1310,6 +1316,7 @@ function showRedGoodbye(callback) {
                     setTimeout(() => {
                         showRedGoodbye(() => {
                             // 第三步：特效全部结束后才真正登出（清空用户、更新导航栏）
+                            restoreCardContent();       // 恢复卡片内容
                             currentUser = null;
                             updateNavButtons();
                         });
