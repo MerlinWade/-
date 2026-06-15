@@ -4,6 +4,7 @@
     
     <link rel="preload" as="image" href="images/外推1.jpg">
     <link rel="preload" as="image" href="images/外推2.jpg">
+    <link rel="preload" as="image" href="images/20180417.jpg">
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -484,28 +485,6 @@ body.ningyuan-mode::after {
             }
         }
         
-        /* 外推图片区域样式 */
-.external-push-section {
-    max-width: 1200px;
-    margin: 0px auto 20px auto;  /* 上边距0px，下边距20px，与板块间距一致 */
-    width: 100%;
-    padding: 0px;   /* 可选，与 .container 的内边距保持一致 */
-    box-sizing: border-box;
-}
-.external-push-img {
-    max-width: 100%;
-    width: auto;
-    max-height: 300px;  /* 限制最大高度，避免过高如果你希望图片宽度不超过父容器但高度不限，可只保留 max-width: 100%;。这里加 max-height: 300px 是示例，你可以根据实际效果调整数值或删除该行*/
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    transition: transform 0.2s;
-    cursor: pointer;
-}
-.external-push-img:hover {
-    transform: scale(1.01);
-}
-
 /* 图片预览模态框（独立于登录模态框） */
 .img-preview-overlay {
     position: fixed;
@@ -566,7 +545,7 @@ body.ningyuan-mode::after {
         font-size: 24px;
     }
 }
-        /* 外推图片区域：左右弹性布局 */
+      /* 左右弹性布局容器（已存在，若已定义则无需重复） */
 .external-push-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -576,18 +555,17 @@ body.ningyuan-mode::after {
     width: 100%;
     box-sizing: border-box;
 }
-
 .external-push-item {
     flex: 1;
-    min-width: 200px;  /* 防止过窄 */
+    min-width: 200px;
 }
 
-/* 大图样式（调整高度与右侧卡片匹配） */
+/* 左侧大图样式 */
 .external-push-img {
     width: 100%;
     height: auto;
     max-height: 300px;
-    object-fit: cover;  /* 确保图片覆盖区域不变形 */
+    object-fit: cover;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     transition: transform 0.2s;
@@ -597,50 +575,53 @@ body.ningyuan-mode::after {
     transform: scale(1.01);
 }
 
-/* 右侧图文卡片样式 */
-.card-image {
-    width: 100%;
-    height: auto;
+/* 右侧卡片样式 */
+.card-link-wrapper {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+}
+.card-link-wrapper:hover {
+    transform: scale(1.01);
 }
 .card-img {
     width: 100%;
     height: auto;
     max-height: 300px;
     object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    transition: transform 0.2s;
+    display: block;
 }
-.card-img:hover {
-    transform: scale(1.01);
-}
-.card-text {
-    text-align: center;
-    margin-top: 12px;
-}
-.card-link {
-    display: inline-block;
-    background: #0066cc;
+.card-text-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
     color: white;
-    padding: 8px 20px;
-    border-radius: 30px;
-    text-decoration: none;
-    font-size: 1rem;
+    text-align: center;
+    padding: 12px;
+    font-size: 1.2rem;
     font-weight: bold;
-    transition: background 0.3s;
+    backdrop-filter: blur(4px); /* 可选毛玻璃效果 */
 }
-.card-link:hover {
-    background: #ff5500;
+.card-title {
+    display: inline-block;
+    background: rgba(0,0,0,0.5);
+    padding: 4px 12px;
+    border-radius: 20px;
 }
 
-/* 响应式：小屏幕时堆叠 */
+/* 响应式：小屏幕堆叠时，卡片高度自适应 */
 @media (max-width: 768px) {
     .external-push-wrapper {
         flex-direction: column;
-        gap: 25px;
     }
     .external-push-img, .card-img {
-        max-height: none;  /* 小屏不限高度，按比例显示 */
+        max-height: none;
         object-fit: contain;
     }
 }
@@ -701,19 +682,21 @@ body.ningyuan-mode::after {
     
 <!-- 外推图片区域：左右并排（大屏），上下堆叠（小屏） -->
 <div class="external-push-wrapper">
-    <!-- 左侧大图 -->
+    <!-- 左侧大图（保持原有点击预览功能） -->
     <div class="external-push-item">
         <img id="external-push-img" src="images/外推1.jpg" alt="外推音乐推荐" class="external-push-img">
     </div>
     
-    <!-- 右侧图文卡片 -->
+    <!-- 右侧卡片：整个链接区域 -->
     <div class="external-push-item">
-        <div class="card-image">
-            <img src="images/警惕诈骗.jpg" alt="警惕诈骗" class="card-img">
-        </div>
-        <div class="card-text">
-            <a href="#" class="card-link" onclick="alert('⚠️ 这是一则防诈骗提醒，后续将链接到相关页面。'); return false;">警惕诈骗</a>
-        </div>
+        <a href="#" class="card-link-wrapper" id="card-link-wrapper">
+            <div class="card-image">
+                <img id="card-img" src="images/警惕诈骗.jpg" alt="警惕诈骗" class="card-img">
+            </div>
+            <div class="card-text-overlay">
+                <span class="card-title">警惕诈骗</span>
+            </div>
+        </a>
     </div>
 </div>
     
@@ -1040,21 +1023,21 @@ function applyNingyuanTheme() {
         weatherDiv.style.backgroundColor = '';
     }
     
-    // 替换右侧卡片内容为宁源专属
-    const cardImg = document.querySelector('.card-img');
-    const cardLink = document.querySelector('.card-link');
-    if (cardImg && cardLink) {
-        // 保存原始内容到元素属性中，以便恢复
-        if (!cardImg.hasAttribute('data-original-src')) {
-            cardImg.setAttribute('data-original-src', cardImg.src);
+        // 替换右侧卡片内容为宁源专属（整卡链接）
+    const cardLink = document.getElementById('card-link-wrapper');
+    const cardImg = document.getElementById('card-img');
+    if (cardLink && cardImg) {
+        // 保存原始内容
+        if (!cardLink.hasAttribute('data-original-href')) {
             cardLink.setAttribute('data-original-href', cardLink.href);
-            cardLink.setAttribute('data-original-text', cardLink.innerText);
+            cardImg.setAttribute('data-original-src', cardImg.src);
+            cardLink.setAttribute('data-original-title', document.querySelector('.card-title').innerText);
         }
-        // 替换为宁源内容（请根据实际文件路径修改）
+        // 替换为宁源内容
         cardImg.src = 'images/20180417.jpg';
         cardLink.onclick = function(e) {
-            e.preventDefault();
-            alert('进入宁源专属页面（演示）');
+            // alert('进入宁源专属页面');
+            // return true; // 允许跳转
         };
     }
 }
@@ -1078,15 +1061,16 @@ function restoreDefaultTheme() {
         weatherDiv.style.backgroundColor = '';
     }
         // 恢复右侧卡片原始内容
-    const cardImg = document.querySelector('.card-img');
-    const cardLink = document.querySelector('.card-link');
-    if (cardImg && cardLink) {
-        const originalSrc = cardImg.getAttribute('data-original-src');
+    const cardLink = document.getElementById('card-link-wrapper');
+    const cardImg = document.getElementById('card-img');
+    if (cardLink && cardImg) {
         const originalHref = cardLink.getAttribute('data-original-href');
-        const originalText = cardLink.getAttribute('data-original-text');
-        if (originalSrc) cardImg.src = originalSrc;
+        const originalSrc = cardImg.getAttribute('data-original-src');
+        const originalTitle = cardLink.getAttribute('data-original-title');
         if (originalHref) cardLink.href = originalHref;
-        if (originalText) cardLink.innerText = originalText;
+        if (originalSrc) cardImg.src = originalSrc;
+        const titleSpan = cardLink.querySelector('.card-title');
+        if (titleSpan && originalTitle) titleSpan.innerText = originalTitle;
     }
 }
             
