@@ -674,17 +674,68 @@ body.ningyuan-mode::after {
     background: rgba(100,0,0,0.3);
 }
 
-/* 让第三列内部上下排列，并允许自然高度 */
+/* 让第三列内部上下排列 */
 .column-third {
     display: flex;
     flex-direction: column;
+    gap: 20px;
 }
 
-/* 配对卡片保持原有样式，移除可能的高度限制 */
-.pair-card {
-    min-height: auto;   /* 覆盖之前可能存在的 min-height */
+/* 问答卡片样式（确保存在） */
+.quiz-card {
+    background: rgba(20, 20, 30, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 16px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
-        
+.quiz-question {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffd966;
+    text-align: center;
+    margin-bottom: 12px;
+}
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.quiz-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    cursor: pointer;
+}
+.quiz-feedback {
+    text-align: center;
+    font-size: 0.85rem;
+    min-height: 32px;
+}
+.quiz-feedback.correct { color: #a0ffa0; background: rgba(0,100,0,0.3); }
+.quiz-feedback.wrong { color: #ffa0a0; background: rgba(100,0,0,0.3); }
+
+/* 配对卡片样式（确保高度正常） */
+.pair-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    background-size: cover;
+    background-position: center;
+    min-height: 260px;  /* 固定最小高度，防止变形 */
+    display: flex;
+    align-items: flex-end;
+}
+.pair-card-content {
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px);
+    width: 100%;
+    padding: 20px 16px;
+    text-align: center;
+    color: white;
+}
 /* 响应式：小屏幕堆叠时，卡片高度自适应 */
 @media (max-width: 768px) {
     .external-push-wrapper {
@@ -695,34 +746,7 @@ body.ningyuan-mode::after {
         object-fit: contain;
     }
 }
-      <div class="external-push-item column-third">
-    <!-- 窗口四：问答卡片 -->
-    <div class="quiz-card">
-        <div class="quiz-question">不知天上宫阙，今夕是（）年？</div>
-        <div class="quiz-options">
-            <label><input type="radio" name="answer" value="0"> 何</label>
-            <label><input type="radio" name="answer" value="2018"> 2018</label>
-            <label><input type="radio" name="answer" value="2026"> 2026</label>
-        </div>
-        <div class="quiz-feedback"></div>
-    </div>
-    <!-- 原有的配对卡片（图片3） -->
-    <div class="pair-card" id="pair-card" style="background-image: url('images/配对.jpg'); background-size: cover; background-position: center;">
-        <div class="pair-card-content">
-            <h3 class="pair-title">姓名配对缘分测试</h3>
-            <p class="pair-desc">输入双方姓名，测测你们之间的缘分吧</p>
-            <a href="#" class="pair-btn" id="pair-btn" onclick="alert('配对功能即将开放，敬请期待！'); return false;">开始测试 →</a>
-        </div>
-    </div>
-</div>
-        
-/* 小屏时保持卡片高度自适应 */
-@media (max-width: 768px) {
-    .pair-card {
-        min-height: 260px;
-    }
-}
-        
+  
     </style>
     
 </head>
@@ -797,8 +821,19 @@ body.ningyuan-mode::after {
         </a>
     </div>
 
-    <!-- 第三个卡片：姓名配对缘分测试 -->
-<div class="external-push-item">
+    <!-- 第三列：问答卡片 + 配对卡片 -->
+<div class="external-push-item column-third">
+    <!-- 窗口四：问答卡片 -->
+    <div class="quiz-card">
+        <div class="quiz-question">不知天上宫阙，今夕是（）年？</div>
+        <div class="quiz-options">
+            <label><input type="radio" name="answer" value="0"> 何</label>
+            <label><input type="radio" name="answer" value="2018"> 2018</label>
+            <label><input type="radio" name="answer" value="2026"> 2026</label>
+        </div>
+        <div class="quiz-feedback"></div>
+    </div>
+    <!-- 原有的配对卡片（图片3） -->
     <div class="pair-card" id="pair-card" style="background-image: url('images/配对.jpg'); background-size: cover; background-position: center;">
         <div class="pair-card-content">
             <h3 class="pair-title">姓名配对缘分测试</h3>
