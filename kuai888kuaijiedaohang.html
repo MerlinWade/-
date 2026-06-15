@@ -564,7 +564,8 @@ body.ningyuan-mode::after {
 .external-push-img {
     width: 100%;
     height: auto;
-    max-height: 300px;
+    max-height: 280px;
+    min-height: 260px;
     object-fit: cover;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
@@ -708,21 +709,15 @@ body.ningyuan-mode::after {
     text-align: center;
     color: white;
 }
-/* 两列等高布局 */
+/* 两列等高布局 - 使用 Grid */
 .external-push-wrapper.two-columns {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 2fr 1fr;  /* 左列宽度 2份，右列 1份 */
     gap: 20px;
-    align-items: stretch;  /* 使两列等高 */
+    align-items: stretch;  /* 强制两列高度相等 */
 }
-.two-columns .left-column {
-    flex: 2;               /* 左列宽度占比 2/3 */
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
+.two-columns .left-column,
 .two-columns .right-column {
-    flex: 1;               /* 右列宽度占比 1/3 */
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -731,12 +726,10 @@ body.ningyuan-mode::after {
 /* 响应式：小屏幕恢复垂直排列 */
 @media (max-width: 768px) {
     .external-push-wrapper.two-columns {
+        display: flex;
         flex-direction: column;
     }
-    .two-columns .left-column,
-    .two-columns .right-column {
-        flex: auto;
-    }
+}
 }
   
     </style>
