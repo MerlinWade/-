@@ -618,6 +618,7 @@ body.ningyuan-mode::after {
     opacity: 0.9;
 }
 
+        
 /* 响应式：小屏幕堆叠时，卡片高度自适应 */
 @media (max-width: 768px) {
     .external-push-wrapper {
@@ -626,6 +627,64 @@ body.ningyuan-mode::after {
     .external-push-img, .card-img {
         max-height: none;
         object-fit: contain;
+    }
+}
+        /* 第三个卡片：姓名配对 */
+.pair-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    min-height: 300px; /* 保证高度与左右图片相近 */
+    display: flex;
+    align-items: flex-end; /* 内容底部对齐，也可居中，根据喜好调整 */
+    background-color: #2a2a2a; /* 图片加载失败时的后备背景 */
+}
+.pair-card-content {
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    width: 100%;
+    padding: 20px 16px;
+    text-align: center;
+    color: white;
+    border-radius: 0 0 8px 8px;
+}
+.pair-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+.pair-desc {
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+    opacity: 0.9;
+}
+.pair-btn {
+    display: inline-block;
+    background: #ff6600;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background 0.3s, transform 0.2s;
+}
+.pair-btn:hover {
+    background: #e65c00;
+    transform: scale(1.02);
+}
+
+/* 确保三个项目在大屏幕等宽 */
+.external-push-item {
+    flex: 1;
+    min-width: 200px;
+}
+/* 小屏时保持卡片高度自适应 */
+@media (max-width: 768px) {
+    .pair-card {
+        min-height: 260px;
     }
 }
         
@@ -702,6 +761,18 @@ body.ningyuan-mode::after {
 </div>
         </a>
     </div>
+
+    <!-- 第三个卡片：姓名配对缘分测试 -->
+<div class="external-push-item">
+    <div class="pair-card" id="pair-card" style="background-image: url('images/配对.jpg'); background-size: cover; background-position: center;">
+        <div class="pair-card-content">
+            <h3 class="pair-title">姓名配对缘分测试</h3>
+            <p class="pair-desc">输入双方姓名，测测你们之间的缘分吧</p>
+            <a href="#" class="pair-btn" id="pair-btn" onclick="alert('配对功能即将开放，敬请期待！'); return false;">开始测试 →</a>
+        </div>
+    </div>
+</div>
+    
 </div>
     
     <!-- 虚拟页脚区域 -->
@@ -1228,7 +1299,7 @@ function updateNavButtons() {
             hideDropdown();
         };
         dropdown.querySelector('.dropdown-delete').onclick = () => {
-            if (confirm(`确定要注销账号「${currentUser}」吗？\n（若为临时账号将被删除，浏览记录及更改仍会保留）`)) deleteAccount();
+            if (confirm(`确定要注销账号「${currentUser}」吗？\n（临时账号将被删除，浏览记录及所作更改仍会保留）`)) deleteAccount();
             hideDropdown();
         };
         
