@@ -486,10 +486,13 @@
 }
 .external-push-img {
     max-width: 100%;
+    width: auto;
+    max-height: 300px;  /* 限制最大高度，避免过高如果你希望图片宽度不超过父容器但高度不限，可只保留 max-width: 100%;。这里加 max-height: 300px 是示例，你可以根据实际效果调整数值或删除该行*/
     height: auto;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     transition: transform 0.2s;
+    cursor: pointer;
 }
 .external-push-img:hover {
     transform: scale(1.01);
@@ -922,7 +925,7 @@
 // 应用宁源主题（灰色背景 + 挽联 + 主要内容灰度 + 浮动元素灰度）
 function applyNingyuanTheme() {
     document.body.classList.add('ningyuan-mode');
-    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer');
+    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer, .external-push-section');
     grayscaleTargets.forEach(el => el.classList.add('ningyuan-grayscale'));
     
     // 添加对浮动元素的灰度（如果它们已存在）
@@ -942,7 +945,7 @@ function applyNingyuanTheme() {
 // 恢复默认主题
 function restoreDefaultTheme() {
     document.body.classList.remove('ningyuan-mode');
-    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer');
+    const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer, .external-push-section');
     grayscaleTargets.forEach(el => el.classList.remove('ningyuan-grayscale'));
     
     // 移除浮动元素的灰度
@@ -1084,7 +1087,7 @@ function updateNavButtons() {
             hideDropdown();
         };
         dropdown.querySelector('.dropdown-delete').onclick = () => {
-            if (confirm(`确定要注销账号「${currentUser}」吗？\n（只删除账号，浏览记录及更改仍保留）`)) deleteAccount();
+            if (confirm(`确定要注销临时账号「${currentUser}」吗？\n（只删除临时账号，浏览记录及更改仍保留）`)) deleteAccount();
             hideDropdown();
         };
         
@@ -1205,7 +1208,7 @@ function showRedGoodbye(callback) {
                 const stored = getStoredUser();
                 if (stored && stored.username === currentUser) {
                     clearUser();
-                    alert(`账号「${currentUser}」已注销，账号已清除。\n感谢您的使用！`);
+                    alert(`临时账号「${currentUser}」已注销。\n感谢您的使用！`);
                 }
                 currentUser = null;
                 updateNavButtons();
@@ -1214,13 +1217,13 @@ function showRedGoodbye(callback) {
             function forgotPassword() {
                 const user = getStoredUser();
                 if (!user) {
-                    alert('❌ 尚无注册账号，请先注册。');
+                    alert('❌ 本机尚无注册账号信息，请先注册临时账号。');
                     return;
                 }
                 const code = prompt('🔐 密码找回验证\n请输入内推码：');
                 if (code === null) return;
                 if (code === 'womenjiehunba') {
-                    alert(`当前账号「${user.username}」的密码是：${user.password}\n请妥善保管。`);
+                    alert(`当前临时账号「${user.username}」的密码是：${user.password}\n请妥善保管。`);
                 } else {
                     alert('❌ 内推码错误，无法获取密码。');
                 }
@@ -1244,7 +1247,7 @@ function showRedGoodbye(callback) {
                 overlay.innerHTML = `
                     <div class="arg-modal">
                         <span class="arg-close">&times;</span>
-                        <h3>📝 注册</h3>
+                        <h3>📝 注册临时账号</h3>
                         <div class="arg-group"><label>用户名</label><input type="text" id="reg_user" placeholder="请输入用户名"></div>
                         <div class="arg-group"><label>密码</label><input type="password" id="reg_pwd" placeholder="设置密码"></div>
                         <div class="arg-group"><label>确认密码</label><input type="password" id="reg_confirm" placeholder="再次输入密码"></div>
@@ -1286,7 +1289,7 @@ function showRedGoodbye(callback) {
 
                         const existing = getStoredUser();
                         if (existing) {
-                            if (!window.confirm(`⚠️ 已有账号「${existing.username}」。\n注册新账号将清除旧数据，是否继续？`)) return;
+                            if (!window.confirm(`⚠️ 已有账号「${existing.username}」。\n注册新临时账号将清除旧临时账号数据，是否继续？`)) return;
                             clearUser();
                         }
                         saveUser(username, password);
@@ -1364,19 +1367,26 @@ function showRedGoodbye(callback) {
             window.addEventListener('DOMContentLoaded', function() {
                 updateNavButtons();
             });
+             // 暴露获取当前用户信息的全局函数
+            window.getCurrentUser = function() {
+                return currentUser || null;
+            };
+            window.isAdminUser = function() {
+                return currentUser === ADMIN_USERNAME;
+            };
         })();
 
         // 图片预览功能（独立于登录注册系统）
 (function() {
-    // 创建预览浮层
-    const previewOverlay = document.createElement('div');
-    previewOverlay.className = 'img-preview-overlay';
-    previewOverlay.innerHTML = `
-        <div class="img-preview-container">
-            <span class="img-preview-close">&times;</span>
-            <img class="img-preview-img" src="images/外推2.jpg" alt="预览图">
-        </div>
-    `;
+   // 创建预览浮层
+const previewOverlay = document.createElement('div');
+previewOverlay.className = 'img-preview-overlay';
+previewOverlay.innerHTML = `
+    <div class="img-preview-container">
+        <span class="img-preview-close">&times;</span>
+        <img class="img-preview-img" src="" alt="预览图">
+    </div>
+`;
     document.body.appendChild(previewOverlay);
         // 如果当前是宁源模式，给预览浮层添加灰度类
     if (document.body.classList.contains('ningyuan-mode')) {
@@ -1386,27 +1396,26 @@ function showRedGoodbye(callback) {
     const closeBtn = previewOverlay.querySelector('.img-preview-close');
     const previewImg = previewOverlay.querySelector('.img-preview-img');
     
-    function showImagePreview(src) {
-        previewImg.src = src;
-        previewOverlay.classList.add('active');
-    }
-    function hideImagePreview() {
-        previewOverlay.classList.remove('active');
-        // 可选：延迟清空src，避免闪烁
-        setTimeout(() => { previewImg.src = ''; }, 300);
-    }
+   function showImagePreview() {
+    previewImg.src = 'images/外推2.jpg';   // 直接指定放大图片的路径
+    previewOverlay.classList.add('active');
+}
+    unction hideImagePreview() {
+    previewOverlay.classList.remove('active');
+    // 不要清空 src，保持图片缓存
+}
     // 点击关闭按钮或遮罩关闭
     closeBtn.onclick = hideImagePreview;
     previewOverlay.onclick = (e) => {
         if (e.target === previewOverlay) hideImagePreview();
     };
     // 绑定点击图片事件（确保图片加载后再绑定）
-    const pushImg = document.getElementById('external-push-img');
-    if (pushImg) {
-        pushImg.onclick = () => {
-            showImagePreview('外推2.jpg');  // 点击放大显示另一张图片
-        };
-    }
+   const pushImg = document.getElementById('external-push-img');
+if (pushImg) {
+    pushImg.onclick = () => {
+        showImagePreview();   // 无需传参
+    };
+}
 })();
         
         // 显示登录提示（保持原有）
@@ -1415,24 +1424,42 @@ function showRedGoodbye(callback) {
             alert('🔒 请登录后查看');
         }
 
-        // 搜索功能处理
-        document.querySelector('.search-btn').addEventListener('click', function() {
+              // ========== 搜索功能（根据用户类型限制引擎）==========
+        function handleSearch() {
+            const currentUser = window.getCurrentUser();
+            if (!currentUser) {
+                alert('🔒 请先登录');
+                return;
+            }
+            
             const searchType = document.getElementById('searchType').value;
             const searchText = document.querySelector('.search-input').value;
-            if (searchText.trim()) {
-                const typeLabel = searchType === 'search' ? '搜索' : '地道搜索';
-                alert(`🔍 ${typeLabel}：${searchText}\n\n搜索功能开发中...`);
-            } else {
+            if (!searchText.trim()) {
                 alert('请输入搜索内容');
+                return;
             }
-        });
+            
+            const isAdmin = window.isAdminUser();
+            const typeLabel = searchType === 'search' ? '搜索' : '地道搜索';
+            
+            // 普通用户不能使用地道搜索
+            if (!isAdmin && searchType === 'daodelao') {
+                alert('❌ 此搜索引擎暂不向临时账号开放，敬请期待。');
+                return;
+            }
+            
+            // 执行搜索（目前仅弹出提示）
+            alert(`🔍 ${typeLabel}：${searchText}\n\n搜索功能开发中...`);
+        }
 
-        // 回车搜索
-        document.querySelector('.search-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.querySelector('.search-btn').click();
-            }
+        // 绑定搜索按钮和回车键
+        const searchBtn = document.querySelector('.search-btn');
+        const searchInput = document.querySelector('.search-input');
+        if (searchBtn) searchBtn.addEventListener('click', handleSearch);
+        if (searchInput) searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleSearch();
         });
+        
     </script>
 </body>
 </html>
