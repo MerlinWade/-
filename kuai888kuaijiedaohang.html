@@ -477,7 +477,87 @@
                 font-size: 0.75em;
             }
         }
+        
+        /* 外推图片区域样式 */
+.external-push-section {
+    margin: 20px 0;
+    text-align: left;  /* 左对齐 */
+    cursor: pointer;
+}
+.external-push-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+}
+.external-push-img:hover {
+    transform: scale(1.01);
+}
+
+/* 图片预览模态框（独立于登录模态框） */
+.img-preview-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 15000;      /* 低于警告框20000、黑屏30000等 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.2s, opacity 0.2s;
+}
+.img-preview-overlay.active {
+    visibility: visible;
+    opacity: 1;
+}
+.img-preview-container {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+}
+.img-preview-img {
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.img-preview-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    font-size: 36px;
+    color: white;
+    cursor: pointer;
+    background: rgba(0,0,0,0.5);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+.img-preview-close:hover {
+    background: rgba(255,0,0,0.7);
+    transform: scale(1.1);
+}
+@media (max-width: 550px) {
+    .img-preview-close {
+        top: -30px;
+        width: 30px;
+        height: 30px;
+        font-size: 24px;
+    }
+}
+        
     </style>
+    
 </head>
 <body>
     <!-- 顶部导航栏 -->
@@ -529,7 +609,12 @@
             </div>
         </div>
     </div>
-
+    
+<!-- 外推图片区域 -->
+<div class="external-push-section">
+    <img id="external-push-img" src="images/外推1.jpg" alt="外推音乐推荐" class="external-push-img">
+</div>
+    
     <!-- 虚拟页脚区域 -->
     <div class="virtual-footer-section">
         <div class="virtual-footer">
@@ -834,24 +919,38 @@
                 localStorage.removeItem(STORAGE_KEY);
             }
             
- // 应用宁源主题（灰色背景 + 挽联 + 主要内容灰度）
-   function applyNingyuanTheme() {
+// 应用宁源主题（灰色背景 + 挽联 + 主要内容灰度 + 浮动元素灰度）
+function applyNingyuanTheme() {
     document.body.classList.add('ningyuan-mode');
     const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer');
     grayscaleTargets.forEach(el => el.classList.add('ningyuan-grayscale'));
+    
+    // 添加对浮动元素的灰度（如果它们已存在）
+    const dropdown = document.getElementById('global-user-dropdown');
+    if (dropdown) dropdown.classList.add('ningyuan-grayscale');
+    const previewOverlay = document.querySelector('.img-preview-overlay');
+    if (previewOverlay) previewOverlay.classList.add('ningyuan-grayscale');
+    
     const weatherDiv = document.querySelector('.weather-info');
     if (weatherDiv) {
         weatherDiv.textContent = '📍 ？？？ -8层';
-        // 删除内联样式，完全依赖 CSS 类
         weatherDiv.style.color = '';
         weatherDiv.style.backgroundColor = '';
     }
 }
- // 回复正常主题
+
+// 恢复默认主题
 function restoreDefaultTheme() {
     document.body.classList.remove('ningyuan-mode');
     const grayscaleTargets = document.querySelectorAll('.navbar, .container, .virtual-footer-section, .real-footer');
     grayscaleTargets.forEach(el => el.classList.remove('ningyuan-grayscale'));
+    
+    // 移除浮动元素的灰度
+    const dropdown = document.getElementById('global-user-dropdown');
+    if (dropdown) dropdown.classList.remove('ningyuan-grayscale');
+    const previewOverlay = document.querySelector('.img-preview-overlay');
+    if (previewOverlay) previewOverlay.classList.remove('ningyuan-grayscale');
+    
     const weatherDiv = document.querySelector('.weather-info');
     if (weatherDiv) {
         weatherDiv.textContent = '📍 北淀市 -18℃ 雨';
@@ -913,6 +1012,10 @@ function updateNavButtons() {
             <button class="dropdown-delete" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer; color: #d32f2f;">🗑️ 注销账号</button>
         `;
         document.body.appendChild(dropdown);
+                // 如果当前是宁源模式，给下拉菜单添加灰度类
+        if (document.body.classList.contains('ningyuan-mode')) {
+            dropdown.classList.add('ningyuan-grayscale');
+        }
         
         // 定位函数：让下拉菜单出现在按钮正下方，左边缘对齐，并自动避免超出屏幕
         function positionDropdown() {
@@ -1263,6 +1366,49 @@ function showRedGoodbye(callback) {
             });
         })();
 
+        // 图片预览功能（独立于登录注册系统）
+(function() {
+    // 创建预览浮层
+    const previewOverlay = document.createElement('div');
+    previewOverlay.className = 'img-preview-overlay';
+    previewOverlay.innerHTML = `
+        <div class="img-preview-container">
+            <span class="img-preview-close">&times;</span>
+            <img class="img-preview-img" src="images/外推2.jpg" alt="预览图">
+        </div>
+    `;
+    document.body.appendChild(previewOverlay);
+        // 如果当前是宁源模式，给预览浮层添加灰度类
+    if (document.body.classList.contains('ningyuan-mode')) {
+        previewOverlay.classList.add('ningyuan-grayscale');
+    }
+    
+    const closeBtn = previewOverlay.querySelector('.img-preview-close');
+    const previewImg = previewOverlay.querySelector('.img-preview-img');
+    
+    function showImagePreview(src) {
+        previewImg.src = src;
+        previewOverlay.classList.add('active');
+    }
+    function hideImagePreview() {
+        previewOverlay.classList.remove('active');
+        // 可选：延迟清空src，避免闪烁
+        setTimeout(() => { previewImg.src = ''; }, 300);
+    }
+    // 点击关闭按钮或遮罩关闭
+    closeBtn.onclick = hideImagePreview;
+    previewOverlay.onclick = (e) => {
+        if (e.target === previewOverlay) hideImagePreview();
+    };
+    // 绑定点击图片事件（确保图片加载后再绑定）
+    const pushImg = document.getElementById('external-push-img');
+    if (pushImg) {
+        pushImg.onclick = () => {
+            showImagePreview('外推2.jpg');  // 点击放大显示另一张图片
+        };
+    }
+})();
+        
         // 显示登录提示（保持原有）
         function showLoginPrompt(event) {
             event.preventDefault();
