@@ -706,18 +706,22 @@ body.ningyuan-mode::after {
     text-align: center;
     color: white;
 }
-/* 两列等高布局 - 使用 Grid */
 .external-push-wrapper.two-columns {
     display: grid;
-    grid-template-columns: 2fr 1fr;  /* 左列宽度 2份，右列 1份 */
+    grid-template-columns: 2fr 1fr;  /* 宽度比例 */
     gap: 20px;
-    align-items: stretch;  /* 强制两列高度相等 */
+    align-items: stretch;            /* 高度拉伸对齐 */
 }
 .two-columns .left-column,
 .two-columns .right-column {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    height: 100%;                    /* 重要：让 flex 容器填满网格单元格 */
+}
+/* 移除可能干扰的 min-height / max-height */
+.pair-card {
+    min-height: auto;                /* 或直接删除 min-height 属性 */
 }
 
 /* 响应式：小屏幕恢复垂直排列 */
