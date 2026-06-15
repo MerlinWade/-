@@ -775,44 +775,44 @@ body.ningyuan-mode::after {
     
 <!-- 外推图片区域：左右并排（大屏），上下堆叠（小屏） -->
 <div class="external-push-wrapper">
-    <!-- 左侧大图（保持原有点击预览功能） -->
+    <!-- 左侧：外推大图（不变） -->
     <div class="external-push-item">
         <img id="external-push-img" src="images/外推1.jpg" alt="外推音乐推荐" class="external-push-img">
     </div>
-    
-    <!-- 右侧卡片：整个链接区域 -->
+
+    <!-- 中间：配对卡片（原图片3） -->
     <div class="external-push-item">
+        <a href="#" class="pair-card" id="pair-card" style="background-image: url('images/配对.jpg'); background-size: cover; background-position: center; text-decoration: none;">
+            <div class="pair-card-content">
+                <h3 class="pair-title">姓名配对缘分测试</h3>
+                <p class="pair-desc">输入双方姓名，测测你们之间的缘分吧</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- 右侧：防诈骗卡片（上） + 问答卡片（下） -->
+    <div class="external-push-item column-third">
+        <!-- 防诈骗卡片（原图片2） -->
         <a href="#" class="card-link-wrapper" id="card-link-wrapper">
             <div class="card-image">
                 <img id="card-img" src="images/警惕诈骗.jpg" alt="警惕诈骗" class="card-img">
             </div>
             <div class="card-text-overlay">
-    <div class="card-title">近期网络诈骗频发，请留意上当受骗</div>
-    <div class="card-desc">记者了解到，诈骗手段层出不穷，请提高警惕。</div>
-</div>
+                <div class="card-title">近期网络诈骗频发，请留意上当受骗</div>
+                <div class="card-desc">记者了解到，诈骗手段层出不穷，请提高警惕。</div>
+            </div>
         </a>
-    </div>
-
-    <!-- 第三列：问答卡片 + 配对卡片 -->
-<div class="external-push-item column-third">
-    <!-- 窗口四：问答卡片 -->
-    <div class="quiz-card">
-        <div class="quiz-question">脑筋急转弯：不知天上宫阙，今夕是（）年？</div>
-        <div class="quiz-options">
-            <label><input type="radio" name="answer" value="0"> 何</label>
-            <label><input type="radio" name="answer" value="2018"> 2018</label>
-            <label><input type="radio" name="answer" value="2026"> 2026</label>
+        <!-- 问答卡片 -->
+        <div class="quiz-card">
+            <div class="quiz-question">脑筋急转弯：不知天上宫阙，今夕是（）年？</div>
+            <div class="quiz-options">
+                <label><input type="radio" name="answer" value="0"> 何</label>
+                <label><input type="radio" name="answer" value="2018"> 2018</label>
+                <label><input type="radio" name="answer" value="2026"> 2026</label>
+            </div>
+            <div class="quiz-feedback"></div>
         </div>
-        <div class="quiz-feedback"></div>
     </div>
-    <!-- 原有的配对卡片（图片3） -->
-    <a href="#" class="pair-card" id="pair-card" style="background-image: url('images/配对.jpg'); background-size: cover; background-position: center; text-decoration: none;">
-    <div class="pair-card-content">
-        <h3 class="pair-title">姓名配对缘分测试</h3>
-        <p class="pair-desc">输入双方姓名，测测你们之间的缘分吧</p>
-        <!-- 已删除按钮 -->
-    </div>
-</a>
 </div>
     
 </div>
