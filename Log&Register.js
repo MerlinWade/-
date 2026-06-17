@@ -502,8 +502,8 @@ function updateNavButtons() {
         navRight.innerHTML = `<button class="login-btn">登陆</button><button class="register-btn">注册</button>`;
         const loginBtn = navRight.querySelector('.login-btn');
         const registerBtn = navRight.querySelector('.register-btn');
-        if (loginBtn) loginBtn.onclick = () => window.handleLogin();
-        if (registerBtn) registerBtn.onclick = () => window.handleRegister();
+            if (loginBtn) loginBtn.onclick = showLoginModal;
+            if (registerBtn) registerBtn.onclick = showRegisterModal;
     }
 }
   
