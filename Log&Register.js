@@ -56,13 +56,6 @@
             return { success: true, user: currentUser, message: `账号「${currentUser}」登录成功` };
         }
         return { success: false, message: '用户名或密码错误' };
-        // 触发 onAuthStateChanged 回调
-        if (success) {
-        if (typeof window.onAuthStateChanged === 'function') {
-            window.onAuthStateChanged(currentUser);
-        }
-        return { success: true, ... };
-        }
     }
 
     function register(username, password, confirmPwd, inviteCode) {
