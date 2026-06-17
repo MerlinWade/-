@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公用模板 · 快888</title>
+    <style>
+        /* ==================== 基础重置 & 布局 ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ==================== 顶部导航栏（含搜索框） ==================== */
+        .navbar {
+            background: linear-gradient(to bottom, #f5f5f5, #e8e8e8);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 12px 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .navbar-brand {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1e3c72;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* ---- 搜索框 ---- */
+        .navbar-search {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .search-select {
+            padding: 7px 10px;
+            border: 1px solid #999;
+            border-radius: 3px;
+            font-size: 0.9em;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 7px 10px;
+            border: 1px solid #999;
+            border-radius: 3px;
+            font-size: 0.9em;
+            background: white;
+            color: #333;
+            min-width: 120px;
+        }
+
+        .search-btn {
+            padding: 7px 18px;
+            background: linear-gradient(to bottom, #0066cc, #0052a3);
+            color: white;
+            border: 1px solid #003d82;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .search-btn:hover {
+            background: linear-gradient(to bottom, #0052a3, #003d82);
+        }
+
+        /* ==================== 主内容区（占位） ==================== */
+        .container {
+            flex: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-content {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ==================== 虚拟页脚 ==================== */
+        .virtual-footer-section {
+            margin-bottom: 25px;
+        }
+
+        .virtual-footer {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .virtual-footer p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+
+        .virtual-footer a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .virtual-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ==================== 真实页脚 ==================== */
+        .real-footer {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .real-footer p {
+            color: #666;
+            font-size: 0.85em;
+            margin: 5px 0;
+        }
+
+        .real-footer a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .real-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ==================== 响应式适配 ==================== */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+            }
+            .navbar-brand {
+                text-align: center;
+            }
+            .navbar-search {
+                width: 100%;
+                min-width: unset;
+            }
+            .virtual-footer p {
+                font-size: 0.85em;
+            }
+            .real-footer p {
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-select {
+                font-size: 0.85em;
+                padding: 6px 8px;
+            }
+            .search-input {
+                font-size: 0.85em;
+                padding: 6px 8px;
+                min-width: 80px;
+            }
+            .search-btn {
+                font-size: 0.85em;
+                padding: 6px 14px;
+            }
+            .virtual-footer p {
+                font-size: 0.8em;
+            }
+            .real-footer p {
+                font-size: 0.75em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== 顶部导航栏（含搜索框） ========== -->
+    <div class="navbar">
+        <div class="navbar-brand">🌐 快888快捷导航</div>
+        <div class="navbar-search">
+            <select class="search-select" id="searchType">
+                <option value="search">搜索</option>
+                <option value="daodelao">地道搜索</option>
+            </select>
+            <input type="text" class="search-input" placeholder="搜索网站、新闻、资讯...">
+            <button class="search-btn">搜索</button>
+        </div>
+        <!-- 此处可扩展登录/注册按钮，若需要可自行添加 -->
+    </div>
+
+    <!-- ========== 主内容占位 ========== -->
+    <div class="container">
+        <div class="page-content">
+            <h2>📄 当前页面内容区域</h2>
+            <p>此处可放置页面专属内容（如关于我们、联系方式等）。</p>
+            <p>搜索框和页脚已自动适配本模板。</p>
+        </div>
+    </div>
+
+    <!-- ========== 虚拟页脚 ========== -->
+    <div class="virtual-footer-section">
+        <div class="virtual-footer">
+            <p>© 2018 快888快捷导航 | 
+               <a href="kuai888-关于我们.html">关于我们</a> | 
+               <a href="kuai888-联系方式.html">联系方式</a> | 
+               <a href="kuai888-用户协议.html">用户协议</a> | 
+               <a href="kuai888-广告服务.html">广告服务</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ========== 真实页脚 ========== -->
+    <div class="real-footer">
+        <p>本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关。</p>
+        <p>© 2026 MerlinWade. All rights reserved. | 本作品受著作权保护。未经许可，不得以任何形式转载或复制。</p>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- JavaScript：提取自原搜索功能，并适配独立模板                    -->
+    <!-- ============================================================ -->
+    <script>
+        // =================================================================
+        // 1. 模拟身份验证函数（请根据实际项目替换为真实逻辑）
+        //    真实环境下，建议从 localStorage 读取用户信息，
+        //    或引入 storage.js / ningyuan-init.js 中的 getCurrentUser。
+        // =================================================================
+        window.getCurrentUser = function() {
+            // 示例 1：从 localStorage 读取（适用于已登录场景）
+            try {
+                const raw = localStorage.getItem('arg_single_user');
+                if (raw) {
+                    const user = JSON.parse(raw);
+                    return user.username || null;
+                }
+            } catch (e) {}
+            
+            // 示例 2：若未登录，默认返回 null（模拟未登录状态）
+            // 如需测试“地道搜索”权限，可将返回值改为 '宁源'。
+            return null; 
+        };
+
+        window.isAdminUser = function() {
+            return window.getCurrentUser() === '宁源';
+        };
+
+        // =================================================================
+        // 2. 搜索功能处理（与原代码完全一致）
+        // =================================================================
+        function handleSearch() {
+            const currentUser = window.getCurrentUser();
+            if (!currentUser) {
+                alert('🔒 请先登录');
+                return;
+            }
+
+            const searchType = document.getElementById('searchType').value;
+            const searchText = document.querySelector('.search-input').value;
+            if (!searchText.trim()) {
+                alert('请输入搜索内容');
+                return;
+            }
+
+            const isAdmin = window.isAdminUser();
+            const typeLabel = searchType === 'search' ? '搜索' : '地道搜索';
+
+            // 普通用户不能使用地道搜索
+            if (!isAdmin && searchType === 'daodelao') {
+                alert('❌ 此搜索引擎暂不向临时账号开放，敬请期待。');
+                return;
+            }
+
+            // 执行搜索（目前仅弹出提示）
+            alert(`🔍 ${typeLabel}：${searchText}\n\n搜索功能开发中...`);
+        }
+
+        // =================================================================
+        // 3. 绑定事件（与首页一致，确保元素存在）
+        // =================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBtn = document.querySelector('.search-btn');
+            const searchInput = document.querySelector('.search-input');
+
+            if (searchBtn) {
+                searchBtn.addEventListener('click', handleSearch);
+            }
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSearch();
+                    }
+                });
+            }
+
+            // 可选：在控制台提示当前登录状态（便于调试）
+            const user = window.getCurrentUser();
+            console.log(user ? `当前登录用户：${user}` : '未登录（搜索功能受限）');
+        });
+    </script>
+
+</body>
+</html>
