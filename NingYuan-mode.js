@@ -67,6 +67,23 @@
         restoreDefaultTheme();
     });
 
+    window.addEventListener('auth:NingYuan-logout', function() {        
+                    playWarningSound();
+                    showWarning('没关系，下次再见~', 1800);   // 红色警告框，持续1.8秒
+                    
+                    // 第一步：在警告框消失的同时（1.8秒后）恢复彩色界面
+                    setTimeout(() => {
+                        restoreDefaultTheme();   // 移除灰度滤镜、恢复天气栏、移除挽联
+                    }, 1800);
+                    
+                    // 第二步：再延迟0.4秒（即总延迟2.2秒）开始显示红色“再见”特效
+                    setTimeout(() => {
+                        showRedGoodbye(() => {
+                        });
+                    }, 2200);
+                    return; 
+    });
+
     // ---------- 页面加载时检查初始状态 ----------
     function checkInitialState() {
         if (window.Auth && typeof window.Auth.getCurrentUser === 'function') {
