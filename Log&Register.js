@@ -332,10 +332,10 @@
                     closeModal();
                  } else if (result.silent) {
                   // 静默失败（宁源注册触发特效），不显示 alert，保留模态框清空输入内容
-                     overlay.querySelector('auth_username').value = '';
-                     overlay.querySelector('auth_password').value = '';
-                     overlay.querySelector('auth_confirmPWD').value = '';
-                     overlay.querySelector('auth_inviteCode').value = '';
+                     overlay.querySelector('#auth_username').value = '';
+                     overlay.querySelector('#auth_password').value = '';
+                     overlay.querySelector('#auth_confirm').value = '';
+                     overlay.querySelector('#auth_invite').value = '';
                   return
                 } else {
                     alert('❌ ' + result.message);
