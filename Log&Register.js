@@ -46,14 +46,14 @@
             currentUser = CONFIG.ADMIN_USERNAME;
             // 注意：宁源账号不存入 localStorage，仅作为内置账号
             window.dispatchEvent(new CustomEvent('auth:NingYuan-login'));
-            return { success: true, user: currentUser, message: '账号「${currentUser}」登录成功' };
+            return { success: true, user: currentUser, message: `账号「${currentUser}」登录成功` };
         }
         // 2. 检查普通用户
         const stored = getStoredUser();
         if (stored && stored.username === username && stored.password === password) {
             currentUser = username;
             window.dispatchEvent(new CustomEvent('auth:login'));
-            return { success: true, user: currentUser, message: '账号「${currentUser}」登录成功' };
+            return { success: true, user: currentUser, message: `账号「${currentUser}」登录成功` };
         }
         return { success: false, message: '用户名或密码错误' };
     }
@@ -77,14 +77,15 @@
         }
         // 保存
         saveUser(username, password);
-        return { success: true, message: '临时账号「${username}」注册成功' };
+        return { success: true, message: `临时账号「${username}」注册成功` };
     }
 
     function logout() {
+        const username = currentUser;  // 先保存
         currentUser = null;
         // 不清理 localStorage，仅清空会话状态
       window.dispatchEvent(new CustomEvent('auth:logout'));  
-      return { success: true, message: '账号「${currentUser}」已登出' };
+      return { success: true, message: `账号「${username}」已登出` };
     }
 
     function deleteAccount() {
@@ -97,10 +98,11 @@
         }
         const stored = getStoredUser();
         if (stored && stored.username === currentUser) {
+            const username = currentUser;
             clearUser();
             currentUser = null;
           window.dispatchEvent(new CustomEvent('auth:logout')); 
-          return { success: true, message: '临时账号「${currentUser}」已注销\n感谢您的使用！' };
+          return { success: true, message: `临时账号「${username}」已注销\n感谢您的使用！` };
         }
         return { success: false, message: '未找到要注销的账号' };
     }
@@ -329,11 +331,11 @@
                     alert('✨ 注册成功！\n欢迎「' + username + '」，请登录。');
                     closeModal();
                  } else if (result.silent) {
-                  // 静默失败（宁源注册触发特效），不显示 alert，直接关闭模态框
-                     overlay.querySelector('#reg_username').value = '';
-                     overlay.querySelector('#reg_password').value = '';
-                     overlay.querySelector('#reg_confirmPWD').value = '';
-                     overlay.querySelector('#reg_inviteCode').value = '';
+                  // 静默失败（宁源注册触发特效），不显示 alert，保留模态框清空输入内容
+                     overlay.querySelector('auth_username').value = '';
+                     overlay.querySelector('auth_password').value = '';
+                     overlay.querySelector('auth_confirmPWD').value = '';
+                     overlay.querySelector('auth_inviteCode').value = '';
                   return
                 } else {
                     alert('❌ ' + result.message);
