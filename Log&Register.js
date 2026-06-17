@@ -56,6 +56,13 @@
             return { success: true, user: currentUser, message: `账号「${currentUser}」登录成功` };
         }
         return { success: false, message: '用户名或密码错误' };
+        // 触发 onAuthStateChanged 回调
+        if (success) {
+        if (typeof window.onAuthStateChanged === 'function') {
+            window.onAuthStateChanged(currentUser);
+        }
+        return { success: true, ... };
+        }
     }
 
     function register(username, password, confirmPwd, inviteCode) {
@@ -331,7 +338,7 @@
                     alert('✨ 注册成功！\n欢迎「' + username + '」，请登录。');
                     closeModal();
                  } else if (result.silent) {
-                  // 静默失败（宁源注册触发特效），不显示 alert，保留模态框清空输入内容
+                  // 静默失败（宁源注册触发特效），不显示 alert，保留模态框清空输入内容方便用户更改（仅作彩蛋）
                      overlay.querySelector('#auth_username').value = '';
                      overlay.querySelector('#auth_password').value = '';
                      overlay.querySelector('#auth_confirm').value = '';
