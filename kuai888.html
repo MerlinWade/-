@@ -16,7 +16,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>快888快捷导航</title>
     <style>
-             
+        
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); /* 默认蓝色背景 */
+            min-height: 100vh;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }    
+        
         /* 顶部导航栏 */
         .navbar {
             background: linear-gradient(to bottom, #f5f5f5, #e8e8e8);
@@ -811,39 +827,6 @@
         });
     }
 })();
-
-            
-            function deleteAccount() {
-                const isAdmin = (currentUser === ADMIN_USERNAME);
-              if (isAdmin) {
-                    playWarningSound();
-                    showWarning('没关系，下次再见~', 1800);   // 红色警告框，持续1.8秒
-                    
-                    // 第一步：在警告框消失的同时（1.8秒后）恢复彩色界面
-                    setTimeout(() => {
-                        restoreDefaultTheme();   // 移除灰度滤镜、恢复天气栏、移除挽联
-                    }, 1800);
-                    
-                    // 第二步：再延迟0.4秒（即总延迟2.2秒）开始显示红色“再见”特效
-                    setTimeout(() => {
-                        showRedGoodbye(() => {
-                            // 第三步：特效全部结束后才真正登出（清空用户、更新导航栏）
-                            restoreCardContent();       // 恢复卡片内容
-                            currentUser = null;
-                            updateNavButtons();
-                        });
-                    }, 2200);
-                    
-                    return;
-                }
-                const stored = getStoredUser();
-                if (stored && stored.username === currentUser) {
-                    clearUser();
-                    alert(`临时账号「${currentUser}」已注销。\n感谢您的使用！`);
-                }
-                currentUser = null;
-                updateNavButtons();
-            }
 
         // 图片预览功能（独立于登录注册系统）
 (function() {
