@@ -839,7 +839,8 @@ previewOverlay.innerHTML = `
         <img class="img-preview-img" src="" alt="预览图">
     </div>
 `;
-    d// 如果当前是宁源模式，给预览浮层添加灰度类（通过统一接口）
+    document.body.appendChild(previewOverlay);
+    // 如果当前是宁源模式，给预览浮层添加灰度类（通过统一接口）
 if (window.NingyuanTheme && typeof window.NingyuanTheme.applyGrayScaleIfNeeded === 'function') {
     window.NingyuanTheme.applyGrayScaleIfNeeded(previewOverlay);
 } else {
