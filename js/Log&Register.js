@@ -46,6 +46,7 @@
             currentUser = CONFIG.ADMIN_USERNAME;
             // 注意：宁源账号不存入 localStorage，仅作为内置账号
             window.dispatchEvent(new CustomEvent('auth:NingYuan-login'));
+            updateNavButtons();
             return { success: true, user: currentUser, message: `账号「${currentUser}」登录成功` };
         }
         // 2. 检查普通用户
@@ -53,6 +54,7 @@
         if (stored && stored.username === username && stored.password === password) {
             currentUser = username;
             window.dispatchEvent(new CustomEvent('auth:login'));
+            updateNavButtons();
             return { success: true, user: currentUser, message: `账号「${currentUser}」登录成功` };
         }
         return { success: false, message: '用户名或密码错误' };
@@ -84,7 +86,8 @@
         const username = currentUser;  // 先保存
         currentUser = null;
         // 不清理 localStorage，仅清空会话状态
-      window.dispatchEvent(new CustomEvent('auth:logout'));  
+      window.dispatchEvent(new CustomEvent('auth:logout'));
+        updateNavButtons();
       return { success: true, message: `账号「${username}」已登出` };
     }
 
@@ -94,6 +97,7 @@
             // 宁源账号不能删除，仅清空会话
             currentUser = null;
             window.dispatchEvent(new CustomEvent('auth:NingYuan-logout'));
+            updateNavButtons();
             return { success: true,  silent: true };
         }
         const stored = getStoredUser();
@@ -101,7 +105,8 @@
             const username = currentUser;
             clearUser();
             currentUser = null;
-          window.dispatchEvent(new CustomEvent('auth:logout')); 
+          window.dispatchEvent(new CustomEvent('auth:logout'));
+            updateNavButtons();
           return { success: true, message: `临时账号「${username}」已注销\n感谢您的使用！` };
         }
         return { success: false, message: '未找到要注销的账号' };
@@ -531,6 +536,7 @@ function init() {
     if (typeof window.onAuthStateChanged === 'function') {
         window.onAuthStateChanged(currentUser);
     }
+     updateNavButtons();
 }
     // ==================== 暴露公共API ====================
     const Auth = {
