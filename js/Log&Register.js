@@ -95,9 +95,7 @@
         const isAdmin = (currentUser === CONFIG.ADMIN_USERNAME);
         if (isAdmin) {
             // 宁源账号不能删除，仅清空会话
-            currentUser = null;
             window.dispatchEvent(new CustomEvent('auth:NingYuan-logout'));
-            updateNavButtons();
             return { success: true,  silent: true };
         }
         const stored = getStoredUser();
