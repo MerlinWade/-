@@ -439,7 +439,7 @@ if (window.NingyuanTheme && typeof window.NingyuanTheme.applyGrayScaleIfNeeded =
             
             // 左右边界检查
             if (left + dropdownRect.width > window.innerWidth) {
-                left = window.innerWidth - dropdownRect.width - 10;
+                left = rect.right - dropdownRect.width;
             }
             if (left < 10) left = 10;
             
@@ -510,8 +510,8 @@ if (window.NingyuanTheme && typeof window.NingyuanTheme.applyGrayScaleIfNeeded =
         navRight.innerHTML = `<button class="login-btn">登陆</button><button class="register-btn">注册</button>`;
         const loginBtn = navRight.querySelector('.login-btn');
         const registerBtn = navRight.querySelector('.register-btn');
-            if (loginBtn) loginBtn.onclick = showLoginModal;
-            if (registerBtn) registerBtn.onclick = showRegisterModal;
+            if (loginBtn) loginBtn.onclick = Auth.showLoginModal;
+            if (registerBtn) registerBtn.onclick = Auth.showRegisterModal;
     }
 }
   
