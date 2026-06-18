@@ -19,17 +19,32 @@
         );
         grayscaleTargets.forEach(el => el.classList.add('ningyuan-grayscale'));
 
+        // ---------- 动态元素灰度工具 ----------
+    function applyGrayScaleIfNeeded(element) {
+        if (document.body.classList.contains('ningyuan-mode') && element) {
+            element.classList.add('ningyuan-grayscale');
+        }
+    }
+        
+        // 处理已存在的动态元素（下拉菜单、预览浮层）
+        const dropdown = document.getElementById('global-user-dropdown');
+        if (dropdown) dropdown.classList.add('ningyuan-grayscale');
+        const previewOverlay = document.querySelector('.img-preview-overlay');
+        if (previewOverlay) previewOverlay.classList.add('ningyuan-grayscale');
+        
         // 天气栏变红
         const weatherDiv = document.querySelector('.weather-info');
         if (weatherDiv) {
             weatherDiv.textContent = '📍 ？？？ -8层';
             weatherDiv.style.color = '#ff0000';
         }
-
+         // 处理卡片内容
+        applyCardContent();
         // 其他宁源专属内容替换可由页面自行处理（如卡片替换），此处不强制
         // 若需要通用替换，可在此扩展，但建议保持模块精简
     }
-
+    
+       
     // ---------- 主题恢复 ----------
     function restoreDefaultTheme() {
         document.body.classList.remove('ningyuan-mode');
@@ -46,7 +61,67 @@
             weatherDiv.style.backgroundColor = '';
         }
     }
+        // 恢复卡片内容
+        restoreCardContent();
 
+        // 移除动态元素的灰度类
+        const dropdown = document.getElementById('global-user-dropdown');
+        if (dropdown) dropdown.classList.remove('ningyuan-grayscale');
+        const previewOverlay = document.querySelector('.img-preview-overlay');
+        if (previewOverlay) previewOverlay.classList.remove('ningyuan-grayscale');
+    }
+     // ---------- 卡片内容替换与恢复 ----------
+    function applyCardContent() {
+        const cardLink = document.getElementById('card-link-wrapper');
+        const cardImg = document.getElementById('card-img');
+        const cardTextOverlay = document.querySelector('.card-text-overlay');
+        if (cardLink && cardImg && cardTextOverlay) {
+            // 保存原始内容（仅首次）
+            if (!cardLink.hasAttribute('data-original-href')) {
+                cardLink.setAttribute('data-original-href', cardLink.href);
+                cardImg.setAttribute('data-original-src', cardImg.src);
+                const originalTitle = cardTextOverlay.querySelector('.card-title')?.innerText || '';
+                const originalDesc = cardTextOverlay.querySelector('.card-desc')?.innerText || '';
+                cardLink.setAttribute('data-original-title', originalTitle);
+                cardLink.setAttribute('data-original-desc', originalDesc);
+            }
+            // 替换为宁源内容
+            cardImg.src = 'images/20180417.jpg';
+            cardTextOverlay.innerHTML = `
+                <div class="card-title">逝者已去</div>
+                <div class="card-desc">记者了解到，这背后隐藏着另一个秘密……</div>
+            `;
+            cardLink.href = 'special.html';
+            cardLink.onclick = function(e) {
+                // 可自定义跳转行为
+                // alert('进入宁源专属页面');
+                return true;
+            };
+        }
+    }
+    
+    
+     function restoreCardContent() {
+        const cardLink = document.getElementById('card-link-wrapper');
+        const cardImg = document.getElementById('card-img');
+        const cardTextOverlay = document.querySelector('.card-text-overlay');
+        if (cardLink && cardImg && cardTextOverlay) {
+            const originalHref = cardLink.getAttribute('data-original-href');
+            const originalSrc = cardImg.getAttribute('data-original-src');
+            const originalTitle = cardLink.getAttribute('data-original-title');
+            const originalDesc = cardLink.getAttribute('data-original-desc');
+            if (originalHref) cardLink.href = originalHref;
+            if (originalSrc) cardImg.src = originalSrc;
+            if (originalTitle && originalDesc) {
+                cardTextOverlay.innerHTML = `
+                    <div class="card-title">${originalTitle}</div>
+                    <div class="card-desc">${originalDesc}</div>
+                `;
+            }
+            cardLink.onclick = null;
+        }
+    }
+    
     // ---------- 事件监听（与 Log&Register.js 联动） ----------
    window.addEventListener('auth:NingYuan-register', function() {
     if (window.Effects) {
@@ -122,6 +197,7 @@
     window.NingyuanTheme = {
         apply: applyNingyuanTheme,
         restore: restoreDefaultTheme
+        applyGrayScaleIfNeeded: applyGrayScaleIfNeeded   // 供动态元素创建时调用
     };
 
 })();
