@@ -8,67 +8,14 @@
 (function() {
     'use strict';
 
-    // ---------- 主题应用 ----------
-    function applyNingyuanTheme() {
-        // 添加 body 类（触发 CSS 中的灰色背景、挽联等）
-        document.body.classList.add('ningyuan-mode');
-
-        // 对主要内容区域添加灰度类（根据实际页面结构调整选择器）
-        const grayscaleTargets = document.querySelectorAll(
-            '.navbar, .container, .virtual-footer-section, .real-footer, .external-push-wrapper'
-        );
-        grayscaleTargets.forEach(el => el.classList.add('ningyuan-grayscale'));
-        
-        // 处理已存在的动态元素（下拉菜单、预览浮层）
-        const dropdown = document.getElementById('global-user-dropdown');
-        if (dropdown) dropdown.classList.add('ningyuan-grayscale');
-        const previewOverlay = document.querySelector('.img-preview-overlay');
-        if (previewOverlay) previewOverlay.classList.add('ningyuan-grayscale');
-        
-        // 天气栏变红
-        const weatherDiv = document.querySelector('.weather-info');
-        if (weatherDiv) {
-            weatherDiv.textContent = '📍 ？？？ -8层';
-            weatherDiv.style.color = '#ff0000';
-        }
-
-        // ---------- 动态元素灰度工具 ----------
+    // ---------- 动态元素灰度工具 ----------
     function applyGrayScaleIfNeeded(element) {
         if (document.body.classList.contains('ningyuan-mode') && element) {
             element.classList.add('ningyuan-grayscale');
         }
     }
-         // 处理卡片内容
-        applyCardContent();
-        // 其他宁源专属内容替换可由页面自行处理（如卡片替换），此处不强制
-        // 若需要通用替换，可在此扩展，但建议保持模块精简
-    }
-    
-       
-    // ---------- 主题恢复 ----------
-    function restoreDefaultTheme() {
-        document.body.classList.remove('ningyuan-mode');
 
-        const grayscaleTargets = document.querySelectorAll(
-            '.navbar, .container, .virtual-footer-section, .real-footer, .external-push-wrapper'
-        );
-        grayscaleTargets.forEach(el => el.classList.remove('ningyuan-grayscale'));
-
-        const weatherDiv = document.querySelector('.weather-info');
-        if (weatherDiv) {
-            weatherDiv.textContent = '📍 北淀市 -18℃ 雨';
-            weatherDiv.style.color = '';
-            weatherDiv.style.backgroundColor = '';
-        }
-    }
-        // 移除动态元素的灰度类
-        const dropdown = document.getElementById('global-user-dropdown');
-        if (dropdown) dropdown.classList.remove('ningyuan-grayscale');
-        const previewOverlay = document.querySelector('.img-preview-overlay');
-        if (previewOverlay) previewOverlay.classList.remove('ningyuan-grayscale');
-    }
- 
-     // ---------- 卡片内容替换与恢复 ----------
+    // ---------- 卡片内容替换与恢复 ----------
     function applyCardContent() {
         const cardLink = document.getElementById('card-link-wrapper');
         const cardImg = document.getElementById('card-img');
@@ -97,9 +44,8 @@
             };
         }
     }
-    
-    
-     function restoreCardContent() {
+
+    function restoreCardContent() {
         const cardLink = document.getElementById('card-link-wrapper');
         const cardImg = document.getElementById('card-img');
         const cardTextOverlay = document.querySelector('.card-text-overlay');
@@ -119,21 +65,72 @@
             cardLink.onclick = null;
         }
     }
-    
-    // ---------- 事件监听（与 Log&Register.js 联动） ----------
-   window.addEventListener('auth:NingYuan-register', function() {
-    if (window.Effects) {
-        window.Effects.playWarningSound();
-        window.Effects.showWarning('⚠️ 该用户名已被占用 ⚠️', 1800);
-        window.Effects.blackout(2000);
-    } else {
-        console.warn('Effects.js 未加载，无法播放注册特效');
+
+    // ---------- 主题应用 ----------
+    function applyNingyuanTheme() {
+        // 添加 body 类（触发 CSS 中的灰色背景、挽联等）
+        document.body.classList.add('ningyuan-mode');
+
+        // 对主要内容区域添加灰度类
+        const grayscaleTargets = document.querySelectorAll(
+            '.navbar, .container, .virtual-footer-section, .real-footer, .external-push-wrapper'
+        );
+        grayscaleTargets.forEach(el => el.classList.add('ningyuan-grayscale'));
+
+        // 处理已存在的动态元素（下拉菜单、预览浮层）
+        const dropdown = document.getElementById('global-user-dropdown');
+        if (dropdown) dropdown.classList.add('ningyuan-grayscale');
+        const previewOverlay = document.querySelector('.img-preview-overlay');
+        if (previewOverlay) previewOverlay.classList.add('ningyuan-grayscale');
+
+        // 天气栏变红
+        const weatherDiv = document.querySelector('.weather-info');
+        if (weatherDiv) {
+            weatherDiv.textContent = '📍 ？？？ -8层';
+            weatherDiv.style.color = '#ff0000';
+        }
+
+        // 处理卡片内容
+        applyCardContent();
     }
-});
-    
+
+    // ---------- 主题恢复 ----------
+    function restoreDefaultTheme() {
+        document.body.classList.remove('ningyuan-mode');
+
+        const grayscaleTargets = document.querySelectorAll(
+            '.navbar, .container, .virtual-footer-section, .real-footer, .external-push-wrapper'
+        );
+        grayscaleTargets.forEach(el => el.classList.remove('ningyuan-grayscale'));
+
+        // 移除动态元素的灰度类
+        const dropdown = document.getElementById('global-user-dropdown');
+        if (dropdown) dropdown.classList.remove('ningyuan-grayscale');
+        const previewOverlay = document.querySelector('.img-preview-overlay');
+        if (previewOverlay) previewOverlay.classList.remove('ningyuan-grayscale');
+
+        const weatherDiv = document.querySelector('.weather-info');
+        if (weatherDiv) {
+            weatherDiv.textContent = '📍 北淀市 -18℃ 雨';
+            weatherDiv.style.color = '';
+            weatherDiv.style.backgroundColor = '';
+        }
+        // 注意：恢复默认主题时，不恢复卡片内容（卡片内容由单独调用 restoreCardContent 恢复）
+    }
+
+    // ---------- 事件监听（与 Log&Register.js 联动） ----------
+    window.addEventListener('auth:NingYuan-register', function() {
+        if (window.Effects) {
+            window.Effects.playWarningSound();
+            window.Effects.showWarning('⚠️ 该用户名已被占用 ⚠️', 1800);
+            window.Effects.blackout(2000);
+        } else {
+            console.warn('Effects.js 未加载，无法播放注册特效');
+        }
+    });
+
     window.addEventListener('auth:NingYuan-login', function() {
         applyNingyuanTheme();
-        // 调用特效：红色闪烁（宁源登录专属）
         if (window.Effects && typeof window.Effects.redFlash === 'function') {
             window.Effects.redFlash();
         } else {
@@ -142,38 +139,38 @@
     });
 
     window.addEventListener('auth:login', function() {
-        // 普通用户登录，确保恢复默认主题（如果之前是宁源模式）
+        // 普通用户登录，恢复默认主题（但不恢复卡片？这里应该全部恢复，因为普通用户登录时宁源已经退出）
+        // 实际上，普通用户登录不应该有宁源残留，所以恢复主题并恢复卡片
         restoreDefaultTheme();
+        restoreCardContent();  // 普通登录也要恢复卡片
     });
 
     window.addEventListener('auth:logout', function() {
+        // 普通登出：立即恢复样式和卡片
         restoreDefaultTheme();
         restoreCardContent();
     });
 
-   window.addEventListener('auth:NingYuan-logout', function() {
-    if (window.Effects) {
-        // 1. 警告音 + 红色框
-        window.Effects.playWarningSound();
-        window.Effects.showWarning('没关系，下次再见~', 1800);
+    window.addEventListener('auth:NingYuan-logout', function() {
+        if (window.Effects) {
+            window.Effects.playWarningSound();
+            window.Effects.showWarning('没关系，下次再见~', 1800);
 
-        // 2. 1.8秒后恢复样式（但卡片内容保留宁源内容）
-        setTimeout(() => {
-            restoreDefaultTheme();   // 只恢复样式，不恢复卡片
-        }, 1800);
+            setTimeout(() => {
+                restoreDefaultTheme();   // 1.8秒后恢复样式，但不恢复卡片
+            }, 1800);
 
-        // 3. 2.2秒后开始再见特效
-        setTimeout(() => {
-            window.Effects.showRedGoodbye(() => {
-                // 4. 特效结束后才恢复卡片内容并登出
-                restoreCardContent();
-                if (window.Auth && typeof window.Auth.logout === 'function') {
-                    window.Auth.logout();
-                }
-            });
-        }, 2200);
-    }
-});
+            setTimeout(() => {
+                window.Effects.showRedGoodbye(() => {
+                    // 特效结束后恢复卡片内容并登出
+                    restoreCardContent();
+                    if (window.Auth && typeof window.Auth.logout === 'function') {
+                        window.Auth.logout();
+                    }
+                });
+            }, 2200);
+        }
+    });
 
     // ---------- 页面加载时检查初始状态 ----------
     function checkInitialState() {
@@ -181,13 +178,11 @@
             const user = window.Auth.getCurrentUser();
             if (user === '宁源') {
                 applyNingyuanTheme();
-                // 注意：登录时的红色闪烁已在 auth:NingYuan-login 事件中触发，
-                // 此处不重复调用，避免刷新页面时误触。
             } else {
                 restoreDefaultTheme();
+                restoreCardContent(); // 确保初始状态卡片正确
             }
         } else {
-            // Auth 未加载，延迟重试
             setTimeout(checkInitialState, 100);
         }
     }
@@ -195,15 +190,14 @@
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', checkInitialState);
     } else {
-        // DOM 已加载，稍后执行等待 Auth 初始化
         setTimeout(checkInitialState, 50);
     }
 
-    // ---------- 暴露公共接口（供外部手动调用） ----------
+    // ---------- 暴露公共接口 ----------
     window.NingyuanTheme = {
         apply: applyNingyuanTheme,
         restore: restoreDefaultTheme,
-        applyGrayScaleIfNeeded: applyGrayScaleIfNeeded   // 供动态元素创建时调用
+        applyGrayScaleIfNeeded: applyGrayScaleIfNeeded
     };
 
 })();
