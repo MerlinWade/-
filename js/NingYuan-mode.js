@@ -48,6 +48,16 @@
     }
 
     // ---------- 事件监听（与 Log&Register.js 联动） ----------
+   window.addEventListener('auth:NingYuan-register', function() {
+    if (window.Effects) {
+        window.Effects.playWarningSound();
+        window.Effects.showWarning('⚠️ 该用户名已被占用 ⚠️', 1800);
+        window.Effects.blackout(2000);
+    } else {
+        console.warn('Effects.js 未加载，无法播放注册特效');
+    }
+});
+    
     window.addEventListener('auth:NingYuan-login', function() {
         applyNingyuanTheme();
         // 调用特效：红色闪烁（宁源登录专属）
