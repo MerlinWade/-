@@ -484,20 +484,21 @@ if (window.NingyuanTheme && typeof window.NingyuanTheme.applyGrayScaleIfNeeded =
         window.addEventListener('scroll', resetDropdown);
         window.addEventListener('resize', resetDropdown);
         
-        // 绑定按钮事件
         dropdown.querySelector('.dropdown-logout').onclick = () => {
-            if (confirm('确定要登出吗？')) logout();
-            alert(result.message);
-            hideDropdown();
-        };
+            if (confirm('确定要登出吗？')) {
+            const result = logout();
+            hideDropdown();                             // 先关闭下拉菜单
+            setTimeout(() => alert(result.message), 0); // 延迟 alert，让渲染先完成
+    }
+};
+
         dropdown.querySelector('.dropdown-delete').onclick = () => {
             if (confirm(`确定要注销账号「${currentUser}」吗？\n（临时账号将被删除，浏览记录及所作更改仍会保留）`)) {
-        const result = deleteAccount();
-        // 只有当不是静默模式且有消息时才显示 alert
-        if (!result.silent && result.message) {
-            alert(result.message);
+            const result = deleteAccount();
+            hideDropdown();
+            if (!result.silent && result.message) {
+            setTimeout(() => alert(result.message), 0);
         }
-        hideDropdown();
     }
 };
         
