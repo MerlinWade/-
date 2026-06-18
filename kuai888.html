@@ -7,6 +7,7 @@
     <script src="js/Effects.js"></script>
     <script src="js/Log&Register.js"></script>
     <script src="js/NingYuan-mode.js"></script>
+    <script src="js/search.js"></script>
     
     <link rel="preload" as="image" href="images/外推2.jpg">
     <link rel="preload" as="image" href="images/警惕诈骗.jpg">
@@ -879,42 +880,6 @@ if (pushImg) {
             event.preventDefault();
             alert('🔒 请登录后查看');
         }
-
-              // ========== 搜索功能（根据用户类型限制引擎）==========
-        function handleSearch() {
-            const currentUser = Auth.getCurrentUser();
-            if (!currentUser) {
-                alert('🔒 请先登录');
-                return;
-            }
-            
-            const searchType = document.getElementById('searchType').value;
-            const searchText = document.querySelector('.search-input').value;
-            if (!searchText.trim()) {
-                alert('请输入搜索内容');
-                return;
-            }
-            
-            const isAdmin = Auth.isAdminUser();
-            const typeLabel = searchType === 'search' ? '搜索' : '地道搜索';
-            
-            // 普通用户不能使用地道搜索
-            if (!isAdmin && searchType === 'daodelao') {
-                alert('❌ 此搜索引擎暂不向临时账号开放，敬请期待。');
-                return;
-            }
-            
-            // 执行搜索（目前仅弹出提示）
-            alert(`🔍 ${typeLabel}：${searchText}\n\n搜索功能开发中...`);
-        }
-
-        // 绑定搜索按钮和回车键
-        const searchBtn = document.querySelector('.search-btn');
-        const searchInput = document.querySelector('.search-input');
-        if (searchBtn) searchBtn.addEventListener('click', handleSearch);
-        if (searchInput) searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') handleSearch();
-        });
         
     </script>
 </body>
