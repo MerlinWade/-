@@ -416,10 +416,15 @@ function updateNavButtons() {
             <button class="dropdown-delete" style="display: block; width: 100%; padding: 8px 12px; border: none; background: none; text-align: left; cursor: pointer; color: #d32f2f;">🗑️ 注销账号</button>
         `;
         document.body.appendChild(dropdown);
-                // 如果当前是宁源模式，给下拉菜单添加灰度类
-        if (document.body.classList.contains('ningyuan-mode')) {
-            dropdown.classList.add('ningyuan-grayscale');
-        }
+               // 如果当前是宁源模式，给下拉菜单添加灰度类（通过统一接口）
+if (window.NingyuanTheme && typeof window.NingyuanTheme.applyGrayScaleIfNeeded === 'function') {
+    window.NingyuanTheme.applyGrayScaleIfNeeded(dropdown);
+} else {
+    // 降级方案（如果 NingyuanTheme 未加载，直接判断）
+    if (document.body.classList.contains('ningyuan-mode')) {
+        dropdown.classList.add('ningyuan-grayscale');
+    }
+}
         
         // 定位函数：让下拉菜单出现在按钮正下方，左边缘对齐，并自动避免超出屏幕
         function positionDropdown() {
