@@ -18,13 +18,6 @@
             '.navbar, .container, .virtual-footer-section, .real-footer, .external-push-wrapper'
         );
         grayscaleTargets.forEach(el => el.classList.add('ningyuan-grayscale'));
-
-        // ---------- 动态元素灰度工具 ----------
-    function applyGrayScaleIfNeeded(element) {
-        if (document.body.classList.contains('ningyuan-mode') && element) {
-            element.classList.add('ningyuan-grayscale');
-        }
-    }
         
         // 处理已存在的动态元素（下拉菜单、预览浮层）
         const dropdown = document.getElementById('global-user-dropdown');
@@ -38,6 +31,13 @@
             weatherDiv.textContent = '📍 ？？？ -8层';
             weatherDiv.style.color = '#ff0000';
         }
+
+        // ---------- 动态元素灰度工具 ----------
+    function applyGrayScaleIfNeeded(element) {
+        if (document.body.classList.contains('ningyuan-mode') && element) {
+            element.classList.add('ningyuan-grayscale');
+        }
+    }
          // 处理卡片内容
         applyCardContent();
         // 其他宁源专属内容替换可由页面自行处理（如卡片替换），此处不强制
@@ -61,15 +61,13 @@
             weatherDiv.style.backgroundColor = '';
         }
     }
-        // 恢复卡片内容
-        restoreCardContent();
-
         // 移除动态元素的灰度类
         const dropdown = document.getElementById('global-user-dropdown');
         if (dropdown) dropdown.classList.remove('ningyuan-grayscale');
         const previewOverlay = document.querySelector('.img-preview-overlay');
         if (previewOverlay) previewOverlay.classList.remove('ningyuan-grayscale');
     }
+ 
      // ---------- 卡片内容替换与恢复 ----------
     function applyCardContent() {
         const cardLink = document.getElementById('card-link-wrapper');
@@ -150,24 +148,32 @@
 
     window.addEventListener('auth:logout', function() {
         restoreDefaultTheme();
+        restoreCardContent();
     });
 
-    window.addEventListener('auth:NingYuan-logout', function() {        
-                    playWarningSound();
-                    showWarning('没关系，下次再见~', 1800);   // 红色警告框，持续1.8秒
-                    
-                    // 第一步：在警告框消失的同时（1.8秒后）恢复彩色界面
-                    setTimeout(() => {
-                        restoreDefaultTheme();   // 移除灰度滤镜、恢复天气栏、移除挽联
-                    }, 1800);
-                    
-                    // 第二步：再延迟0.4秒（即总延迟2.2秒）开始显示红色“再见”特效
-                    setTimeout(() => {
-                        showRedGoodbye(() => {
-                        });
-                    }, 2200);
-                    return; 
-    });
+   window.addEventListener('auth:NingYuan-logout', function() {
+    if (window.Effects) {
+        // 1. 警告音 + 红色框
+        window.Effects.playWarningSound();
+        window.Effects.showWarning('没关系，下次再见~', 1800);
+
+        // 2. 1.8秒后恢复样式（但卡片内容保留宁源内容）
+        setTimeout(() => {
+            restoreDefaultTheme();   // 只恢复样式，不恢复卡片
+        }, 1800);
+
+        // 3. 2.2秒后开始再见特效
+        setTimeout(() => {
+            window.Effects.showRedGoodbye(() => {
+                // 4. 特效结束后才恢复卡片内容并登出
+                restoreCardContent();
+                if (window.Auth && typeof window.Auth.logout === 'function') {
+                    window.Auth.logout();
+                }
+            });
+        }, 2200);
+    }
+});
 
     // ---------- 页面加载时检查初始状态 ----------
     function checkInitialState() {
@@ -196,7 +202,7 @@
     // ---------- 暴露公共接口（供外部手动调用） ----------
     window.NingyuanTheme = {
         apply: applyNingyuanTheme,
-        restore: restoreDefaultTheme
+        restore: restoreDefaultTheme,
         applyGrayScaleIfNeeded: applyGrayScaleIfNeeded   // 供动态元素创建时调用
     };
 
