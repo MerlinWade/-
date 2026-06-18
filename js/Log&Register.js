@@ -426,32 +426,31 @@ if (window.NingyuanTheme && typeof window.NingyuanTheme.applyGrayScaleIfNeeded =
         
         // 定位函数：让下拉菜单出现在按钮正下方，左边缘对齐，并自动避免超出屏幕
         function positionDropdown() {
-            const rect = menuBtn.getBoundingClientRect();
-            // 先设置临时位置，以便获取其宽高
-            dropdown.style.left = '0px';
-            dropdown.style.top = '0px';
-            dropdown.style.display = 'block';
-            const dropdownRect = dropdown.getBoundingClientRect();
-            dropdown.style.display = 'none';
-            
-            let left = rect.left;
-            let top = rect.bottom;
-            
-            // 左右边界检查
-            if (left + dropdownRect.width > window.innerWidth) {
-                left = rect.right - dropdownRect.width;
-            }
-            if (left < 10) left = 10;
-            
-            // 底部空间不足时，显示在按钮上方
-            if (top + dropdownRect.height > window.innerHeight) {
-                top = rect.top - dropdownRect.height;
-                if (top < 10) top = 10; // 避免超出顶部
-            }
-            
-            dropdown.style.left = left + 'px';
-            dropdown.style.top = top + 'px';
-        }
+    const rect = menuBtn.getBoundingClientRect();
+    dropdown.style.left = '0px';
+    dropdown.style.top = '0px';
+    dropdown.style.display = 'block';
+    const dropdownRect = dropdown.getBoundingClientRect();
+    dropdown.style.display = 'none';
+    
+    let left = rect.right - dropdownRect.width;  // 右边缘对齐
+    let top = rect.bottom;
+    
+    // 左右边界检查
+    if (left < 10) left = 10;
+    if (left + dropdownRect.width > window.innerWidth - 10) {
+        left = window.innerWidth - dropdownRect.width - 10;
+    }
+    
+    // 底部空间不足时，显示在按钮上方
+    if (top + dropdownRect.height > window.innerHeight) {
+        top = rect.top - dropdownRect.height;
+        if (top < 10) top = 10;
+    }
+    
+    dropdown.style.left = left + 'px';
+    dropdown.style.top = top + 'px';
+}
         
         function showDropdown() {
             positionDropdown();
@@ -488,12 +487,19 @@ if (window.NingyuanTheme && typeof window.NingyuanTheme.applyGrayScaleIfNeeded =
         // 绑定按钮事件
         dropdown.querySelector('.dropdown-logout').onclick = () => {
             if (confirm('确定要登出吗？')) logout();
+            alert(result.message);
             hideDropdown();
         };
         dropdown.querySelector('.dropdown-delete').onclick = () => {
-            if (confirm(`确定要注销账号「${currentUser}」吗？\n（临时账号将被删除，浏览记录及所作更改仍会保留）`)) deleteAccount();
-            hideDropdown();
-        };
+            if (confirm(`确定要注销账号「${currentUser}」吗？\n（临时账号将被删除，浏览记录及所作更改仍会保留）`)) {
+        const result = deleteAccount();
+        // 只有当不是静默模式且有消息时才显示 alert
+        if (!result.silent && result.message) {
+            alert(result.message);
+        }
+        hideDropdown();
+    }
+};
         
         // 可选：在页面关闭或卸载时移除事件监听（非必须，但为了规范）
         window.addEventListener('beforeunload', () => {
