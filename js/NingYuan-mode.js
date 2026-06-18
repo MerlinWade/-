@@ -166,6 +166,7 @@
                     restoreCardContent();
                     if (window.Auth && typeof window.Auth.logout === 'function') {
                         window.Auth.logout();
+                        alert('⚠️ 账号未注销');
                     }
                 });
             }, 2200);
