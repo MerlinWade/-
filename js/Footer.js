@@ -1,12 +1,12 @@
 // ================================================================
 // Footer.js - 真实页脚动态加载
 // 功能：在页面中指定的容器内插入真实页脚 HTML
-// 使用：在页面中放置 <div id="Footer-container"></div>，然后引入此脚本
+// 使用：在页面中放置 <div id="footer-container"></div>，然后引入此脚本
 // ================================================================
 
 (function() {
     // 配置页脚文件路径（根据实际目录调整）
-    const FOOTER_URL = 'templates/footer.html';
+    const FOOTER_URL = 'Footer.html';
 
     function loadFooter() {
         const container = document.getElementById('footer-container');
