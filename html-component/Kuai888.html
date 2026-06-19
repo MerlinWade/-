@@ -1,0 +1,37 @@
+<!-- ===== 导航栏 ===== -->
+<header id="navbar-component">
+    <div class="navbar">
+        <div class="navbar-brand">🌐 快888快捷导航</div>
+        <div class="weather-info">📍 北淀市 -18℃ 雨</div>
+        <div class="navbar-search">
+            <select class="search-select" id="searchType">
+                <option value="search">搜索</option>
+                <option value="daodelao">地道搜索</option>
+            </select>
+            <input type="text" class="search-input" placeholder="搜索网站、新闻、资讯...">
+            <button class="search-btn">搜索</button>
+        </div>
+        <div class="navbar-right">
+            <!-- 注意：这里的 onclick 需要指向全局 Auth 对象 -->
+            <button class="login-btn" onclick="Auth.showLoginModal()">登陆</button>
+            <button class="register-btn" onclick="Auth.showRegisterModal()">注册</button>
+        </div>
+    </div>
+</header>
+
+<!-- ===== 虚拟页脚 ===== -->
+<footer id="virtual-footer-component">
+    <div class="virtual-footer-section">
+        <div class="virtual-footer">
+            <p>© 2018 快888快捷导航 | <a href="kuai888-关于我们.html">关于我们</a> | <a href="kuai888-联系方式.html">联系方式</a> | <a href="kuai888-用户协议.html">用户协议</a>| <a href="kuai888-广告服务.html">广告服务</a></p>
+        </div>
+    </div>
+</footer>
+
+<!-- ===== 真实页脚 ===== -->
+<footer id="real-footer-component">
+    <div class="real-footer">
+        <p>本网站的内容为虚构游戏作品，与任何真实的人物、团体或事件无关。</p>
+        <p>© 2026 MerlinWade. All rights reserved. | 本作品受著作权保护。未经许可，不得以任何形式转载或复制。</p>
+    </div>
+</footer>
