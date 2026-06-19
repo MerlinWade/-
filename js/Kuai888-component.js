@@ -5,7 +5,7 @@
 // ================================================================
 
 (function() {
-    const COMPONENTS_URL = 'templates/common-components.html';
+    const COMPONENTS_URL = 'html-component/Kuai888-component.html';
 
     function loadComponents() {
         // 检查页面中是否存在需要注入的占位容器
