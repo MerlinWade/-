@@ -77,13 +77,13 @@
         const searchBtn = document.querySelector('.search-btn');
         const searchInput = document.querySelector('.search-input');
         if (searchBtn) {
+            searchBtn.removeEventListener('click', handleSearch); // 防止重复绑定
             searchBtn.addEventListener('click', handleSearch);
         }
         if (searchInput) {
+            searchInput.removeEventListener('keypress', handleSearch);
             searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    handleSearch();
-                }
+                if (e.key === 'Enter') handleSearch();
             });
         }
     }
@@ -98,7 +98,8 @@
     // 暴露搜索函数以便外部调用（可选）
     window.Search = {
         handleSearch,
-        getAvailableEngines
+        getAvailableEngines,
+        bindEvents
     };
 
 })();
