@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快888快捷导航</title>
+    
+    <!-- ========== CSS 样式 ========== -->
+    <link rel="stylesheet" href="css/Kuai888-common.css">
+    <link rel="stylesheet" href="css/NingYuan-mode.css">
+    
+    <!-- ========== JavaScript 模块（按依赖顺序） ========== -->
+    <script src="js/Effects.js"></script>
+    <script src="js/Log&Register.js"></script>
+    <script src="js/NingYuan-mode.js"></script>
+    <script src="js/Search.js"></script>
+    <script src="js/Kuai888-component.js"></script>
+    
+    <!-- ========== 页面特有样式（仅用于本页） ========== -->
+    <style>
+        /* 广告服务页面内部的卡片修饰 */
+        .ad-service-intro {
+            text-align: center;
+            padding: 10px 0 5px 0;
+        }
+        .ad-service-intro h2 {
+            color: #1e3c72;
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+        }
+        .ad-service-intro p {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.7;
+            max-width: 800px;
+            margin: 0 auto 10px auto;
+        }
+        .ad-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .ad-feature-item {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px 16px;
+            flex: 1 1 200px;
+            max-width: 260px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .ad-feature-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .ad-feature-item h3 {
+            color: #0066cc;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .ad-feature-item p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .ad-placeholder {
+            background: #eef2f7;
+            border: 2px dashed #b0c4de;
+            border-radius: 8px;
+            padding: 30px 20px;
+            margin: 25px 0 10px 0;
+            text-align: center;
+        }
+        .ad-placeholder p {
+            color: #5a7a9a;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        .ad-placeholder .highlight {
+            color: #ff6600;
+            font-weight: bold;
+        }
+        @media (max-width: 600px) {
+            .ad-features {
+                flex-direction: column;
+                align-items: center;
+            }
+            .ad-feature-item {
+                max-width: 100%;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== 导航栏占位 ========== -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- ========== 主内容 ========== -->
+    <div class="container">
+        <!-- 广告服务介绍 -->
+        <div class="nav-section">
+            <div class="nav-header">📢 广告服务</div>
+            <div class="nav-content">
+                <div class="ad-service-intro">
+                    <h2>让您的品牌在快888导航中获得更多曝光</h2>
+                    <p>我们为各类企业、个人创作者提供优质的广告展示位，精准触达每日活跃用户。无论您是推广产品、活动还是品牌形象，我们都有灵活的投放方案。</p>
+                </div>
+
+                <div class="ad-features">
+                    <div class="ad-feature-item">
+                        <h3>🎯 精准投放</h3>
+                        <p>基于用户行为与兴趣标签，将广告展示给最可能感兴趣的人群。</p>
+                    </div>
+                    <div class="ad-feature-item">
+                        <h3>📊 数据透明</h3>
+                        <p>实时查看曝光量、点击率、转化数据，让每一分钱都花得明明白白。</p>
+                    </div>
+                    <div class="ad-feature-item">
+                        <h3>💡 创意支持</h3>
+                        <p>专业设计团队协助制作广告素材，提升广告吸引力。</p>
+                    </div>
+                    <div class="ad-feature-item">
+                        <h3>📈 效果优化</h3>
+                        <p>持续监测并优化投放策略，确保广告效果持续提升。</p>
+                    </div>
+                </div>
+
+                <!-- 示例广告位（占位效果） -->
+                <div class="ad-placeholder">
+                    <p>📌 您的广告位在此 —— 联系 <span class="highlight">ad@kuai888.com</span> 获取报价</p>
+                    <p style="font-size:0.8rem; color:#8a9aa8; margin-top:6px;">（示例位置，实际投放将根据方案展示在导航页显著区域）</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.9rem;">
+                    <p>合作咨询：<a href="mailto:ad@kuai888.com" style="color: #0066cc;">ad@kuai888.com</a> ｜ 电话：+86 (010) 8888-8888</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 页脚占位 ========== -->
+    <div id="virtual-footer-placeholder"></div>
+    <div id="real-footer-placeholder"></div>
+
+    <!-- ========== 页面特定脚本（无需额外交互，保持干净） ========== -->
+    <script>
+        // 本页无需额外脚本，所有公共功能已由全局模块提供
+        console.log('📢 广告服务页面加载完成');
+    </script>
+</body>
+</html>
