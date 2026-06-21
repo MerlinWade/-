@@ -239,6 +239,27 @@ body {
     text-decoration: underline;
 }
 
+/* ---------- 真实页脚 ---------- */
+.real-footer {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 10px 0 0 0;
+    text-align: center;
+}
+.real-footer p {
+    color: #aaa;
+    font-size: 0.8em;
+    margin: 4px 0;
+}
+.real-footer a {
+    color: #aaa;
+    text-decoration: none;
+}
+.real-footer a:hover {
+    text-decoration: underline;
+}
+
 /* ---------- 响应式设计 ---------- */
 @media (max-width: 1024px) {
     .navbar {
