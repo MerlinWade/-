@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快888快捷导航</title>
+    
+    <!-- ========== CSS 样式 ========== -->
+    <link rel="stylesheet" href="css/Kuai888-common.css">
+    <link rel="stylesheet" href="css/NingYuan-mode.css">
+    
+    <!-- ========== JavaScript 模块 ========== -->
+    <script src="js/Effects.js"></script>
+    <script src="js/Log&Register.js"></script>
+    <script src="js/NingYuan-mode.js"></script>
+    <script src="js/Search.js"></script>
+    <script src="js/Kuai888-component.js"></script>
+    
+    <!-- ========== 页面特有样式 ========== -->
+    <style>
+        .about-container {
+            padding: 10px 0;
+        }
+        .about-container .company-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1e3c72;
+            text-align: center;
+            margin-bottom: 6px;
+            letter-spacing: 2px;
+        }
+        .about-container .company-sub {
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        .about-container .about-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #2d2d2d;
+            margin-bottom: 16px;
+            text-indent: 2em;
+        }
+        .about-container .about-text strong {
+            color: #1e3c72;
+        }
+        /* 怪谈风格的特殊块 */
+        .about-container .glitch-block {
+            background: #f5f0f0;
+            border-left: 6px solid #aa3333;
+            padding: 16px 20px;
+            border-radius: 4px;
+            margin: 25px 0;
+            color: #3a2a2a;
+            font-family: "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .about-container .glitch-block strong {
+            color: #aa3333;
+        }
+        .about-container .glitch-block .redacted {
+            background: #2a1a1a;
+            color: #2a1a1a;
+            padding: 0 4px;
+            border-radius: 2px;
+            user-select: none;
+        }
+        .about-container .glitch-block .redacted:hover {
+            color: #ff8866;
+            background: transparent;
+        }
+        .about-container .mystery-box {
+            background: #1e1a1a;
+            color: #b0a0a0;
+            padding: 20px 24px;
+            border-radius: 8px;
+            margin: 30px 0 20px 0;
+            text-align: center;
+            border: 1px solid #4a3a3a;
+        }
+        .about-container .mystery-box p {
+            margin: 6px 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .about-container .mystery-box .highlight {
+            color: #ff8866;
+        }
+        .about-container .mystery-box .flicker {
+            animation: flicker 2s infinite;
+        }
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        @media (max-width: 600px) {
+            .about-container .company-name {
+                font-size: 1.4rem;
+            }
+            .about-container .about-text {
+                font-size: 0.92rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== 导航栏占位 ========== -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- ========== 主内容 ========== -->
+    <div class="container">
+        <div class="nav-section">
+            <div class="nav-header">📖 关于我们</div>
+            <div class="nav-content about-container">
+
+                <div class="company-name">快888快捷导航</div>
+                <div class="company-sub">—— 自 2018 年起，连接未知 ——</div>
+
+                <p class="about-text">
+                    <strong>快888快捷导航</strong> 成立于 2018 年，最初只是一个简单的个人网址收藏页。但随着时间推移，它逐渐演化成一个集导航、搜索、社交于一体的综合平台。我们的使命是为用户提供快速、稳定的互联网入口，同时保持对 <strong>异常现象</strong> 的高度敏感。
+                </p>
+
+                <p class="about-text">
+                    我们的团队由来自不同领域的 <strong>观察者</strong> 组成，他们各自负责监测数据流中的“异常波动”。我们相信，互联网不仅仅是信息的海洋，更是一面映照 <strong>现实褶皱</strong> 的镜子。快888的每一次更新，都是对镜面的一次擦拭。
+                </p>
+
+                <!-- 怪谈风格块 -->
+                <div class="glitch-block">
+                    <strong>⚠️ 记录片段 #19-88</strong><br>
+                    据非官方统计，本站每日约有 <span style="color:#aa3333;">0.73%</span> 的访问请求无法追溯到任何已知的 IP 或设备。
+                    这些请求通常发生在 <strong>凌晨 3:33</strong> 左右，且搜索关键词多为 <span class="redacted">████████</span> 或 <span class="redacted">██████</span>。
+                    我们已将这些请求归入“<strong>回声</strong>”分类，并持续观察其模式。
+                </div>
+
+                <p class="about-text">
+                    我们致力于保护用户的隐私，但我们也必须提醒：<strong>您在本站留下的任何痕迹，都可能被不止一双眼睛看到。</strong> 我们建议您定期检查自己的浏览记录，并注意那些 <span style="color:#8a3a3a;">您不记得访问过的页面</span>。
+                </p>
+
+                <!-- 神秘块 -->
+                <div class="mystery-box">
+                    <p><span class="highlight">⚡ 我们相信，每一个链接都是一扇门。</span></p>
+                    <p>有些门通往信息，有些门通往 <span class="flicker" style="color:#ff8866;">其他事物</span>。</p>
+                    <p style="font-size:0.8rem; opacity:0.6; margin-top:10px;">—— 本站部分服务由 <span class="redacted">████████</span> 提供支持。</p>
+                </div>
+
+                <p class="about-text" style="text-align: right; font-size:0.9rem; color:#888;">
+                    —— 最后更新于 <span style="font-family: monospace;">2026-06-21 03:33</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 页脚占位 ========== -->
+    <div id="virtual-footer-placeholder"></div>
+    <div id="real-footer-placeholder"></div>
+
+    <!-- ========== 页面特定脚本 ========== -->
+    <script>
+        // 控制台彩蛋
+        console.log('%c📖 你正在阅读关于我们的真相。', 'color: #1e3c72; font-size: 16px;');
+        console.log('%c但真相不止一面……', 'color: #886666; font-size: 14px;');
+    </script>
+</body>
+</html>
