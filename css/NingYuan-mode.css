@@ -1,0 +1,63 @@
+/* ================================================================
+   NingyuanTheme.css - 宁源模式专用样式
+   作用：仅在 body.ningyuan-mode 下生效，不影响普通模式
+   依赖：页面需引入此文件，并确保 body 上正确添加/移除 ningyuan-mode 类
+   ================================================================ */
+
+/* ---------- 宁源模式：灰色背景 ---------- */
+body.ningyuan-mode {
+    background: #333333 !important;  /* 覆盖默认蓝色渐变背景 */
+}
+
+/* ---------- 挽联（左右两侧固定定位） ---------- */
+body.ningyuan-mode::before,
+body.ningyuan-mode::after {
+    content: "";
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: "楷体", "华文楷书", "KaiTi", serif;
+    font-size: 24px;
+    color: white;
+    background: transparent;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    white-space: nowrap;
+    z-index: 5000;
+    pointer-events: none;
+    letter-spacing: 8px;
+    /* 增强清晰度：深色描边 + 阴影 */
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 0 4px black, 0 0 2px black;
+}
+
+body.ningyuan-mode::before {
+    right: 10px;
+    content: "死生有命";
+}
+body.ningyuan-mode::after {
+    left: 10px;
+    content: "富贵在天";
+}
+
+/* 移动端缩小挽联字号 */
+@media (max-width: 768px) {
+    body.ningyuan-mode::before,
+    body.ningyuan-mode::after {
+        font-size: 16px;
+        letter-spacing: 4px;
+    }
+}
+
+/* ---------- 灰度类：用于变灰的主要内容区域 ---------- */
+.ningyuan-grayscale {
+    filter: grayscale(1);
+}
+
+/* ---------- 天气栏在宁源模式下强制红色（不受灰度影响） ---------- */
+body.ningyuan-mode .weather-info {
+    filter: grayscale(0);
+    color: #ff0000 !important;
+    background: #000000 !important;
+    border-color: #ff0000 !important;
+}
