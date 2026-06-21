@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快888快捷导航</title>
+    
+    <!-- ========== CSS 样式 ========== -->
+    <link rel="stylesheet" href="css/Kuai888-common.css">
+    <link rel="stylesheet" href="css/NingYuan-mode.css">
+    
+    <!-- ========== JavaScript 模块 ========== -->
+    <script src="js/Effects.js"></script>
+    <script src="js/Log&Register.js"></script>
+    <script src="js/NingYuan-mode.js"></script>
+    <script src="js/Search.js"></script>
+    <script src="js/Kuai888-component.js"></script>
+    
+    <!-- ========== 页面特有样式 ========== -->
+    <style>
+        .protocol-container {
+            padding: 10px 0;
+        }
+        .protocol-container .warning-banner {
+            background: #2a1a1a;
+            border-left: 6px solid #aa3333;
+            color: #d4b0a0;
+            padding: 16px 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            font-family: "Courier New", monospace;
+        }
+        .protocol-container .warning-banner strong {
+            color: #ff8866;
+        }
+        .protocol-list {
+            list-style: none;
+            padding: 0;
+            counter-reset: rule-counter;
+        }
+        .protocol-list li {
+            counter-increment: rule-counter;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            background: #fcfcfc;
+            border: 1px solid #e8e0e0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #2d2d2d;
+            transition: background 0.2s;
+            position: relative;
+        }
+        .protocol-list li::before {
+            content: "第 " counter(rule-counter) " 条";
+            display: block;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        /* 诡异的条款用特殊样式 */
+        .protocol-list li.weird {
+            background: #f5f0f0;
+            border-color: #b08080;
+            color: #3a2a2a;
+        }
+        .protocol-list li.weird::after {
+            content: " ⚠️";
+            color: #aa3333;
+            font-size: 1.2rem;
+            position: absolute;
+            right: 12px;
+            top: 12px;
+        }
+        .protocol-list li.weird-strong {
+            background: #2d1a1a;
+            border-color: #8a3a3a;
+            color: #e8d0c0;
+        }
+        .protocol-list li.weird-strong::before {
+            color: #c08070;
+        }
+        .protocol-footer-note {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 20px;
+            border-top: 1px dashed #ccc;
+            padding-top: 16px;
+            font-family: "Courier New", monospace;
+        }
+        .protocol-footer-note .glitch {
+            color: #666;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        @media (max-width: 600px) {
+            .protocol-list li {
+                padding: 12px 14px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== 导航栏占位 ========== -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- ========== 主内容 ========== -->
+    <div class="container">
+        <div class="nav-section">
+            <div class="nav-header">📜 用户协议</div>
+            <div class="nav-content protocol-container">
+
+                <!-- 警告横幅（怪谈风格） -->
+                <div class="warning-banner">
+                    <strong>⚠️ 阅读前须知：</strong> 本协议一经打开即视为您已完全理解并接受所有条款。<br>
+                    若您感到不适，请立即关闭页面，但 <strong>不要刷新</strong> —— 刷新不会改变任何事。
+                </div>
+
+                <!-- 协议条款列表 -->
+                <ol class="protocol-list">
+                    <li>您确认您已年满 <strong>18 周岁</strong>，或已获得法定监护人的同意。</li>
+                    <li>您同意在使用本网站时遵守中华人民共和国法律法规，不传播违法信息。</li>
+                    <li>本网站保留随时修改、暂停或终止部分服务的权利，恕不另行通知。</li>
+                    <li>您注册的账号仅限本人使用，不得转让、出租或出借。</li>
+                    <li>您对通过本网站发布的内容承担全部责任，本网站不承担连带责任。</li>
+                    <li>本网站可能会收集您的浏览数据以优化服务，但不会向第三方出售您的个人信息。</li>
+                    <li class="weird">您同意在 <strong>每日 23:00 至次日 5:00</strong> 期间，若访问本网站，请保持室内光线充足，并确保至少有一扇门处于开启状态。</li>
+                    <li class="weird">若您发现页面上出现 <strong>非您本人输入的文本</strong>，请勿尝试选中或复制它们。关闭所有标签页并重启设备。</li>
+                    <li class="weird-strong">您承诺不会在 <strong>满月之夜</strong> 进行任何账号注销或密码修改操作。若确需操作，请先朗读本协议第三遍。</li>
+                    <li class="weird">您理解并接受：本网站的“搜索”功能可能会返回 <strong>并非您所查询的内容</strong>，但您仍应相信其相关性。</li>
+                    <li class="weird-strong">若您连续 30 天未登录，您的账号将被标记为“休眠”。休眠账号的持有者可能会在梦境中收到本网站的提醒信息。</li>
+                    <li>本协议的最终解释权归快888快捷导航所有。</li>
+                    <li class="weird">第十三条：您同意在每次登录后，默念一遍“<span style="color:#8a3a3a;">我已阅读并理解</span>”，否则可能无法正常使用部分功能。</li>
+                    <li class="weird-strong">第十四条：如果您看到此条款，说明您已经通过了第一道验证。请记住——<strong>这里没有退出按钮</strong>，只有继续的选项。</li>
+                </ol>
+
+                <!-- 底部诡异注脚 -->
+                <div class="protocol-footer-note">
+                    本协议自您第一次访问本页起生效，直至您不再存在。<br>
+                    <span class="glitch">您已阅读至末尾，恭喜。</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 页脚占位 ========== -->
+    <div id="virtual-footer-placeholder"></div>
+    <div id="real-footer-placeholder"></div>
+
+    <!-- ========== 页面特定脚本 ========== -->
+    <script>
+        // 简单彩蛋：控制台输出警告信息
+        console.log('%c⚠️ 你正在查看用户协议。', 'color: #aa3333; font-size: 16px; font-weight: bold;');
+        console.log('%c有些条款你可能已经忽略了……', 'color: #886666; font-size: 14px;');
+        console.log('%c但这没关系。', 'color: #666; font-size: 12px;');
+    </script>
+</body>
+</html>
