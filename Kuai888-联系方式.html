@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快888快捷导航</title>
+    
+    <!-- ========== CSS 样式 ========== -->
+    <link rel="stylesheet" href="css/Kuai888-common.css">
+    <link rel="stylesheet" href="css/NingYuan-mode.css">
+    
+    <!-- ========== JavaScript 模块 ========== -->
+    <script src="js/Effects.js"></script>
+    <script src="js/Log&Register.js"></script>
+    <script src="js/NingYuan-mode.js"></script>
+    <script src="js/Search.js"></script>
+    <script src="js/Kuai888-component.js"></script>
+    
+    <!-- ========== 页面特有样式 ========== -->
+    <style>
+        .contact-container {
+            padding: 10px 0;
+        }
+        .contact-info-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin: 20px 0 30px 0;
+        }
+        .contact-item {
+            flex: 1 1 200px;
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px 18px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .contact-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .contact-item .icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .contact-item h3 {
+            color: #1e3c72;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+        }
+        .contact-item p {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+        .contact-item a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+        .contact-form-placeholder {
+            background: #f0f4f8;
+            border: 2px dashed #b8c8d8;
+            border-radius: 12px;
+            padding: 30px 24px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .contact-form-placeholder p {
+            color: #5a7a9a;
+            font-size: 1rem;
+            margin: 6px 0;
+        }
+        .contact-form-placeholder .btn-mock {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 10px 30px;
+            border-radius: 40px;
+            font-weight: bold;
+            border: none;
+            font-size: 0.95rem;
+            cursor: default;
+            opacity: 0.7;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+        .contact-form-placeholder .btn-mock:hover {
+            opacity: 0.9;
+        }
+        .contact-note {
+            font-size: 0.85rem;
+            color: #888;
+            text-align: center;
+            margin-top: 25px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        @media (max-width: 600px) {
+            .contact-info-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+            .contact-item {
+                width: 100%;
+                max-width: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== 导航栏占位 ========== -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- ========== 主内容 ========== -->
+    <div class="container">
+        <div class="nav-section">
+            <div class="nav-header">📬 联系方式</div>
+            <div class="nav-content contact-container">
+
+                <div class="contact-info-grid">
+                    <!-- 邮箱 -->
+                    <div class="contact-item">
+                        <span class="icon">📧</span>
+                        <h3>电子邮箱</h3>
+                        <p><a href="mailto:contact@kuai888.com">contact@kuai888.com</a></p>
+                    </div>
+                    <!-- 电话 -->
+                    <div class="contact-item">
+                        <span class="icon">📞</span>
+                        <h3>客服电话</h3>
+                        <p>+86 (010) 8888-8888</p>
+                        <p style="font-size:0.8rem; color:#999;">工作日 9:00 – 18:00</p>
+                    </div>
+                    <!-- 地址 -->
+                    <div class="contact-item">
+                        <span class="icon">📍</span>
+                        <h3>办公地址</h3>
+                        <p>北京市朝阳区建国路88号<br>快888大厦 18层</p>
+                    </div>
+                </div>
+
+                <!-- 联系表单占位（后续可替换为真实表单） -->
+                <div class="contact-form-placeholder">
+                    <p style="font-size:1.1rem; font-weight:bold; color:#1e3c72;">📝 在线留言</p>
+                    <p>填写您的姓名、邮箱和留言内容，我们会尽快回复您。</p>
+                    <p style="font-size:0.85rem; color:#7a8a9a;">（表单功能开发中，敬请期待）</p>
+                    <span class="btn-mock">提交留言（占位）</span>
+                </div>
+
+                <div class="contact-note">
+                    也可通过 <a href="Kuai888-关于我们.html">关于我们</a> 页面了解更多信息。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 页脚占位 ========== -->
+    <div id="virtual-footer-placeholder"></div>
+    <div id="real-footer-placeholder"></div>
+
+    <!-- ========== 页面特定脚本 ========== -->
+    <script>
+        // 本页无需额外交互，所有公共功能已由全局模块提供
+        console.log('📬 联系方式页面加载完成');
+    </script>
+</body>
+</html>
