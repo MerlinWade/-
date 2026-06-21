@@ -9,34 +9,296 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>快888快捷导航</title>
     
-    <!-- ========== 1. CSS 样式（先加载，确保页面渲染时已有样式） ========== -->
+    <!-- ========== 1. CSS 样式（先加载） ========== -->
     <link rel="stylesheet" href="css/Kuai888-common.css">
     <link rel="stylesheet" href="css/NingYuan-mode.css">
     
+    <!-- ========== 页面特有样式（原封不动保留） ========== -->
+    <style>
+        /* ---------- 外推图片区域 ---------- */
+        .external-push-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0px auto 20px auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .external-push-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* 左侧大图 */
+        .external-push-img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .external-push-img:hover {
+            transform: scale(1.01);
+        }
+
+        /* 防诈骗卡片 */
+        .card-link-wrapper {
+            position: relative;
+            display: block;
+            text-decoration: none;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+        }
+        .card-link-wrapper:hover {
+            transform: scale(1.01);
+        }
+        .card-img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
+        }
+        .card-text-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            color: white;
+            text-align: center;
+            padding: 12px;
+        }
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .card-desc {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* 问答卡片 */
+        .quiz-card {
+            background: rgba(20, 20, 30, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 16px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        .quiz-card:hover {
+            transform: scale(1.01);
+        }
+        .quiz-question {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ffd966;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .quiz-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: white;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .quiz-feedback {
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+            min-height: 32px;
+            padding: 4px;
+            border-radius: 20px;
+        }
+        .quiz-feedback.correct {
+            color: #a0ffa0;
+            background: rgba(0,100,0,0.3);
+        }
+        .quiz-feedback.wrong {
+            color: #ffa0a0;
+            background: rgba(100,0,0,0.3);
+        }
+
+        /* 配对卡片 */
+        .pair-card {
+            display: flex;
+            align-items: flex-end;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            background-size: cover;
+            background-position: center;
+            min-height: 260px;
+            height: auto;
+            transition: transform 0.2s;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .pair-card:hover {
+            transform: scale(1.01);
+        }
+        .pair-card-content {
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(4px);
+            width: 100%;
+            padding: 20px 16px;
+            text-align: center;
+            color: white;
+        }
+
+        /* 两列等高布局 */
+        .external-push-wrapper.two-columns {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            align-items: stretch;
+        }
+        .two-columns .left-column,
+        .two-columns .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+        }
+
+        /* 图片预览模态框 */
+        .img-preview-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 15000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.2s;
+        }
+        .img-preview-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .img-preview-container {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .img-preview-img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .img-preview-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            font-size: 36px;
+            color: white;
+            cursor: pointer;
+            background: rgba(0,0,0,0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .img-preview-close:hover {
+            background: rgba(255,0,0,0.7);
+            transform: scale(1.1);
+        }
+        @media (max-width: 550px) {
+            .img-preview-close {
+                top: -30px;
+                width: 30px;
+                height: 30px;
+                font-size: 24px;
+            }
+        }
+
+        /* 真实页脚（若 common.css 未提供，此处补充） */
+        .real-footer {
+            background: none;
+            border: none;
+            box-shadow: none;
+            padding: 10px 0 0 0;
+            text-align: center;
+        }
+        .real-footer p {
+            color: #aaa;
+            font-size: 0.8em;
+            margin: 4px 0;
+        }
+        .real-footer a {
+            color: #aaa;
+            text-decoration: none;
+        }
+        .real-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 响应式微调 */
+        @media (max-width: 768px) {
+            .external-push-wrapper.two-columns {
+                display: flex;
+                flex-direction: column;
+            }
+            .external-push-img, .card-img {
+                max-height: none;
+                object-fit: contain;
+            }
+            .pair-card {
+                min-height: 220px;
+            }
+        }
+        @media (max-width: 480px) {
+            .pair-card {
+                min-height: 180px;
+            }
+        }
+    </style>
+
     <!-- ========== 2. JavaScript 模块（按依赖顺序加载） ========== -->
-    <!-- 特效库（无依赖） -->
     <script src="js/Effects.js"></script>
-    <!-- 认证模块（依赖 Effects 已加载） -->
     <script src="js/Log&Register.js"></script>
-    <!-- 宁源主题（依赖 Effects 和 Log&Register） -->
     <script src="js/NingYuan-mode.js"></script>
-    <!-- 搜索功能（依赖 Log&Register 中的 Auth 对象） -->
     <script src="js/Search.js"></script>
-    <!-- 公共组件加载器（依赖上述所有，最后加载） -->
     <script src="js/Kuai888-component.js"></script>
 </head>
 <body>
-    <!-- ========================================================= -->
-    <!-- 占位容器：导航栏（组件加载器会将内容注入此处）           -->
-    <!-- 位置：原来 <div class="navbar"> 所在的位置，即在 body 开头 -->
-    <!-- ========================================================= -->
+    <!-- ========== 导航栏占位 ========== -->
     <div id="navbar-placeholder"></div>
 
-    <!-- ========================================================= -->
-    <!-- 主内容区域                                              -->
-    <!-- ========================================================= -->
+    <!-- ========== 主内容 ========== -->
     <div class="container">
-        <!-- 个人常用网址导航 -->
         <div class="nav-section">
             <div class="nav-header">⭐ 个人常用网址导航</div>
             <div class="nav-content">
@@ -65,14 +327,11 @@
             </div>
         </div>
     </div>
-    
-    <!-- ========================================================= -->
-    <!-- 外推图片区域：两列等高布局                              -->
-    <!-- ========================================================= -->
+
+    <!-- ========== 外推图片区域 ========== -->
     <div class="external-push-wrapper two-columns">
-        <!-- 左列（较宽）：防诈骗卡片 + 问答卡片 -->
+        <!-- 左列 -->
         <div class="external-push-item left-column">
-            <!-- 防诈骗卡片（原图片2） -->
             <a href="#" class="card-link-wrapper" id="card-link-wrapper">
                 <div class="card-image">
                     <img id="card-img" src="images/警惕诈骗.jpg" alt="警惕诈骗" class="card-img">
@@ -82,7 +341,6 @@
                     <div class="card-desc">记者了解到，诈骗手段层出不穷，请提高警惕。</div>
                 </div>
             </a>
-            <!-- 问答卡片 -->
             <div class="quiz-card">
                 <div class="quiz-question">脑筋急转弯：不知天上宫阙，今夕是（）年？</div>
                 <div class="quiz-options">
@@ -93,12 +351,9 @@
                 <div class="quiz-feedback"></div>
             </div>
         </div>
-
-        <!-- 右列（较窄）：外推图片 + 配对卡片 -->
+        <!-- 右列 -->
         <div class="external-push-item right-column">
-            <!-- 外推图片 -->
             <img id="external-push-img" src="images/外推1.jpg" alt="外推音乐推荐" class="external-push-img">
-            <!-- 配对卡片 -->
             <a href="#" class="pair-card" id="pair-card" style="background-image: url('images/配对.jpg'); background-size: cover; background-position: center; text-decoration: none;">
                 <div class="pair-card-content">
                     <h3 class="pair-title">姓名配对缘分测试</h3>
@@ -107,24 +362,14 @@
             </a>
         </div>
     </div>
-    
-    <!-- ========================================================= -->
-    <!-- 占位容器：虚拟页脚                                          -->
-    <!-- 位置：原来 <div class="virtual-footer-section"> 所在的位置  -->
-    <!-- ========================================================= -->
-    <div id="virtual-footer-placeholder"></div>
 
-    <!-- ========================================================= -->
-    <!-- 占位容器：真实页脚                                          -->
-    <!-- 位置：原来 <div class="real-footer"> 所在的位置             -->
-    <!-- ========================================================= -->
+    <!-- ========== 页脚占位 ========== -->
+    <div id="virtual-footer-placeholder"></div>
     <div id="real-footer-placeholder"></div>
 
-    <!-- ========================================================= -->
-    <!-- 页面特定脚本（不属于模块的部分保留在页面中）                -->
-    <!-- ========================================================= -->
+    <!-- ========== 页面特定脚本 ========== -->
     <script>
-        // 问答卡片交互逻辑
+        // 问答卡片交互
         (function() {
             const quizRadios = document.querySelectorAll('input[name="answer"]');
             const feedbackDiv = document.querySelector('.quiz-feedback');
@@ -143,7 +388,7 @@
                         return;
                     }
                     if (selectedValue === '2018') {
-                       feedbackDiv.innerHTML = '✓ 正确！<b style="color: red;">password1</b>。';
+                        feedbackDiv.innerHTML = '✓ 正确！<b style="color: red;">password1</b>。';
                         feedbackDiv.classList.remove('wrong');
                         feedbackDiv.classList.add('correct');
                     } else {
@@ -158,9 +403,8 @@
             }
         })();
 
-        // 图片预览功能（独立于登录注册系统）
+        // 图片预览
         (function() {
-            // 创建预览浮层
             const previewOverlay = document.createElement('div');
             previewOverlay.className = 'img-preview-overlay';
             previewOverlay.innerHTML = `
@@ -170,13 +414,10 @@
                 </div>
             `;
             document.body.appendChild(previewOverlay);
-            // 如果当前是宁源模式，给预览浮层添加灰度类（通过统一接口）
             if (window.NingyuanTheme && typeof window.NingyuanTheme.applyGrayScaleIfNeeded === 'function') {
                 window.NingyuanTheme.applyGrayScaleIfNeeded(previewOverlay);
-            } else {
-                if (document.body.classList.contains('ningyuan-mode')) {
-                    previewOverlay.classList.add('ningyuan-grayscale');
-                }
+            } else if (document.body.classList.contains('ningyuan-mode')) {
+                previewOverlay.classList.add('ningyuan-grayscale');
             }
 
             const closeBtn = previewOverlay.querySelector('.img-preview-close');
@@ -195,13 +436,10 @@
             };
             const pushImg = document.getElementById('external-push-img');
             if (pushImg) {
-                pushImg.onclick = () => {
-                    showImagePreview();
-                };
+                pushImg.onclick = () => showImagePreview();
             }
         })();
 
-        // 显示登录提示（保持原有）
         function showLoginPrompt(event) {
             event.preventDefault();
             alert('🔒 请登录后查看');
